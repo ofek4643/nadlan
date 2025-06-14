@@ -1,0 +1,141 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8f9fa;
+  padding: 60px;
+}
+
+.card {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 500px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #0a2342;
+}
+
+.subtitle {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 10px;
+}
+
+.formgroup {
+  display: flex;
+  flex-direction: column;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.field label,
+.row label {
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.field input,
+.row input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+}
+.row input {
+  width: 200px;
+  margin-top: 0.4rem;
+}
+.row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.buttonShowPassword {
+  all: unset;
+  font-size: 1rem;
+  color: #0a2342;
+  cursor: pointer;
+  text-align: center;
+  padding: 7px 15px;
+  border-radius: 5px;
+  margin: 20px 0px;
+  transition: all 0.1s ease-in-out;
+}
+.buttonShowPassword:hover {
+  background-color: hsl(30 100% 60%);
+  color: white;
+}
+.agreement {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.agreement a {
+  color: #0a2342;
+}
+.agreement a:hover {
+  text-decoration: underline;
+}
+
+.buttonRegister {
+  background-color: hsl(220, 40%, 22%);
+  color: white;
+  padding: 0.8rem;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  margin-top: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+}
+.buttonRegister:hover {
+  background-color: hsl(220, 40%, 32%);
+}
+.buttonRegister:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.loginLink {
+  margin-top: 1rem;
+  text-align: center;
+}
+.checkBox {
+  cursor: pointer;
+}
+.loginLink a {
+  color: #0a2342;
+}
+.loginLink a:hover {
+  text-decoration: underline;
+}
+.errorText {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+.error {
+  display: flex;
+}
+.listResult {
+  margin-top: 10px;
+  list-style: none;
+}

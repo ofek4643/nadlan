@@ -1,0 +1,96 @@
+* {
+  font-size: 1.1rem;
+}
+footer {
+  direction: rtl;
+  padding: 40px 100px; /* רק למעלה ולמטה */
+  background-color: #1e2d50;
+  color: rgb(202, 202, 202);
+}
+.headers {
+  color: white;
+  font-size: 1.2rem;
+}
+.containerAll {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.containerInfo {
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 20px;
+}
+.iconDiv {
+  display: flex;
+  gap: 20px;
+}
+.twoGap {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+.oneGap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.listItem {
+  margin-top: 10px;
+  list-style: none;
+}
+.white:hover {
+  color: white;
+}
+.white {
+  color: rgb(202, 202, 202);
+}
+.info {
+  margin-right: 15px;
+}
+.inputField {
+  width: 300px;
+  font-family: inherit;
+  padding: 10px;
+  border: none;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
+
+}
+.sendBtn {
+  width: 50px;
+  background-color: hsl(30 100% 60%);
+  cursor: pointer;
+  height: 100%;
+  border: none;
+  border-bottom-left-radius: 5px;
+  border-top-left-radius: 5px;
+}
+.copyRight {
+  display: flex;
+  justify-content: space-between;
+  border-top: 1px solid;
+  padding-top: 20px;
+  color: gray;
+}
+.btnContainer {
+  display: flex;
+  gap: 20px;
+}
+.btnFooter {
+  all: unset;
+  cursor: pointer;
+  color: gray;
+}
+.btnFooter:hover {
+  color: white;
+}
+.listInformation {
+  list-style: none;
+  margin-top: 10px;
+}
+.form{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

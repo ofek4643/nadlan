@@ -1,0 +1,94 @@
+.custom-select {
+  position: relative;
+  width: 350px;
+  direction: rtl;
+  font-family: sans-serif;
+}
+
+.select-btn {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  text-align: right;
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+    display: flex;
+  justify-content: space-between;
+}
+.select-btn-half1 {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top-right-radius: 12px;
+  border-bottom-right-radius: 12px;
+  text-align: right;
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+    display: flex;
+  justify-content: space-between;
+}
+.select-btn-half2 {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-top-left-radius: 12px;
+  border-bottom-left-radius: 12px;
+  text-align: right;
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+    display: flex;
+  justify-content: space-between;
+}
+
+.arrow {
+  font-size: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.options-list {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  width: 100%;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  z-index: 999;
+  margin-top: 4px;
+}
+
+.option-item {
+  padding: 10px 25px;
+  cursor: pointer;
+  min-height: 43px;
+  list-style: none;
+  
+}
+
+.option-item:hover {
+  background-color: orange;
+  color: white;
+
+}
+.myCustomSelect1{
+position: relative;
+  width: 175px;
+  direction: rtl;
+  font-family: sans-serif;
+}
+.myCustomSelect2{
+position: relative;
+  width: 175px;
+  direction: rtl;
+  font-family: sans-serif;
+}

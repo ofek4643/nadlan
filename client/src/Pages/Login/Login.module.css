@@ -1,0 +1,141 @@
+* {
+  font-family: sans-serif;
+  direction: rtl;
+}
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 300px);
+  background-color: #f7f8fa;
+}
+
+.card {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  text-align: right;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
+}
+
+.title {
+  font-size: 1.5rem;
+  color: #0a2342;
+}
+
+.subtitle {
+  font-size: 0.9rem;
+  color: #666;
+  margin-top: 10px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.formGroup label {
+  margin: 10px 0px;
+}
+.formGroup input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-top: 0.25rem;
+  background-color: hsl(210 20% 98%);
+    outline: none;
+
+}
+.passwordContainer {
+  display: flex;
+  align-items: center;
+  background: #f5f5f5;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+}
+
+.passwordContainer input {
+  background: #f5f5f5;
+  border: none;
+  outline: none;
+  flex: 1;
+}
+
+.showBtn {
+  background: #f5f5f5;
+  border: none;
+  color: #0a2342;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 10px 15px;
+  border-radius: 7px;
+  margin-left: 5px;
+  transition: all 0.1s ease-in-out;
+}
+
+.showBtn:hover {
+  color: white;
+  background-color: hsl(30 100% 60%);
+}
+
+.options {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.options input {
+  margin-left: 7px;
+}
+.link {
+  color: #0a2342;
+}
+.link:hover {
+  text-decoration: underline;
+}
+
+.loginBtn {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #0a2342;
+  color: #fff;
+  border: none;
+  border-radius: 60px;
+  cursor: pointer;
+}
+
+.loginBtn:hover {
+  background-color: hwb(213 4% 64%);
+}
+.loginBtn:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.register {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.register a {
+  color: #0a2342;
+}
+.register a:hover {
+  text-decoration: underline;
+}
+.error{
+  color: red;
+}

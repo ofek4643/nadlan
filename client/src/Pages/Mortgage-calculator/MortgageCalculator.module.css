@@ -1,0 +1,193 @@
+.headerCalculator {
+  font-family: sans-serif;
+  color: hsl(222 47% 24%);
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+.btnContainer {
+  margin-top: 30px;
+}
+.buttonHeader {
+  width: 240px;
+  padding: 10px 5px;
+  border: none;
+  transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.container {
+  margin-top: 30px;
+  background-color: white;
+}
+.mortgageContainer {
+  padding: 24px;
+  color: #1a1a1a;
+  font-family: Arial, sans-serif;
+  line-height: 1.6;
+}
+.calculatorContainer {
+  display: flex;
+  gap: 50px;
+  padding: 24px;
+  font-family: Arial, sans-serif;
+  color: #1a1a1a;
+}
+
+.title {
+  font-size: 1.4rem;
+  color: #1a3c7e;
+  margin-bottom: 16px;
+}
+
+.subtitle {
+  font-size: 1.2rem;
+  margin-top: 24px;
+  margin-bottom: 8px;
+}
+
+.note {
+  display: flex;
+  background-color: #eef5ff;
+  width: 100%;
+  padding: 12px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  border-right: 5px solid #74abf8;
+}
+.noteInfo {
+  margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  font-size: 18px;
+}
+
+.list {
+  padding-right: 20px;
+  margin-bottom: 16px;
+}
+.paragraph {
+  margin-bottom: 10px;
+}
+.icon {
+  color: blue;
+}
+.listItem {
+  display: flex;
+  gap: 5px;
+}
+.formgroup {
+  display: flex;
+  flex-direction: column;
+}
+.row {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+.inputLabel {
+  display: flex;
+  flex-direction: column;
+  border-radius: 5px;
+}
+.inputLabel input {
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+}
+.input {
+  width: 400px;
+  padding: 0.6rem;
+}
+.inputRange {
+  width: 400px;
+}
+.rangeSubTitles {
+  display: flex;
+  justify-content: space-between;
+}
+.TypeMortgage {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+.headerTypeMortgage{
+  margin-top: 30px;
+}
+.titleTypeMortgage {
+  display: flex;
+  justify-content: space-between;
+}
+.inputRangeSmall {
+  width: 250px;
+}
+.border{
+  padding: 10px;
+  border: 1px solid;
+}
+.btnCalculator {
+  margin-top: 30px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+    color: white;
+  background-color: hsl(222 47% 24%);
+}
+
+.btnCalculator:hover {
+  background-color: hsl(222 47% 34%);
+}
+.resultInfoContainer{
+  width: 100%;
+  background-color: red;
+  padding: 20px;
+}
+.resultInfo{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+.secendHeader{
+  margin-top: 20px;
+}
+.error {
+  margin-top: 0.5rem;
+  color: #ff3333;
+  font-size: 0.9rem;
+}
+
+.errorText {
+  background-color: #ffe6e6;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
+.resultInfoContainer {
+  flex: 1;
+  background-color: #f8faff;
+  border: 1px solid #c9d1e0;
+  border-radius: 8px;
+  padding: 1.5rem;
+  min-width: 300px;
+}
+
+.resultInfo {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 1rem;
+  color: #1f1f3e;
+}
+
+.secendHeader {
+  margin-top: 1rem;
+  font-size: 1.1rem;
+  font-weight: bold;
+  color: #1f1f3e;
+}
+

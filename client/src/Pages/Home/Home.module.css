@@ -1,0 +1,184 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  padding: 10px 20px;
+  background: linear-gradient(to right, hsl(222 47% 24%), white);
+  justify-content: space-evenly;
+  height: 350px;
+  border-radius: 10px;
+}
+.header {
+  color: white;
+  font-size: 55px;
+}
+.headerSpan {
+  color: orange;
+  font-size: 55px;
+}
+.subtitles {
+  font-size: 26px;
+  color: white;
+  max-width: 800px;
+}
+.searchProp {
+  margin-left: 20px;
+  padding: 10px 30px;
+  border-radius: 5px;
+  border: none;
+  color: white;
+  background-color: orange;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+.searchProp:hover {
+  scale: 1.05;
+  background-color: hsl(39, 100%, 60%);
+}
+.postProp {
+  padding: 10px 30px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  background-color: hsl(222 47% 24%);
+  color: white;
+  transition: all 0.1s ease-in-out;
+}
+.postProp:hover {
+  scale: 1.05;
+  background-color: hsl(222 47% 34%);
+}
+.containerProperty {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+.containerPropertyHeader {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+.PropertyHeader {
+  font-family: sans-serif;
+  color: hsl(222 47% 24%);
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+.linkProperty {
+  all: unset;
+  margin-left: 20px;
+}
+.link:hover {
+  text-decoration: underline;
+}
+.Properties {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+}
+.servicesContainer {
+  display: flex;
+  flex-direction: column;
+  margin-top: 50px;
+}
+.servicesHeaderDiv {
+  text-align: center;
+}
+.servicesHeader {
+  font-family: sans-serif;
+  color: hsl(222 47% 24%);
+  font-size: 1.7rem;
+  font-weight: bold;
+}
+.services {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+.cardService {
+  width: 466px;
+  height: 215px;
+  border-radius: 10px;
+  background-color: white;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s ease-in-out;
+}
+.cardService:hover {
+  scale: 1.02;
+}
+.iconImg {
+  background-color: hsl(222 47% 24% / 0.1);
+  color: hsl(222 47% 24%);
+  font-size: 30px;
+  padding: 20px;
+  border-radius: 30%;
+}
+.cardServiceHeader {
+  font-size: 22px;
+}
+.cardServiceSubTitles {
+  color: rgb(77, 76, 76);
+  font-size: 16px;
+}
+.ad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  margin-top: 80px;
+  margin-bottom: 20px;
+  width: 100%;
+  height: 280px;
+  background-color: hsl(30 100% 60%/0.1);
+  padding: 50px;
+}
+.adHeader {
+  color: hsl(222 47% 24%);
+  font-size: 34px;
+}
+.adSubTitle {
+  width: 700px;
+  text-align: center;
+  color: rgb(77, 76, 76);
+  font-size: 20px;
+}
+.btnContainer{
+  display: flex;
+  gap: 20px;
+}
+.adLoginBtn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  background-color: hsl(222 47% 24%);
+  color: white;
+}
+.adLoginBtn:hover {
+  background-color: hsl(222 47% 34%);
+  scale: 1.02;
+}
+.adSearchProperty {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  background-color: hsl(210 20% 98%);
+}
+.adSearchProperty:hover {
+  color: white;
+  background-color: hsl(30 100% 60%);
+  scale: 1.02;
+}
