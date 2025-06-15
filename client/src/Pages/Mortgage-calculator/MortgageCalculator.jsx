@@ -122,7 +122,7 @@ const MortgageCalculator = () => {
   return (
     <div>
       <div className={styles.allContainerSearchProperty}>
-        <h2 className={styles.headerCalculator}>חיפוש נכסים</h2>
+        <h2 className={styles.headerCalculator}>מחשבון משכנתא</h2>
       </div>
       <div className={styles.btnContainer}>
         <button
@@ -132,7 +132,7 @@ const MortgageCalculator = () => {
             color: activeTab === "calculator" ? "#003b5c" : "#666",
           }}
           onClick={() => setActiveTab("calculator")}
-          className={styles.buttonHeader}
+          className={styles.buttonHeader1}
         >
           מחשבון
         </button>
@@ -143,7 +143,7 @@ const MortgageCalculator = () => {
             color: activeTab === "information" ? "#003b5c" : "#666",
           }}
           onClick={() => setActiveTab("information")}
-          className={styles.buttonHeader}
+          className={styles.buttonHeader2}
         >
           מידע שימושי
         </button>
