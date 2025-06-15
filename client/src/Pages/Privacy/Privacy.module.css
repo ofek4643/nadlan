@@ -1,0 +1,41 @@
+.warrper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #f8f9fa;
+}
+.card {
+  background-color: #fff;
+  padding: 40px;
+  border-radius: 5px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 500px;
+  line-height: 1.6;
+}
+.title {
+  font-size: 1.6rem;
+  color: #0a2342;
+  text-align: center;
+  margin-bottom: 20px;
+}
+.secendHeader {
+  margin-top: 20px;
+}
+.subTitle {
+  text-align: center;
+  font-weight: bold;
+}
+.backButton {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+  background-color: hsl(222 47% 24%);
+}
+.backButton:hover {
+  background-color: hsl(222 47% 34%);
+}

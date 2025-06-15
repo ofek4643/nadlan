@@ -11,16 +11,32 @@ const Footer = () => {
               <h3 className={styles.headers}>נדל"ן ישראלי</h3>
               <p>הפלטפורמה המובילה בישראל למציאת נכסי נדל"ן לרכישה והשכרה.</p>
               <div className={styles.iconDiv}>
-                <a href="">
+                <a
+                  href="https://facebook.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <i className={`fa-brands fa-facebook-f ${styles.white}`}></i>
                 </a>
-                <a href="">
+                <a
+                  href="https://twitter.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <i className={`fa-brands fa-twitter ${styles.white}`}></i>
                 </a>
-                <a href="">
+                <a
+                  href="https://instagram.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <i className={`fa-brands fa-instagram ${styles.white}`}></i>
                 </a>
-                <a href="">
+                <a
+                  href="https://linkedin.com"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   <i className={`fa-brands fa-linkedin-in ${styles.white}`}></i>
                 </a>
               </div>
@@ -29,34 +45,34 @@ const Footer = () => {
               <h3 className={styles.headers}>קישורים מהירים</h3>
               <ul>
                 <li className={styles.listItem}>
-                  <a className={styles.white} href="">
+                  <Link className={styles.white} to="/">
                     דף הבית
-                  </a>
+                  </Link>
                 </li>
                 <li className={styles.listItem}>
-                  <a className={styles.white} href="">
+                  <Link className={styles.white} to="/properties">
                     חיפוש נכסים
-                  </a>
+                  </Link>
                 </li>
                 <li className={styles.listItem}>
-                  <a className={styles.white} href="">
+                  <Link className={styles.white} to="/mortgage-calculator">
                     מחשבון משכנתא
-                  </a>
+                  </Link>
                 </li>
                 <li className={styles.listItem}>
-                  <a className={styles.white} href="">
+                  <Link className={styles.white} to="/">
                     סוכני נדל"ן
-                  </a>
+                  </Link>
                 </li>
                 <li className={styles.listItem}>
-                  <a className={styles.white} href="">
+                  <Link className={styles.white} to="/">
                     מדריך למוכרים
-                  </a>
+                  </Link>
                 </li>
                 <li className={styles.listItem}>
-                  <a className={styles.white} href="">
+                  <Link className={styles.white} to="/">
                     מדריך לקונים
-                  </a>
+                  </Link>
                 </li>
               </ul>
             </div>
@@ -97,14 +113,14 @@ const Footer = () => {
           <div className={styles.copyRight}>
             <span> © 2023 נדל"ן ישראלי. כל הזכויות שמורות.</span>
             <div className={styles.btnContainer}>
-              <Link to="/terms of use">
+              <Link to="/terms">
                 <button className={styles.btnFooter}>תנאי שימוש</button>
               </Link>
-              <Link to="/Privacy Policy">
-                  <button className={styles.btnFooter}>מדיניות פרטיות</button>
+              <Link to="/privacy">
+                <button className={styles.btnFooter}>מדיניות פרטיות</button>
               </Link>
               <Link to="/site map">
-                  <button className={styles.btnFooter}>מפת האתר</button>
+                <button className={styles.btnFooter}>מפת האתר</button>
               </Link>
             </div>
           </div>
