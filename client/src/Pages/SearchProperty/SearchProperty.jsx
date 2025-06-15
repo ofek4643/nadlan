@@ -1,5 +1,6 @@
 import styles from "../SearchProperty/SearchProperty.module.css";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
+import CustomInput from "../../components/CustomInput/CustomInput.jsx"
 import allProperties from "../../data/properties.js";
 import Property from "../../components/Property/Property.jsx";
 
@@ -294,7 +295,7 @@ const SearchProperty = () => {
                 <div>
                   <label htmlFor="">גודל במ"ר</label>
                   <div className={styles.divInput}>
-                    <input
+                    <CustomInput
                       style={{
                         border: sizeError ? "1px solid red" : "1px solid #ccc",
                       }}
@@ -304,7 +305,7 @@ const SearchProperty = () => {
                       min={0}
                       onChange={(e) => setMinSize(e.target.value)}
                     />
-                    <input
+                    <CustomInput
                       style={{
                         border: sizeError ? "1px solid red" : "1px solid #ccc",
                       }}
@@ -328,21 +329,21 @@ const SearchProperty = () => {
                   <div className={styles.divCheckBox}>
                     <div className={styles.column}>
                       <label className={styles.checkboxLabel}>
-                        <input className={styles.checkBox} type="checkbox" />
+                        <CustomInput className={styles.checkBox} type="checkbox" />
                         מרפסת
                       </label>
                       <label className={styles.checkboxLabel}>
-                        <input className={styles.checkBox} type="checkbox" />
+                        <CustomInput className={styles.checkBox} type="checkbox" />
                         מחסן
                       </label>
                     </div>
                     <div className={styles.column}>
                       <label className={styles.checkboxLabel}>
-                        <input className={styles.checkBox} type="checkbox" />
+                        <CustomInput className={styles.checkBox} type="checkbox" />
                         חניה
                       </label>
                       <label className={styles.checkboxLabel}>
-                        <input className={styles.checkBox} type="checkbox" />
+                        <CustomInput className={styles.checkBox} type="checkbox" />
                         מעלית
                       </label>
                     </div>
@@ -352,15 +353,15 @@ const SearchProperty = () => {
                   <label htmlFor="">סטטוס</label>
                   <div className={styles.divRadio}>
                     <label className={styles.checkboxLabel}>
-                      <input value="" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
+                      <CustomInput value="" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
                       הכל
                     </label>
                     <label className={styles.checkboxLabel}>
-                      <input value="להשכרה" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
+                      <CustomInput value="להשכרה" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
                       להשכרה
                     </label>
                     <label className={styles.checkboxLabel}>
-                      <input value="למכירה" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
+                      <CustomInput value="למכירה" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
                       למכירה
                     </label>
                   </div>

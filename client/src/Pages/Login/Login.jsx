@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import styles from "./Login.module.css";
+import CustomInput from "../../components/CustomInput/CustomInput";
 
 const Login = () => {
   const [show, setShow] = useState(false);
@@ -24,7 +25,7 @@ const Login = () => {
             <label id="labelUsername" htmlFor="username">
               שם משתמש
             </label>
-            <input
+            <CustomInput
               id="username"
               type="text"
               placeholder="הזן שם משתמש"
@@ -34,7 +35,7 @@ const Login = () => {
               סיסמה
             </label>
             <div className={styles.passwordContainer}>
-              <input
+              <CustomInput
                 id="password"
                 type={show ? "text" : "password"}
                 placeholder="הזן סיסמה"
@@ -51,7 +52,7 @@ const Login = () => {
 
           <div className={styles.options}>
             <label>
-              <input type="checkbox" />
+              <CustomInput type="checkbox" />
               זכור אותי
             </label>
             <Link to="/forgot-password" className={styles.link}>

@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import CustomInput from "../../components/CustomInput/CustomInput";
 import styles from "../Mortgage-calculator/MortgageCalculator.module.css";
+
 const MortgageCalculator = () => {
   const [activeTab, setActiveTab] = useState("calculator");
   const [propertyMoney, setpropertyMoney] = useState(1500000);
@@ -116,7 +118,7 @@ const MortgageCalculator = () => {
     propertyMoney,
     myMoney,
   ]);
-  
+
   const labelStyle = (error) => ({ color: error ? "red" : "black" });
 
   return (
@@ -127,8 +129,7 @@ const MortgageCalculator = () => {
       <div className={styles.btnContainer}>
         <button
           style={{
-            backgroundColor:
-              activeTab === "calculator" ? "#e0f2ff" : "#f1f1f1",
+            backgroundColor: activeTab === "calculator" ? "#e0f2ff" : "#f1f1f1",
             color: activeTab === "calculator" ? "#003b5c" : "#666",
           }}
           onClick={() => setActiveTab("calculator")}
@@ -155,14 +156,15 @@ const MortgageCalculator = () => {
               <div className={styles.row}>
                 <div className={styles.inputLabel}>
                   <label style={labelStyle(errorMoney)}>מחיר הנכס (₪)</label>
-                  <input
+                  <CustomInput
                     className={styles.input}
                     type="number"
                     placeholder="הכנס את מחיר הנכס"
                     value={propertyMoney}
                     onChange={(e) => setpropertyMoney(e.target.value)}
-                    min={0}
+                    min = {0}
                   />
+                  
                   <div className={styles.error}>
                     {errorMoney && (
                       <div className={styles.errorText}>
@@ -174,7 +176,7 @@ const MortgageCalculator = () => {
                 <div className={styles.inputLabel}>
                   <label style={labelStyle(errorMoney)}>הון עצמי (₪)</label>
                   <div>
-                    <input
+                    <CustomInput
                       className={styles.input}
                       type="number"
                       placeholder="הכנס את ההון העצמי שלך"
@@ -195,7 +197,7 @@ const MortgageCalculator = () => {
               <div className={styles.row}>
                 <div className={styles.inputLabel}>
                   <label>תקופת המשכנתא (שנים)</label>
-                  <input
+                  <CustomInput
                     min={5}
                     max={30}
                     value={years}
@@ -211,7 +213,7 @@ const MortgageCalculator = () => {
                 </div>
                 <div className={styles.inputLabel}>
                   <label>ריבית שנתית (%)</label>
-                  <input
+                  <CustomInput
                     min={1}
                     max={8}
                     step={0.1}
@@ -238,7 +240,7 @@ const MortgageCalculator = () => {
                       <label>פריים</label>
                       <span>{primePercent}%</span>
                     </div>
-                    <input
+                    <CustomInput
                       min={0}
                       max={100}
                       value={primePercent}
@@ -255,7 +257,7 @@ const MortgageCalculator = () => {
                       <label>קבועה צמודה</label>
                       <span>{noChangePercent}%</span>
                     </div>
-                    <input
+                    <CustomInput
                       min={0}
                       max={100}
                       value={noChangePercent}
@@ -272,7 +274,7 @@ const MortgageCalculator = () => {
                       <label>משתנה לא צמודה</label>
                       <span>{changePercent}%</span>
                     </div>
-                    <input
+                    <CustomInput
                       min={0}
                       max={100}
                       value={changePercent}

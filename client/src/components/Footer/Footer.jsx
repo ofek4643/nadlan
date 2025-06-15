@@ -1,6 +1,7 @@
 import React from "react";
 import styles from "./Footer.module.css";
 import { Link } from "react-router-dom";
+import CustomInput from "../CustomInput/CustomInput";
 const Footer = () => {
   return (
     <>
@@ -101,7 +102,7 @@ const Footer = () => {
               <h3 className={styles.headers}>הרשמה לעדכונים</h3>
               <p>הישארו מעודכנים בנכסים חדשים ומבצעים מיוחדים</p>
               <form className={styles.form}>
-                <input
+                <CustomInput
                   className={styles.inputField}
                   type="email"
                   placeholder="כתובת איימל"

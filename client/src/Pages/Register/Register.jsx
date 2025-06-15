@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Register.module.css";
+import CustomInput from "../../components/CustomInput/CustomInput.jsx"
 import { Link } from "react-router-dom";
 
 const requirements = [
@@ -143,7 +144,7 @@ const Register = () => {
         <div className={styles.formgroup}>
           <div className={styles.field}>
             <label style={labelStyle(fullNameError)}>שם מלא</label>
-            <input
+            <CustomInput
               type="text"
               placeholder="הזן שם מלא"
               onChange={(e) => setFullName(e.target.value)}
@@ -159,7 +160,7 @@ const Register = () => {
           <div className={styles.row}>
             <div>
               <label style={labelStyle(userNameError)}>שם משתמש</label>
-              <input
+              <CustomInput
                 type="text"
                 placeholder="הזן שם משתמש"
                 onChange={(e) => setUserName(e.target.value)}
@@ -174,7 +175,7 @@ const Register = () => {
             </div>
             <div>
               <label style={labelStyle(emailError)}>אימייל</label>
-              <input
+              <CustomInput
                 type="email"
                 placeholder="your@email.com"
                 onChange={(e) => setEmail(e.target.value)}
@@ -224,13 +225,13 @@ const Register = () => {
 
           <div className={styles.field}>
             <label>כתובת</label>
-            <input type="text" placeholder="עיר, רחוב ומספר" />
+            <CustomInput type="text" placeholder="עיר, רחוב ומספר" />
           </div>
 
           <div className={styles.row}>
             <div>
               <label style={labelStyle(passwordError)}>סיסמה</label>
-              <input
+              <CustomInput
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type={show ? "text" : "password"}
@@ -246,7 +247,7 @@ const Register = () => {
             </div>
             <div>
               <label style={labelStyle(confirmPasswordError)}>אימות סיסמה</label>
-              <input
+              <CustomInput
                 value={confirmPassword}
                 type={show ? "text" : "password"}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -303,7 +304,7 @@ const Register = () => {
           </div>
 
           <div className={styles.agreement}>
-            <input
+            <CustomInput
               className={styles.checkBox}
               type="checkbox"
               onClick={() => setAccept(accept ? false : true)}
