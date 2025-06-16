@@ -41,7 +41,7 @@ a {
   text-decoration: none;
   color: black;
 }
-.authButtons{
+.authButtons {
   display: flex;
   gap: 20px;
 }
@@ -61,9 +61,35 @@ a {
   background-color: hsl(222 47% 24%);
 }
 .LoginBtn:hover {
-    color: white;
+  color: white;
   background-color: hsl(30 100% 60%);
 }
 .RegisterBtn:hover {
   background-color: hsl(222 47% 34%);
+}
+
+.alertButton {
+  position: relative;
+  all: unset;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+}
+.alertButton:hover {
+  color: white;
+  background-color: hsl(30 100% 60%);
+}
+.alertDiv {
+  position: absolute;
+  top: 90px;
+  left: 10px;
+  background-color: white;
+  border: 1px solid #ccc;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 10px;
+  width: 300px;
+  z-index: 10;
+  border-radius: 8px;
 }

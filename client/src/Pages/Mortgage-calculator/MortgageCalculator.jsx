@@ -127,27 +127,28 @@ const MortgageCalculator = () => {
         <h2 className={styles.headerCalculator}>מחשבון משכנתא</h2>
       </div>
       <div className={styles.btnContainer}>
-        <button
-          style={{
-            backgroundColor: activeTab === "calculator" ? "#e0f2ff" : "#f1f1f1",
-            color: activeTab === "calculator" ? "#003b5c" : "#666",
-          }}
-          onClick={() => setActiveTab("calculator")}
-          className={styles.buttonHeader1}
-        >
-          מחשבון
-        </button>
-        <button
-          style={{
-            backgroundColor:
-              activeTab === "information" ? "#e0f2ff" : "#f1f1f1",
-            color: activeTab === "information" ? "#003b5c" : "#666",
-          }}
-          onClick={() => setActiveTab("information")}
-          className={styles.buttonHeader2}
-        >
-          מידע שימושי
-        </button>
+          <button
+            style={{
+              backgroundColor:
+                activeTab === "calculator" ? "#e0f2ff" : "#f1f1f1",
+              color: activeTab === "calculator" ? "#003b5c" : "#666",
+            }}
+            onClick={() => setActiveTab("calculator")}
+            className={styles.buttonHeader}
+          >
+            מחשבון
+          </button>
+          <button
+            style={{
+              backgroundColor:
+                activeTab === "information" ? "#e0f2ff" : "#f1f1f1",
+              color: activeTab === "information" ? "#003b5c" : "#666",
+            }}
+            onClick={() => setActiveTab("information")}
+            className={styles.buttonHeader}
+          >
+            מידע שימושי
+          </button>
       </div>
       <div className={styles.container}>
         {activeTab === "calculator" && (
@@ -162,9 +163,9 @@ const MortgageCalculator = () => {
                     placeholder="הכנס את מחיר הנכס"
                     value={propertyMoney}
                     onChange={(e) => setpropertyMoney(e.target.value)}
-                    min = {0}
+                    min={0}
                   />
-                  
+
                   <div className={styles.error}>
                     {errorMoney && (
                       <div className={styles.errorText}>
