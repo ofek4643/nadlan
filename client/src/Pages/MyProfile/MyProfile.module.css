@@ -1,9 +1,12 @@
 .warrper {
   display: flex;
+  min-height: calc(100vh - 400px);
 }
+
 .NavProfile {
+  display: flex;
+  flex-direction: column;
   width: 250px;
-  height: 900px;
   background-color: hsl(222 47% 11%);
   color: white;
 }
@@ -65,31 +68,82 @@
   width: fit-content;
 }
 .headerButtonsMyProfile {
-  width: 240px;
+  width: 180px;
   padding: 5px 2px;
   border: none;
   transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   cursor: pointer;
   border-radius: 10px;
 }
-.containerAlert {
-  margin-top: 30px;
+.containerSelected {
+  margin-top: 40px;
   padding: 25px;
   border-radius: 5px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   background-color: white;
 }
-.headerAlert {
+.headerDiv {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.headerContainerSelected {
   color: hsl(222 47% 24%);
   font-size: 1.2rem;
   margin-bottom: 30px;
 }
-.alerts{
+.alerts {
   text-align: center;
   padding: 30px;
 }
-.alert{
+.alert {
   background-color: rgb(223, 223, 223);
   padding: 20px;
   margin-top: 10px;
+}
+.addNewPropertie {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.05rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+  background-color: hsl(222 47% 24%);
+  height: 50px;
+}
+.icon {
+  margin-right: 10px;
+}
+.containerProperties {
+  display: flex;
+  width: 100%;
+  flex-wrap: wrap;
+  padding: 0px 28px;
+  gap: 20px;
+}
+.Properties {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+.containerInputs{
+    width: 100%;
+
+}
+.row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.input{
+  width: 800px;
 }

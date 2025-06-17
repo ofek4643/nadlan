@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
 import styles from "../MyProfile/MyProfile.module.css";
 import { Link } from "react-router-dom";
-
+import Property from "../../components/Property/Property.jsx";
+import allProperties from "../../data/properties.js";
+import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 const MyProfile = () => {
   const [myProfileActive, setMyProfileActive] = useState(true);
   const [myPropertiesActive, setmyPropertiesActive] = useState(false);
   const [myAlertsActive, setMyAlertsActive] = useState(false);
   const [myFavoriteActive, setMyFavoriteActive] = useState(false);
 
+  const [myProperties, setMyProperties] = useState(null);
   const [alertArray, setAlertArray] = useState(null);
   useEffect(() => {
     async function fetchAlerts() {
@@ -15,6 +18,7 @@ const MyProfile = () => {
         const res = await fetch();
         const data = await res.json();
         setAlertArray(data.alerts);
+        setMyProperties(data.Properties);
       } catch (error) {
         console.error("Error in get alerts", error);
         setAlertArray([]);
@@ -91,6 +95,7 @@ const MyProfile = () => {
             }}
           >
             פרופיל
+            <i className={`fa-regular fa-user ${styles.icon}`}></i>
           </button>
           <button
             className={styles.headerButtonsMyProfile}
@@ -101,6 +106,7 @@ const MyProfile = () => {
             }}
           >
             הנכסים שלי
+            <i className={`fa-solid fa-house ${styles.icon}`}></i>
           </button>
           <button
             className={styles.headerButtonsMyProfile}
@@ -111,6 +117,7 @@ const MyProfile = () => {
             }}
           >
             התראות
+            <i className={`fa-solid fa-bell ${styles.icon}`}></i>
           </button>
           <button
             className={styles.headerButtonsMyProfile}
@@ -121,29 +128,82 @@ const MyProfile = () => {
             }}
           >
             נכסים מעודפים
+            <i className={`fa-solid fa-heart ${styles.icon}`}></i>
           </button>
         </div>
-        <div className={styles.containerSelected}>
-          {myProfileActive && <div>profile</div>}
-          {myPropertiesActive && <div>properties</div>}
-          {myAlertsActive && (
-            <div className={styles.containerAlert}>
-              <h2 className={styles.headerAlert}>התראות</h2>
-              <div className={styles.alerts}>
-                {alertArray?.length > 0
-                  ? alertArray.map((alert, index) => (
-                      <div className={styles.alert} key={index}>
-                        {alert}
-                      </div>
-                    ))
-                  : "אין התראות חדשות"}
+        {myProfileActive && (
+          <div className={styles.containerSelected}>
+            <h2 className={styles.headerContainerSelected}>פרטים איישים</h2>
+            <div className={styles.containerInputs}>
+              <div className={styles.row}>
+                <div className={styles.field}>
+                  <label>שם משתמש</label>
+                  <CustomInput
+                    value=""
+                    name="type"
+                    type="text"
+                    className={styles.input}
+                    // onChange={(e) => setType(e.target.value)}
+                  />
+                </div>
+                <div className={styles.field}>
+                  <label>שם משתמש</label>
+                  <CustomInput
+                    value=""
+                    name="type"
+                    type="text"
+                    className={styles.input}
+                
+                    // onChange={(e) => setType(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
-          )}
-          {myFavoriteActive && <div>
-            נכסים מעודפים
-          </div> }
-        </div>
+          </div>
+        )}
+        {myPropertiesActive && (
+          <div className={styles.containerSelected}>
+            <div className={styles.headerDiv}>
+              <h2 className={styles.headerContainerSelected}>הנכסים שלי</h2>
+              <Link to="/add-property">
+                <button className={styles.addNewPropertie}>
+                  הוסף נכנס חדש +
+                </button>
+              </Link>
+            </div>
+            {myProperties?.length > 0 ? (
+              <div className={styles.containerProperties}>
+                <Property
+                  properties={allProperties.slice(0, myProperties.length)}
+                />
+              </div>
+            ) : (
+              <div className={styles.Properties}>
+                <p>טרם פרסמת נכסים במערכת</p>
+                <Link to="/add-property">
+                  <button className={styles.addNewPropertie}>
+                    פרסם נכס ראשון +
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
+        {myAlertsActive && (
+          <div className={styles.containerSelected}>
+            <h2 className={styles.headerContainerSelected}>התראות</h2>
+            <div className={styles.alerts}>
+              {alertArray?.length > 0
+                ? alertArray.map((alert, index) => (
+                    <div className={styles.alert} key={index}>
+                      {alert}
+                    </div>
+                  ))
+                : "אין התראות חדשות"}
+            </div>
+          </div>
+        )}
+        {myFavoriteActive && <div>נכסים מעודפים</div>}
       </div>
     </div>
   );

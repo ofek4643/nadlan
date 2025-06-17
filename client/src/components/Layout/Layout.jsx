@@ -5,10 +5,9 @@ import Footer from "../Footer/Footer.jsx";
 
 const Layout = () => {
   const location = useLocation();
-  const isFullWidth = location.pathname === "/my-profile"; // או כל תנאי אחר
-
+  const isFullWidth = location.pathname === "/my-profile";
   const mainStyle = isFullWidth
-    ? { width: "100vw" }
+    ? { width: "100%"}
     : { padding: "40px 0", margin: "0 auto", maxWidth: "1500px" };
 
   return (

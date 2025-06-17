@@ -8,6 +8,8 @@ import Register from "./Pages/Register/Register.jsx";
 import Terms from "./Pages/Terms/Terms.jsx";
 import Privacy from "./Pages/Privacy/Privacy.jsx";
 import MyProfile from "./Pages/MyProfile/MyProfile.jsx";
+import AddProperty from "./Pages/AddProperty/AddProperty.jsx";
+
 function App() {
   return (
     <Router>
@@ -21,6 +23,7 @@ function App() {
           <Route path="terms" element={<Terms />} />
           <Route path="privacy" element={<Privacy />} />
           <Route path="my-profile" element={<MyProfile />} />
+          <Route path="add-property" element={<AddProperty />} />
         </Route>
       </Routes>
     </Router>
