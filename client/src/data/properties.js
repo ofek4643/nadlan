@@ -211,3 +211,4 @@ const allProperties = [
   ];
   
 export default allProperties;
+export const labelStyle = (error) => ({ color: error ? "red" : "black" });

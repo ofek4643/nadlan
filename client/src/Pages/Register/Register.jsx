@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Register.module.css";
-import CustomInput from "../../components/CustomInput/CustomInput.jsx"
+import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { Link } from "react-router-dom";
+import { labelStyle } from "../../data/properties.js";
 
 const requirements = [
   {
@@ -49,9 +50,6 @@ const Register = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [acceptError, setAcceptError] = useState(false);
 
-  // const [passwordError, setPasswordError] = useState(false);
-  // const [passwordCheckError, setpasswordCheckError] = useState(false);
-
   useEffect(() => {
     const checks = requirements.map((req) => ({
       ...req,
@@ -62,9 +60,6 @@ const Register = () => {
   }, [password]);
 
   const onSubmit = () => {
-    console.log(password);
-    console.log(confirmPassword);
-
     if (fullName.length <= 3) {
       setFullNameError(true);
     }
@@ -117,17 +112,25 @@ const Register = () => {
         setPasswordError(true);
       }
       if (password === confirmPassword && password !== "") {
-      setConfirmPasswordError(false);
-    } else {
-      setConfirmPasswordError(true);
-    }
+        setConfirmPasswordError(false);
+      } else {
+        setConfirmPasswordError(true);
+      }
       if (accept === true) {
         setAcceptError(false);
       }
     }
-  }, [fullName, userName, email, submited, phoneNumber, score ,password ,confirmPassword , accept]);
-
-  const labelStyle = (error) => ({ color: error ? "red" : "black" });
+  }, [
+    fullName,
+    userName,
+    email,
+    submited,
+    phoneNumber,
+    score,
+    password,
+    confirmPassword,
+    accept,
+  ]);
 
   const strengthLabel = ["", "חלש", "בינונית", "חזקה"];
   const strengthColor = ["gray", "red", "orange", "green"];
@@ -190,7 +193,7 @@ const Register = () => {
 
           <div className={styles.field}>
             <label style={labelStyle(phoneNumberError)}>מספר טלפון</label>
-            <input
+            <CustomInput
               type="tel"
               placeholder="0501234567"
               inputMode="numeric"
@@ -246,7 +249,9 @@ const Register = () => {
               </div>
             </div>
             <div>
-              <label style={labelStyle(confirmPasswordError)}>אימות סיסמה</label>
+              <label style={labelStyle(confirmPasswordError)}>
+                אימות סיסמה
+              </label>
               <CustomInput
                 value={confirmPassword}
                 type={show ? "text" : "password"}
@@ -263,7 +268,8 @@ const Register = () => {
           <div className={styles.containerReq}>
             <ul>
               {results.map((req) => (
-                <li className={styles.listResult}
+                <li
+                  className={styles.listResult}
                   key={req.id}
                   style={{ color: req.passed ? "green" : "red" }}
                 >

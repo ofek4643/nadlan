@@ -18,6 +18,17 @@
     display: flex;
   justify-content: space-between;
 }
+.select-btn-addProperty{
+ width: 100%;
+  cursor: pointer;
+  display: flex;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+}
 .select-btn-half1 {
   width: 100%;
   padding: 10px 15px;
@@ -89,6 +100,11 @@ position: relative;
 .myCustomSelect2{
 position: relative;
   width: 175px;
+  direction: rtl;
+  font-family: sans-serif;
+}
+.custom-select-addProperty {
+  position: relative;
   direction: rtl;
   font-family: sans-serif;
 }

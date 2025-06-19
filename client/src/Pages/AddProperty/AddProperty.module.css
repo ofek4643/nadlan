@@ -1,0 +1,103 @@
+.divBackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 1rem;
+  color: #0a2342;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.divBackBtn:hover {
+  background-color: hsl(30 100% 60%);
+  color: white;
+}
+.warrper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.allContainerAddProperty {
+  display: flex;
+  flex-direction: column;
+  width: 900px;
+  gap: 30px;
+}
+.headerAllContainerAddProperty {
+  font-family: sans-serif;
+  color: hsl(222, 47%, 24%);
+  font-size: 1.7rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.rulesContainer {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.headerRulesContainer {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.listRulesContainer {
+  padding-right: 20px;
+  color: #333333d0;
+}
+.listItem {
+  margin-top: 8px;
+}
+.ContainerAddPropert {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 20px;
+}
+.form1 {
+  width: 50%;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.headerAddProperty {
+  margin-bottom: 20px;
+}
+.input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+  outline: none;
+  width: 100%;
+  
+}
+
+.textAreaInput {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+  outline: none;
+  resize: vertical;
+  min-height: 70px;
+  height: 100px;
+}

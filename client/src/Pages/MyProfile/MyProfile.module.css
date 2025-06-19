@@ -3,12 +3,22 @@
   min-height: calc(100vh - 400px);
 }
 
-.NavProfile {
+.navProfile {
   display: flex;
   flex-direction: column;
-  width: 250px;
+  width: 290px;
   background-color: hsl(222 47% 11%);
   color: white;
+  transition: all 0.3s ease;
+}
+
+.smallNavProfile {
+  display: flex;
+  flex-direction: column;
+  width: 65px;
+  background-color: hsl(222 47% 11%);
+  color: white;
+  transition: all 0.3s ease;
 }
 
 .headerNav {
@@ -19,6 +29,7 @@
   justify-content: space-between;
   padding: 20px;
 }
+
 .List {
   list-style: none;
   padding: 10px;
@@ -34,14 +45,31 @@
   cursor: pointer;
   color: white;
 }
-.listItem:nth-child(2) {
+.smallListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  transition: 0.2s all ease-in-out;
+  cursor: pointer;
+  color: white;
+  justify-content: center;
+}
+.listItem:nth-child(2),
+.smallListItem:nth-child(2) {
   background-color: hsl(30 100% 60%);
 }
-.listItem:hover {
+.listItem:hover,
+.smallListItem:hover {
   background-color: hsl(30 100% 60%);
 }
 .menu {
   display: none;
+}
+.menu:checked ~ .NavProfile {
+  width: 100px;
 }
 .label {
   font-size: 23px;
@@ -129,21 +157,58 @@
   align-items: center;
   gap: 20px;
 }
-.containerInputs{
-    width: 100%;
-
-}
 .row {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 1rem;
   width: 100%;
+  gap: 30px;
 }
 .field {
   display: flex;
   flex-direction: column;
-  margin-bottom: 1rem;
+  flex: 1;
+  margin-bottom: 25px;
 }
-.input{
-  width: 800px;
+.input {
+  margin-top: 15px;
+  background-color: hsl(210 20% 98%);
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  outline: none;
+}
+.notAllowed {
+  cursor: not-allowed;
+}
+.secendHeaderContainerSelected {
+  color: hsl(222 47% 24%);
+  font-size: 1.2rem;
+  margin-bottom: 30px;
+  margin-top: 30px;
+}
+.saveBtn {
+  margin-top: 40px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+  background-color: hsl(222 47% 24%);
+}
+.saveBtn:hover {
+  background-color: hsl(222 47% 34%);
+}
+.errorText {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+.error {
+  display: flex;
+}
+.listResult {
+  margin-top: 10px;
+  list-style: none;
 }

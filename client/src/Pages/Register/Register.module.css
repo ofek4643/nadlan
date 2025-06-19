@@ -135,7 +135,4 @@
 .error {
   display: flex;
 }
-.listResult {
-  margin-top: 10px;
-  list-style: none;
-}
+

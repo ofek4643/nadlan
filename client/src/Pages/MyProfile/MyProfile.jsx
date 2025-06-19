@@ -4,6 +4,32 @@ import { Link } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
 import allProperties from "../../data/properties.js";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
+import { labelStyle } from "../../data/properties.js";
+
+const requirements = [
+  {
+    id: "length",
+    regex: /.{8,}/,
+    message: "תשתמש ב8 תווים לפחות",
+  },
+  {
+    id: "uppercase",
+    regex: /[A-Z]/,
+    message: "תשתמש באות גדולה אחת לפחות",
+  },
+  {
+    id: "lowercase",
+    regex: /[a-z]/,
+    message: "תשתמש באות קטנה אחת לפחות",
+  },
+  { id: "number", regex: /\d/, message: "תשתמש במספר אחד לפחות" },
+  {
+    id: "special",
+    regex: /(?=[^\p{L}\p{N}\p{Emoji}])/u,
+    message: "תשתמש בתו מיוחד אחד לפחות (! @ # )",
+  },
+];
+
 const MyProfile = () => {
   const [myProfileActive, setMyProfileActive] = useState(true);
   const [myPropertiesActive, setmyPropertiesActive] = useState(false);
@@ -12,6 +38,35 @@ const MyProfile = () => {
 
   const [myProperties, setMyProperties] = useState(null);
   const [alertArray, setAlertArray] = useState(null);
+
+  const [navCollapsed, setNavCollapsed] = useState(false);
+
+  const [submited, setSubmited] = useState(false);
+  const [results, setResults] = useState([]);
+  const [score, setScore] = useState(0);
+
+  const [fullName, setFullName] = useState("");
+  const [fullNameError, setFullNameError] = useState(false);
+  const [email, setEmail] = useState("");
+  const [emailError, setEmailError] = useState(false);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneNumberError, setPhoneNumberError] = useState(false);
+  const [password, setPassword] = useState("");
+  const [passwordError, setPasswordError] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [newPasswordError, setNewPasswordError] = useState(false);
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+  const [confirmPasswordError, setConfirmNewPasswordError] = useState(false);
+
+  useEffect(() => {
+    const checks = requirements.map((req) => ({
+      ...req,
+      passed: req.regex.test(newPassword),
+    }));
+    setResults(checks);
+    setScore(checks.filter((c) => c.passed).length);
+  }, [newPassword]);
+
   useEffect(() => {
     async function fetchAlerts() {
       try {
@@ -52,33 +107,113 @@ const MyProfile = () => {
     setMyFavoriteActive(true);
   }
 
+  function onSubmit() {
+    setSubmited(true);
+    if (fullName.length <= 3) {
+      setFullNameError(true);
+    }
+    if (!/^[^\s@]+@[^\s@]+\.(com|co\.il)$/.test(email)) {
+      setEmailError(true);
+    }
+    if (phoneNumber.length < 9) {
+      setPhoneNumberError(true);
+    }
+
+    if (newPassword !== confirmNewPassword || newPassword === "") {
+      setConfirmNewPasswordError(true);
+    }
+    if (score !== 5) {
+      setNewPasswordError(true);
+    }
+  }
+
+  useEffect(() => {
+    if (submited) {
+      if (fullName.trim().length > 3 && fullName.includes(" ")) {
+        setFullNameError(false);
+      } else {
+        setFullNameError(true);
+      }
+      if (/^[^\s@]+@[^\s@]+\.(com|co\.il)$/i.test(email)) {
+        setEmailError(false);
+      } else {
+        setEmailError(true);
+      }
+      if (phoneNumber.length >= 10) {
+        setPhoneNumberError(false);
+      } else {
+        setPhoneNumberError(true);
+      }
+      if (score >= 5) {
+        setNewPasswordError(false);
+      } else {
+        setNewPasswordError(true);
+      }
+      if (newPassword === confirmNewPassword && newPassword !== "") {
+        setConfirmNewPasswordError(false);
+      } else {
+        setConfirmNewPasswordError(true);
+      }
+    }
+  }, [
+    submited,
+    fullName,
+    email,
+    phoneNumber,
+    score,
+    newPassword,
+    confirmNewPassword,
+  ]);
+
+  const strengthLabel = ["", "חלש", "בינונית", "חזקה"];
+  const strengthColor = ["gray", "red", "orange", "green"];
+  const strengthIndex = score === 0 ? 0 : score <= 2 ? 1 : score <= 4 ? 2 : 3;
+
   return (
     <div className={styles.warrper}>
-      <div className={styles.NavProfile}>
+      <div
+        className={navCollapsed ? styles.smallNavProfile : styles.navProfile}
+      >
         <div className={styles.headerNav}>
-          <h2>איזור אישי</h2>
+          {navCollapsed ? "" : <h2>איזור אישי</h2>}
           <label className={styles.label}>
-            <input className={styles.menu} type="checkbox" />☰
+            <input
+              onClick={() => setNavCollapsed((prev) => !prev)}
+              className={styles.menu}
+              type="checkbox"
+            />
+            ☰
           </label>
         </div>
         <hr />
         <nav>
           <ul className={styles.List}>
-            <Link to="/properties" className={styles.listItem}>
+            <Link
+              to="/properties"
+              className={navCollapsed ? styles.smallListItem : styles.listItem}
+            >
               <span>🏠︎</span>
-              <span>נכסים</span>
+              {navCollapsed ? "" : <span>נכסים</span>}
             </Link>
-            <Link className={styles.listItem}>
+            <Link
+              className={navCollapsed ? styles.smallListItem : styles.listItem}
+            >
               <span>⚙</span>
-              <span>הגדרות פרופיל</span>
+              {navCollapsed ? "" : <span>הגדרות פרופיל</span>}
             </Link>
-            <Link to="/mortgage-calculator" className={styles.listItem}>
+            <Link
+              to="/mortgage-calculator"
+              className={navCollapsed ? styles.smallListItem : styles.listItem}
+            >
               <span>🗎</span>
-              <span>מחשבון משכנתא</span>
+              {navCollapsed ? "" : <span>מחשבון משכנתא</span>}
             </Link>
-            <Link to="/" className={styles.listItem}>
+            <Link
+              to="/"
+              className={navCollapsed ? styles.smallListItem : styles.listItem}
+            >
               <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
-              <span>חזרה לאתר</span>
+              {navCollapsed ? "" : <span>חזרה לאתר</span>}
             </Link>
           </ul>
         </nav>
@@ -133,30 +268,156 @@ const MyProfile = () => {
         </div>
         {myProfileActive && (
           <div className={styles.containerSelected}>
-            <h2 className={styles.headerContainerSelected}>פרטים איישים</h2>
+            <h2 className={styles.headerContainerSelected}>פרטים אישיים</h2>
             <div className={styles.containerInputs}>
               <div className={styles.row}>
                 <div className={styles.field}>
                   <label>שם משתמש</label>
                   <CustomInput
-                    value=""
-                    name="type"
+                    placeHolder="dw"
                     type="text"
                     className={styles.input}
-                    // onChange={(e) => setType(e.target.value)}
+                    readOnly
                   />
                 </div>
                 <div className={styles.field}>
-                  <label>שם משתמש</label>
+                  <label style={labelStyle(emailError)}>אימייל</label>
                   <CustomInput
-                    value=""
-                    name="type"
+                    placeholder="your@email.com"
                     type="text"
                     className={styles.input}
-                
-                    // onChange={(e) => setType(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
+                  />
+                  <div className={styles.error}>
+                    {emailError && (
+                      <div className={styles.errorText}>אימייל לא תקין </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <div className={styles.row}>
+                <div className={styles.field}>
+                  <label style={labelStyle(fullNameError)}>שם מלא</label>
+                  <CustomInput
+                    type="text"
+                    className={`${styles.input} ${styles.marginBottom}`}
+                    onChange={(e) => setFullName(e.target.value)}
+                  />
+                  <div className={styles.error}>
+                    {fullNameError && (
+                      <div className={styles.errorText}>
+                        שם מלא חייב להכיל לפחות 4 תווים ושני מילים
+                      </div>
+                    )}
+                  </div>
+                </div>
+                <div className={styles.field}>
+                  <label style={labelStyle(phoneNumberError)}>טלפון</label>
+                  <CustomInput
+                    type="text"
+                    className={`${styles.input} ${styles.marginBottom}`}
+                    onChange={(e) => setPhoneNumber(e.target.value)}
+                  />
+                  <div className={styles.error}>
+                    {phoneNumberError && (
+                      <div className={styles.errorText}>מספר טלפון לא תקין</div>
+                    )}
+                  </div>
+                </div>
+              </div>
+              <hr />
+              <h2 className={styles.secendHeaderContainerSelected}>
+                פרטים אישיים
+              </h2>
+              <div className={styles.containerInputs}>
+                <div className={styles.field}>
+                  <label>סיסמה נוכחית</label>
+                  <CustomInput
+                    placeHolder="הזן את הסיסמה הנוכחית"
+                    type="password"
+                    className={styles.input}
+                    onChange={(e) => setPassword(e.target.value)}
                   />
                 </div>
+                <div className={styles.row}>
+                  <div className={styles.field}>
+                    <label style={labelStyle(newPasswordError)}>
+                      סיסמה חדשה
+                    </label>
+                    <CustomInput
+                      placeHolder="הזן את הסיסמה החדשה"
+                      type="password"
+                      className={styles.input}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                    />
+                    <div className={styles.error}>
+                      {newPasswordError && (
+                        <div className={styles.errorText}>
+                          סיסמה חייבת להיות ברמה חזקה
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className={styles.field}>
+                    <label style={labelStyle(confirmPasswordError)}>
+                      אימות סיסמה חדשה
+                    </label>
+                    <CustomInput
+                      placeHolder="הזן שוב את הסיסמה החדשה"
+                      type="password"
+                      className={styles.input}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                    />
+                    <div className={styles.error}>
+                      {confirmPasswordError && (
+                        <div className={styles.errorText}>
+                          הסיסמאות לא תואמות
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+                <div className={styles.containerReq}>
+                  <ul>
+                    {results.map((req) => (
+                      <li
+                        key={req.id}
+                        className={styles.listResult}
+                        style={{ color: req.passed ? "green" : "red" }}
+                      >
+                        {req.passed ? "✔️" : "❌"} {req.message}
+                      </li>
+                    ))}
+                  </ul>
+                  <div style={{ marginTop: 20 }}>
+                    חוזק הסיסמא: <strong>{strengthLabel[strengthIndex]}</strong>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: 10,
+                      height: 15,
+                      backgroundColor: "#ddd",
+                      borderRadius: 10,
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: `${(score / 5) * 100}%`,
+                        height: "100%",
+                        backgroundColor: strengthColor[strengthIndex],
+                        borderRadius: 10,
+                        transition: "width 0.3s ease",
+                      }}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={onSubmit}
+                  type="submit"
+                  className={styles.saveBtn}
+                >
+                  שמור שינויים
+                </button>
               </div>
             </div>
           </div>

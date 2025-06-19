@@ -26,6 +26,7 @@ const Header = () => {
         <ul className={styles.navList}>
           <Link to="/">דף הבית</Link>
           <Link to="properties">חיפוש נכסים</Link>
+          <Link to="add-property">פרסם נכס</Link>
           <Link to="mortgage-calculator">מחשבון משכנתא</Link>
         </ul>
         <div className={styles.authButtons}>
@@ -39,7 +40,7 @@ const Header = () => {
             <button className={styles.RegisterBtn}>פרופיל שלי</button>
           </Link>
         </div>
-          <button
+        {/* <button
             onMouseDown={(e) => e.stopPropagation()}
             onClick={() => setAlertActive((prev) => !prev)}
             className={styles.alertButton}
@@ -51,7 +52,7 @@ const Header = () => {
               <h2>התראות</h2>
               <p>אין התראות חדשות</p>
             </div>
-          )}
+          )} */}
       </div>
     </header>
   );
