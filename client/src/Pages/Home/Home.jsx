@@ -1,11 +1,52 @@
 import { Link } from "react-router-dom";
 import styles from "../Home/Home.module.css";
 import Property from "../../components/Property/Property";
-import allProperties from "../../data/properties.js"
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+
 const Home = () => {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const initialMessage = location.state?.showMessage || "";
+  const [message, setMessage] = useState(initialMessage);
+  const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
+    useState(false);
+  const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    async function fetchProperties() {
+      try {
+        const res = await axios.get("http://localhost:5000/properties");
+        setProperties(res.data);
+      } catch (err) {
+        console.error("שגיאה:", err);
+        setMessageErrorFetchVisibility(true);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchProperties();
+  }, []);
+
+  useEffect(() => {
+    if (message) {
+      const timer = setTimeout(() => {
+        setMessage("");
+        navigate(location.pathname, { replace: true });
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [message, location.pathname, navigate]);
 
   return (
     <div>
+      <div>
+        {message && <div className={styles.successMessage}>{message}</div>}
+      </div>
       <div className={styles.container}>
         <h2 className={styles.header}>
           מצא את הנכס <span className={styles.headerSpan}>המושלם </span>עבורך
@@ -18,8 +59,8 @@ const Home = () => {
           <Link to="properties">
             <button className={styles.searchProp}>🔍 חיפוש נכסים </button>
           </Link>
-            {/* login ? "properties" : "login" */}
-          <Link to={""}>
+          {/* login ? "properties" : "login" */}
+          <Link to="/add-property">
             <button className={styles.postProp}>🏠 פרסם נכס</button>
           </Link>
         </div>
@@ -33,7 +74,14 @@ const Home = () => {
           </Link>
         </div>
         <div className={styles.Properties}>
-          <Property properties={allProperties.slice(0, 3)} />
+          {loading ? (
+            <div className={styles.loadingSpinner}></div>
+          ) : (
+            <Property properties={properties.slice(0, 3)} />
+          )}
+          {messageErrorFetchVisibility && (
+            <div className={styles.errorMessage}>{messageErrorFetch}</div>
+          )}
         </div>
       </div>
       <div className={styles.servicesContainer}>

@@ -53,8 +53,7 @@
   font-size: 1rem;
   margin-top: 0.25rem;
   background-color: hsl(210 20% 98%);
-    outline: none;
-
+  outline: none;
 }
 .passwordContainer {
   display: flex;
@@ -136,6 +135,85 @@
 .register a:hover {
   text-decoration: underline;
 }
-.error{
+.errorText {
   color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+.error {
+  display: flex;
+}
+@keyframes slideInOutLoop {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.successMessage,
+.errorMessage {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideInOutLoop 3.6s ease-in-out infinite;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
+}
+
+.errorMessage {
+  background-color: #db1010;
+  color: white;
+}
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(25, 118, 210, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+.loginBtnLoading {
+  background-color: hsl(220, 40%, 62%);
+  color: white;
+  padding: 0.75rem;
+  border: none;
+  width: 100%;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 60px;
 }

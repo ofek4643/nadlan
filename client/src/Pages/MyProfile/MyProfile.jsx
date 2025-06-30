@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import styles from "../MyProfile/MyProfile.module.css";
 import { Link } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
-import allProperties from "../../data/properties.js";
+// import allProperties from "../../data/properties.js";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/properties.js";
 
@@ -212,7 +212,7 @@ const MyProfile = () => {
               to="/"
               className={navCollapsed ? styles.smallListItem : styles.listItem}
             >
-              <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i>
+              <i className="fa-solid fa-right-from-bracket fa-rotate-180"></i>
               {navCollapsed ? "" : <span>חזרה לאתר</span>}
             </Link>
           </ul>
@@ -270,155 +270,163 @@ const MyProfile = () => {
           <div className={styles.containerSelected}>
             <h2 className={styles.headerContainerSelected}>פרטים אישיים</h2>
             <div className={styles.containerInputs}>
-              <div className={styles.row}>
-                <div className={styles.field}>
-                  <label>שם משתמש</label>
-                  <CustomInput
-                    placeHolder="dw"
-                    type="text"
-                    className={styles.input}
-                    readOnly
-                  />
-                </div>
-                <div className={styles.field}>
-                  <label style={labelStyle(emailError)}>אימייל</label>
-                  <CustomInput
-                    placeholder="your@email.com"
-                    type="text"
-                    className={styles.input}
-                    onChange={(e) => setEmail(e.target.value)}
-                  />
-                  <div className={styles.error}>
-                    {emailError && (
-                      <div className={styles.errorText}>אימייל לא תקין </div>
-                    )}
+              <form>
+                <div className={styles.row}>
+                  <div className={styles.field}>
+                    <label>שם משתמש</label>
+                    <CustomInput
+                      placeholder="dw"
+                      type="text"
+                      className={styles.input}
+                      readOnly
+                    />
                   </div>
-                </div>
-              </div>
-              <div className={styles.row}>
-                <div className={styles.field}>
-                  <label style={labelStyle(fullNameError)}>שם מלא</label>
-                  <CustomInput
-                    type="text"
-                    className={`${styles.input} ${styles.marginBottom}`}
-                    onChange={(e) => setFullName(e.target.value)}
-                  />
-                  <div className={styles.error}>
-                    {fullNameError && (
-                      <div className={styles.errorText}>
-                        שם מלא חייב להכיל לפחות 4 תווים ושני מילים
-                      </div>
-                    )}
+                  <div className={styles.field}>
+                    <label style={labelStyle(emailError)}>אימייל</label>
+                    <CustomInput
+                      placeholder="your@email.com"
+                      type="text"
+                      className={styles.input}
+                      onChange={(e) => setEmail(e.target.value)}
+                    />
+                    <div className={styles.error}>
+                      {emailError && (
+                        <div className={styles.errorText}>אימייל לא תקין </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-                <div className={styles.field}>
-                  <label style={labelStyle(phoneNumberError)}>טלפון</label>
-                  <CustomInput
-                    type="text"
-                    className={`${styles.input} ${styles.marginBottom}`}
-                    onChange={(e) => setPhoneNumber(e.target.value)}
-                  />
-                  <div className={styles.error}>
-                    {phoneNumberError && (
-                      <div className={styles.errorText}>מספר טלפון לא תקין</div>
-                    )}
-                  </div>
-                </div>
-              </div>
-              <hr />
-              <h2 className={styles.secendHeaderContainerSelected}>
-                פרטים אישיים
-              </h2>
-              <div className={styles.containerInputs}>
-                <div className={styles.field}>
-                  <label>סיסמה נוכחית</label>
-                  <CustomInput
-                    placeHolder="הזן את הסיסמה הנוכחית"
-                    type="password"
-                    className={styles.input}
-                    onChange={(e) => setPassword(e.target.value)}
-                  />
                 </div>
                 <div className={styles.row}>
                   <div className={styles.field}>
-                    <label style={labelStyle(newPasswordError)}>
-                      סיסמה חדשה
-                    </label>
+                    <label style={labelStyle(fullNameError)}>שם מלא</label>
                     <CustomInput
-                      placeHolder="הזן את הסיסמה החדשה"
-                      type="password"
-                      className={styles.input}
-                      onChange={(e) => setNewPassword(e.target.value)}
+                      type="text"
+                      className={`${styles.input} ${styles.marginBottom}`}
+                      onChange={(e) => setFullName(e.target.value)}
                     />
                     <div className={styles.error}>
-                      {newPasswordError && (
+                      {fullNameError && (
                         <div className={styles.errorText}>
-                          סיסמה חייבת להיות ברמה חזקה
+                          שם מלא חייב להכיל לפחות 4 תווים ושני מילים
                         </div>
                       )}
                     </div>
                   </div>
                   <div className={styles.field}>
-                    <label style={labelStyle(confirmPasswordError)}>
-                      אימות סיסמה חדשה
-                    </label>
+                    <label style={labelStyle(phoneNumberError)}>טלפון</label>
                     <CustomInput
-                      placeHolder="הזן שוב את הסיסמה החדשה"
-                      type="password"
-                      className={styles.input}
-                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      type="text"
+                      className={`${styles.input} ${styles.marginBottom}`}
+                      onChange={(e) => setPhoneNumber(e.target.value)}
                     />
                     <div className={styles.error}>
-                      {confirmPasswordError && (
+                      {phoneNumberError && (
                         <div className={styles.errorText}>
-                          הסיסמאות לא תואמות
+                          מספר טלפון לא תקין
                         </div>
                       )}
                     </div>
                   </div>
                 </div>
-                <div className={styles.containerReq}>
-                  <ul>
-                    {results.map((req) => (
-                      <li
-                        key={req.id}
-                        className={styles.listResult}
-                        style={{ color: req.passed ? "green" : "red" }}
-                      >
-                        {req.passed ? "✔️" : "❌"} {req.message}
-                      </li>
-                    ))}
-                  </ul>
-                  <div style={{ marginTop: 20 }}>
-                    חוזק הסיסמא: <strong>{strengthLabel[strengthIndex]}</strong>
-                  </div>
-                  <div
-                    style={{
-                      marginTop: 10,
-                      height: 15,
-                      backgroundColor: "#ddd",
-                      borderRadius: 10,
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: `${(score / 5) * 100}%`,
-                        height: "100%",
-                        backgroundColor: strengthColor[strengthIndex],
-                        borderRadius: 10,
-                        transition: "width 0.3s ease",
-                      }}
+                <hr />
+                <h2 className={styles.secendHeaderContainerSelected}>
+                  פרטים אישיים
+                </h2>
+                <div className={styles.containerInputs}>
+                  <div className={styles.field}>
+                    <label>סיסמה נוכחית</label>
+                    <CustomInput
+                      placeholder="הזן את הסיסמה הנוכחית"
+                      autoComplete="current-password"
+                      type="password"
+                      className={styles.input}
+                      onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
+                  <div className={styles.row}>
+                    <div className={styles.field}>
+                      <label style={labelStyle(newPasswordError)}>
+                        סיסמה חדשה
+                      </label>
+                      <CustomInput
+                        placeholder="הזן את הסיסמה החדשה"
+                        autoComplete="new-password"
+                        type="password"
+                        className={styles.input}
+                        onChange={(e) => setNewPassword(e.target.value)}
+                      />
+                      <div className={styles.error}>
+                        {newPasswordError && (
+                          <div className={styles.errorText}>
+                            סיסמה חייבת להיות ברמה חזקה
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    <div className={styles.field}>
+                      <label style={labelStyle(confirmPasswordError)}>
+                        אימות סיסמה חדשה
+                      </label>
+                      <CustomInput
+                        placeholder="הזן שוב את הסיסמה החדשה"
+                        autoComplete="new-password"
+                        type="password"
+                        className={styles.input}
+                        onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      />
+                      <div className={styles.error}>
+                        {confirmPasswordError && (
+                          <div className={styles.errorText}>
+                            הסיסמאות לא תואמות
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                  <div className={styles.containerReq}>
+                    <ul>
+                      {results.map((req) => (
+                        <li
+                          key={req.id}
+                          className={styles.listResult}
+                          style={{ color: req.passed ? "green" : "red" }}
+                        >
+                          {req.passed ? "✔️" : "❌"} {req.message}
+                        </li>
+                      ))}
+                    </ul>
+                    <div style={{ marginTop: 20 }}>
+                      חוזק הסיסמא:{" "}
+                      <strong>{strengthLabel[strengthIndex]}</strong>
+                    </div>
+                    <div
+                      style={{
+                        marginTop: 10,
+                        height: 15,
+                        backgroundColor: "#ddd",
+                        borderRadius: 10,
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: `${(score / 5) * 100}%`,
+                          height: "100%",
+                          backgroundColor: strengthColor[strengthIndex],
+                          borderRadius: 10,
+                          transition: "width 0.3s ease",
+                        }}
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={onSubmit}
+                    type="submit"
+                    className={styles.saveBtn}
+                  >
+                    שמור שינויים
+                  </button>
                 </div>
-                <button
-                  onClick={onSubmit}
-                  type="submit"
-                  className={styles.saveBtn}
-                >
-                  שמור שינויים
-                </button>
-              </div>
+              </form>
             </div>
           </div>
         )}

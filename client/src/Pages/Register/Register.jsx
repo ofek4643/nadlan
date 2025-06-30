@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { Link } from "react-router-dom";
 import { labelStyle } from "../../data/properties.js";
+import axios from "axios";
 
 const requirements = [
   {
@@ -50,6 +52,14 @@ const Register = () => {
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [acceptError, setAcceptError] = useState(false);
 
+  const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
+  const [showMessage, setShowMessage] = useState("");
+  const timeoutRef = useRef(null);
+
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
+
   useEffect(() => {
     const checks = requirements.map((req) => ({
       ...req,
@@ -59,29 +69,89 @@ const Register = () => {
     setScore(checks.filter((c) => c.passed).length);
   }, [password]);
 
-  const onSubmit = () => {
-    if (fullName.length <= 3) {
+  const onSubmit = async () => {
+    setSubmited(true);
+    let hasErrors = false;
+
+    if (fullName.length <= 3 || !fullName.includes(" ")) {
       setFullNameError(true);
+      hasErrors = true;
     }
     if (userName.length <= 7) {
       setUserNameError(true);
+      hasErrors = true;
     }
     if (!/^[^\s@]+@[^\s@]+\.(com|co\.il)$/.test(email)) {
       setEmailError(true);
+      hasErrors = true;
     }
     if (phoneNumber.length < 9) {
       setPhoneNumberError(true);
+      hasErrors = true;
     }
     if (password !== confirmPassword || password === "") {
       setConfirmPasswordError(true);
+      hasErrors = true;
     }
     if (score !== 5) {
       setPasswordError(true);
+      hasErrors = true;
     }
     if (accept === false) {
       setAcceptError(true);
+      hasErrors = true;
     }
-    setSubmited(true);
+    if (hasErrors) {
+      if (!showMessageVisibilty) {
+        setShowMessage("יש למלא את כל השדות בצורה תקינה");
+        setShowMessageVisibilty(true);
+
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+        timeoutRef.current = setTimeout(() => {
+          setShowMessageVisibilty(false);
+          timeoutRef.current = null;
+        }, 3000);
+      }
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await axios.post("http://localhost:5000/register", {
+        fullName,
+        userName,
+        email,
+        phoneNumber,
+        password,
+      });
+      console.log("התגובה מהשרת:", res.data.message);
+      navigate("/", { state: { showMessage: res.data.message } });
+    } catch (error) {
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setLoading(false);
+
+      if (!showMessageVisibilty) {
+        setShowMessageVisibilty(true);
+
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setShowMessageVisibilty(false);
+          timeoutRef.current = null;
+        }, 3000);
+      }
+    }
   };
 
   useEffect(() => {
@@ -135,15 +205,27 @@ const Register = () => {
   const strengthLabel = ["", "חלש", "בינונית", "חזקה"];
   const strengthColor = ["gray", "red", "orange", "green"];
   const strengthIndex = score === 0 ? 0 : score <= 2 ? 1 : score <= 4 ? 2 : 3;
+
   return (
     <div className={styles.wrapper}>
+      {showMessageVisibilty && (
+        <div
+          className={
+            showMessage.includes("הצלחה")
+              ? styles.successMessage
+              : styles.errorMessage
+          }
+        >
+          {showMessage}
+        </div>
+      )}
       <div className={styles.card}>
         <div className={styles.header}>
           <h3 className={styles.title}>הרשמה</h3>
           <p className={styles.subtitle}>הצטרף למערכת הנדל"ן המובילה בישראל</p>
         </div>
 
-        {/* <form action=""> */}
+        <form action="">
         <div className={styles.formgroup}>
           <div className={styles.field}>
             <label style={labelStyle(fullNameError)}>שם מלא</label>
@@ -228,7 +310,7 @@ const Register = () => {
 
           <div className={styles.field}>
             <label>כתובת</label>
-            <CustomInput type="text" placeholder="עיר, רחוב ומספר" />
+            <CustomInput type="text" autoComplete = "address" placeholder="עיר, רחוב ומספר" />
           </div>
 
           <div className={styles.row}>
@@ -238,6 +320,7 @@ const Register = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 type={show ? "text" : "password"}
+                autoComplete="new-password"
                 placeholder="הזן סיסמה"
               />
               <div className={styles.error}>
@@ -256,6 +339,7 @@ const Register = () => {
                 value={confirmPassword}
                 type={show ? "text" : "password"}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                autoComplete="new-password"
                 placeholder="הזן שוב סיסמה"
               />
               <div className={styles.error}>
@@ -329,16 +413,26 @@ const Register = () => {
           <button
             onClick={onSubmit}
             type="submit"
-            className={styles.buttonRegister}
+            className={
+              loading ? styles.buttonRegisterLoading : styles.buttonRegister
+            }
+            disabled={showMessageVisibilty}
           >
-            הירשם
+            {loading ? (
+              <>
+                <span>נרשם...</span>
+                <span className={styles.loadingSpinner}></span>
+              </>
+            ) : (
+              "הירשם"
+            )}
           </button>
 
           <p className={styles.loginLink}>
             כבר יש לך חשבון? <Link to="/login">התחבר כאן</Link>
           </p>
         </div>
-        {/* </form> */}
+        </form>
       </div>
     </div>
   );

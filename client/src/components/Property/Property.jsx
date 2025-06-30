@@ -25,11 +25,11 @@ const Property = ({ properties }) => {
               <div className={styles.imgDivHeader}>
                 <span
                   style={{
-                    backgroundColor: item.type === "להשכרה" ? "orange" : "hsl(222 47% 24%)"
+                    backgroundColor: item.status === "להשכרה" ? "orange" : "hsl(222 47% 24%)"
                   }}
                   className={styles.title}
                 >
-                  {item.type}
+                  {item.status}
                 </span>
                 <button
                   style={{
@@ -45,24 +45,24 @@ const Property = ({ properties }) => {
             </div>
             <div className={styles.infoDiv}>
               <div className={styles.infoDivHeader}>
-                <h3>{item.title}</h3>
-                <p className={styles.infoPrice}>{item.price}</p>
+                <h3>{item.header}</h3>
+                <p className={styles.infoPrice}>{item.status === "להשכרה" ? `${item.price.toLocaleString()} ₪ / לחודש` : `${item.price.toLocaleString()} ₪`}</p>
               </div>
-              <p className={styles.addressProperty}>{item.address}</p>
+              <p className={styles.addressProperty}>{`${item.neighborhood}, ${item.city}`}</p>
               <div className={styles.moreInfoProperty}>
                 <p className={styles.moreInfo}>
                   <i
                     className={`${styles.moveIcon} fa-solid fa-ruler fa-rotate-90`}
                   ></i>
-                  {item.size}
+                  {`${item.size} מ"ר`}
                 </p>
                 <p className={styles.moreInfo}>
                   <i className={`${styles.moveIcon} fa-solid fa-bed`}></i>
-                  {item.rooms}
+                  {`${item.rooms} חדרים`}
                 </p>
                 <p className={styles.moreInfo}>
                   <i className={`${styles.moveIcon} fa-solid fa-bath`}></i>
-                  {item.showers}
+                  {`${item.bathrooms} חדרי רחצה`}
                 </p>
               </div>
               <div className={styles.callDiv}>

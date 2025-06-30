@@ -19,7 +19,7 @@
   justify-content: space-between;
 }
 .select-btn-addProperty{
- width: 100%;
+  width: 100%;
   cursor: pointer;
   display: flex;
   padding: 0.6rem;
@@ -28,6 +28,23 @@
   font-size: 0.95rem;
   background-color: hsl(210 20% 98%);
   margin-top: 5px;
+  position: relative;
+    display: flex;
+  justify-content: space-between;
+}
+.select-btn-addProperty1{
+  width: 200px;
+  cursor: pointer;
+  display: flex;
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+  position: relative;
+    display: flex;
+  justify-content: space-between;
 }
 .select-btn-half1 {
   width: 100%;
@@ -54,7 +71,7 @@
   cursor: pointer;
   font-size: 1rem;
   position: relative;
-    display: flex;
+  display: flex;
   justify-content: space-between;
 }
 

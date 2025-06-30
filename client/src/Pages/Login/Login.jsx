@@ -1,20 +1,111 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
+import axios from "axios";
 
 const Login = () => {
   const [show, setShow] = useState(false);
-  const [username, setUsername] = useState("");
+  const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [userNameError, setUserNameError] = useState(false);
+  const [passwordError, setPasswordError] = useState(false);
+  const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
+  const [showMessage, setShowMessage] = useState("");
+  const timeoutRef = useRef(null);
+  const [loading, setLoading] = useState(false);
+  const [submited, setSubmited] = useState(false);
 
-  const onSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const onSubmit = async (e) => {
     e.preventDefault();
-  }
+    setSubmited(true);
+    let hasErrors = false;
+    if (userName === "") {
+      setUserNameError(true);
+      hasErrors = true;
+    }
+    if (password === "") {
+      setPasswordError(true);
+      hasErrors = true;
+    }
+    if (hasErrors) {
+      if (!showMessageVisibilty) {
+        setShowMessage("יש למלא את כל השדות");
+        setShowMessageVisibilty(true);
 
+        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+
+        timeoutRef.current = setTimeout(() => {
+          setShowMessageVisibilty(false);
+          timeoutRef.current = null;
+        }, 3000);
+      }
+      return;
+    }
+    try {
+      setLoading(true);
+      const res = await axios.post("http://localhost:5000/login", {
+        userName,
+        password,
+      });
+      console.log("התגובה מהשרת:", res.data);
+      navigate("/", { state: { showMessage: res.data } });
+    } catch (error) {
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setLoading(false);
+
+      if (!showMessageVisibilty) {
+        setShowMessageVisibilty(true);
+
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+
+        timeoutRef.current = setTimeout(() => {
+          setShowMessageVisibilty(false);
+          timeoutRef.current = null;
+        }, 3000);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (submited) {
+      if (userName !== "") {
+        setUserNameError(false);
+      } else {
+        setUserNameError(true);
+      }
+      if (password !== "") {
+        setPasswordError(false);
+      } else {
+        setPasswordError(true);
+      }
+    }
+  }, [submited, userName, password]);
 
   return (
     <div className={styles.wrapper}>
+      {showMessageVisibilty && (
+        <div
+          className={
+            showMessage.includes("הצלחה")
+              ? styles.successMessage
+              : styles.errorMessage
+          }
+        >
+          {showMessage}
+        </div>
+      )}
       <div className={styles.card}>
         <div className={styles.header}>
           <h3 className={styles.title}>התחברות</h3>
@@ -29,8 +120,13 @@ const Login = () => {
               id="username"
               type="text"
               placeholder="הזן שם משתמש"
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={(e) => setUserName(e.target.value)}
             />
+            <div className={styles.error}>
+              {userNameError && (
+                <div className={styles.errorText}>שם משתמש הוא שדה חובה</div>
+              )}
+            </div>
             <label id="labelPassword" htmlFor="password">
               סיסמה
             </label>
@@ -40,13 +136,21 @@ const Login = () => {
                 type={show ? "text" : "password"}
                 placeholder="הזן סיסמה"
                 onChange={(e) => setPassword(e.target.value)}
+                autoComplete="off"
               />
-              <button type="button"
+
+              <button
+                type="button"
                 onClick={() => setShow(show ? false : true)}
                 className={styles.showBtn}
               >
                 {show ? "הסתר" : "הצג"}
               </button>
+            </div>
+            <div className={styles.error}>
+              {passwordError && (
+                <div className={styles.errorText}>סיסמא הוא שדה חובה</div>
+              )}
             </div>
           </div>
 
@@ -63,10 +167,17 @@ const Login = () => {
           <button
             onClick={onSubmit}
             type="submit"
-            disabled={password === "" || username === ""}
-            className={styles.loginBtn}
+            className={loading ? styles.loginBtnLoading : styles.loginBtn}
+            disabled={showMessageVisibilty}
           >
-            התחבר
+            {loading ? (
+              <>
+                <span>מתחבר...</span>
+                <span className={styles.loadingSpinner}></span>
+              </>
+            ) : (
+              "התחבר"
+            )}
           </button>
         </form>
 

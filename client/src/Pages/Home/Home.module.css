@@ -74,8 +74,8 @@
 }
 .Properties {
   display: flex;
-  justify-content: center;
   gap: 50px;
+  min-height: 420px;
 }
 .servicesContainer {
   display: flex;
@@ -150,7 +150,7 @@
   color: rgb(77, 76, 76);
   font-size: 20px;
 }
-.btnContainer{
+.btnContainer {
   display: flex;
   gap: 20px;
 }
@@ -181,4 +181,79 @@
   color: white;
   background-color: hsl(30 100% 60%);
   scale: 1.02;
+}
+@keyframes slideInOutLoop {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.successMessage {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideInOutLoop 3.6s ease-in-out infinite;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
+}
+.loadingSpinner {
+  width: 60px;
+  height: 60px;
+  border: 5px solid rgba(25, 118, 210, 0.3);
+  border-top-color: #1976d2;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  position: absolute;
+  bottom: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+@keyframes spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+.errorMessage {
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #db1010;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: bold;
+  margin-top: 16px;
+  position: absolute;
+  bottom: 220px;
+  left: 50%;
+  transform: translateX(-50%);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }

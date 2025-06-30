@@ -60,6 +60,11 @@
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
   display: flex;
   gap: 20px;
+  flex-direction: column;
+}
+.ContainerAddPropertFlex {
+  display: flex;
+  gap: 25px;
 }
 .form1 {
   width: 50%;
@@ -72,7 +77,6 @@
 .row {
   display: flex;
   gap: 1rem;
-  margin-bottom: 1rem;
 }
 .headerAddProperty {
   margin-bottom: 20px;
@@ -86,7 +90,6 @@
   margin-top: 5px;
   outline: none;
   width: 100%;
-  
 }
 
 .textAreaInput {
@@ -100,4 +103,127 @@
   resize: vertical;
   min-height: 70px;
   height: 100px;
+}
+.divCheckBox {
+  display: flex;
+  justify-content: space-between;
+  width: 450px;
+  margin-top: 10px;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+}
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  direction: rtl;
+}
+.checkBox {
+  transform: scale(1.3);
+}
+.containerButton {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 10px;
+}
+.cancelBtn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  background-color: hsl(210 20% 98%);
+}
+.postPropertyBtn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+  background-color: hsl(222 47% 24%);
+}
+.cancelBtn:hover {
+  color: white;
+  background-color: hsl(30 100% 60%);
+}
+.postPropertyBtn:hover {
+  background-color: hsl(222 47% 34%);
+}
+.errorText {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+.errorTextSubmit {
+  color: red;
+  font-size: 1.15rem;
+  margin-top: 5px;
+}
+.error {
+  display: flex;
+}
+.addPropertyFooter {
+  display: flex;
+  justify-content: space-between;
+}
+.errorDiv {
+  display: flex;
+  align-items: center;
+}
+@keyframes slideInOutLoop {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.successMessage,
+.errorMessage {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideInOutLoop 3.6s ease-in-out infinite;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
+}
+
+.errorMessage {
+  background-color: #db1010;
+  color: white;
+}
+.postPropertyBtn:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
 }

@@ -1,11 +1,34 @@
 import styles from "../SearchProperty/SearchProperty.module.css";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
-import CustomInput from "../../components/CustomInput/CustomInput.jsx"
-import allProperties from "../../data/properties.js";
+import CustomInput from "../../components/CustomInput/CustomInput.jsx";
+// import allProperties from "../../data/properties.js";
 import Property from "../../components/Property/Property.jsx";
 
 import { useEffect, useState } from "react";
+import axios from "axios";
 const SearchProperty = () => {
+  useEffect(() => {
+    const ofek = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/properties");
+        setAllProperties(res.data);
+        setFilteredProperties(res.data);
+      } catch (error) {
+        console.error("שגיאה:", error);
+        setMessageErrorFetchVisibility(true);
+      }
+      finally {
+        setLoading(false);
+      }
+    };
+    ofek();
+  }, []);
+
+  const [loading, setLoading] = useState(true);
+  const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
+    useState(false);
+  const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
+
   //useState - passwordBtn
   const [isOpen, setIsOpen] = useState(false);
 
@@ -15,9 +38,9 @@ const SearchProperty = () => {
   const [sizeError, setSizeError] = useState(false);
 
   //useStates - filter
+  const [allProperties, setAllProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState(allProperties);
-  const [baseFilteredProperties, setBaseFilteredProperties] = useState(allProperties);
-  const [title, setTitle] = useState("");
+  const [header, setHeader] = useState("");
   const [city, setCity] = useState("");
   const [minRooms, setMinRooms] = useState("");
   const [maxRooms, setMaxRooms] = useState("");
@@ -25,9 +48,15 @@ const SearchProperty = () => {
   const [maxPrice, setMaxPrice] = useState("");
   const [minSize, setMinSize] = useState("");
   const [maxSize, setMaxSize] = useState("");
-  const [type, setType] = useState("");
+  const [status, setStatus] = useState("");
   const [sort, setSort] = useState("");
 
+  const [furnished, setFurnished] = useState(false);
+  const [airConditioning, setAirConditioning] = useState(false);
+  const [parking, setParking] = useState(false);
+  const [balcony, setBalcony] = useState(false);
+  const [elevator, setElevator] = useState(false);
+  const [storage, setStorage] = useState(false);
 
   // useStates - page
   const [currentPage, setCurrentPage] = useState(1);
@@ -49,19 +78,19 @@ const SearchProperty = () => {
 
   //variablesFilterPrice
   const parsedMinPrice = minPrice
-      ? parseInt(minPrice.replace(/[^0-9]/g, ""))
-      : 0;
-    const parsedMaxPrice = maxPrice
-      ? maxPrice.includes("+")
-        ? Infinity
-        : parseInt(maxPrice.replace(/[^0-9]/g, ""))
-      : Infinity;
+    ? parseInt(minPrice.replace(/[^0-9]/g, ""))
+    : 0;
+  const parsedMaxPrice = maxPrice
+    ? maxPrice.includes("+")
+      ? Infinity
+      : parseInt(maxPrice.replace(/[^0-9]/g, ""))
+    : Infinity;
 
-    //variablesFilterRooms
-    const parsedMinRooms =
-      minRooms === "5+" ? 5 : minRooms ? parseInt(minRooms) : 0;
-    const parsedMaxRooms =
-      maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
+  //variablesFilterRooms
+  const parsedMinRooms =
+    minRooms === "5+" ? 5 : minRooms ? parseInt(minRooms) : 0;
+  const parsedMaxRooms =
+    maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
 
   //checkWhenInputIsOk
   useEffect(() => {
@@ -74,30 +103,34 @@ const SearchProperty = () => {
     if (parsedMaxRooms >= parsedMinRooms) {
       setRoomsError(false);
     }
-  }, [parsedMaxSize, parsedMinSize,parsedMaxPrice,parsedMinPrice,parsedMaxRooms,parsedMinRooms]);
-  
+  }, [
+    parsedMaxSize,
+    parsedMinSize,
+    parsedMaxPrice,
+    parsedMinPrice,
+    parsedMaxRooms,
+    parsedMinRooms,
+  ]);
+
   //Sort
   useEffect(() => {
-    const sorted = [...baseFilteredProperties]
+    const sorted = [...allProperties];
+
     if (sort === "מחיר(מהנמוך לגבוה)") {
-       sorted.sort((a,b) => parseInt(a.price.replace(/[^0-9]/g, "")) - parseInt(b.price.replace(/[^0-9]/g, "")))
-    }
-    else if (sort === "מחיר(מהגבוה לנמוך)") {
-       sorted.sort((a,b) => parseInt(b.price.replace(/[^0-9]/g, "")) - parseInt(a.price.replace(/[^0-9]/g, "")))
-    }
-    else if (sort === "שטח(מהנמוך לגבוה)"){
-      sorted.sort((a,b) => parseInt(a.size.replace(/[^0-9]/g, "")) - parseInt(b.size.replace(/[^0-9]/g, "")))
-    }
-    else if (sort === "שטח(מהגבוה לנמוך)") {
-       sorted.sort((a,b) => parseInt(b.size.replace(/[^0-9]/g, "")) - parseInt(a.size.replace(/[^0-9]/g, "")))
+      sorted.sort((a, b) => a.price - b.price);
+    } else if (sort === "מחיר(מהגבוה לנמוך)") {
+      sorted.sort((a, b) => b.price - a.price);
+    } else if (sort === "שטח(מהנמוך לגבוה)") {
+      sorted.sort((a, b) => a.size - b.size);
+    } else if (sort === "שטח(מהגבוה לנמוך)") {
+      sorted.sort((a, b) => b.size - a.size);
     }
 
     setFilteredProperties(sorted);
-    setCurrentPage(1)
-  },[sort ,baseFilteredProperties])
+    setCurrentPage(1);
+  }, [sort, allProperties]);
   // functions
   function filterProp() {
-
     //variableError
     let hasError = false;
 
@@ -118,45 +151,62 @@ const SearchProperty = () => {
     }
 
     if (hasError) {
-      setFilteredProperties(filteredProperties);
+      setFilteredProperties(allProperties);
       setCurrentPage(1);
       return;
     }
 
     //filter
-      const filtered = allProperties.filter((property) => {
-      const matchesTitle = title ? property.title.includes(title) : true;
-      const matchesCity = city ? property.title.includes(city) : true;
+    const filtered = allProperties.filter((property) => {
+      const matchesTitle = header ? property.header.includes(header) : true;
+      const matchesCity = city ? property.header.includes(city) : true;
 
-      const propertyRooms = parseInt(property.rooms);
- 
       const matchesRooms =
-        propertyRooms >= parsedMinRooms && propertyRooms <= parsedMaxRooms;
-
-      const propertyPrice = parseInt(property.price.replace(/[^0-9]/g, ""));
+        property.rooms >= parsedMinRooms && property.rooms <= parsedMaxRooms;
 
       const matchesPrice =
-        propertyPrice >= parsedMinPrice && propertyPrice <= parsedMaxPrice;
-
-      const propertySize = parseInt(
-        property.size.slice(0, property.size.indexOf(" "))
-      );
+        property.price >= parsedMinPrice && property.price <= parsedMaxPrice;
 
       const matchesSize =
-        propertySize >= parsedMinSize && propertySize <= parsedMaxSize;
+        property.size >= parsedMinSize && property.size <= parsedMaxSize;
 
-      const matchesType = type ? property.type.includes(type) : true;
+      const matchesType = status ? property.status.includes(status) : true;
+
+      const matchesFurnished = furnished ? property.furnished === true : true;
+      const matchesAirConditioning = airConditioning
+        ? property.airConditioning === true
+        : true;
+      const matchesParking = parking ? property.parking === true : true;
+      const matchesBalcony = balcony ? property.balcony === true : true;
+      const matchesElevator = elevator ? property.elevator === true : true;
+      const matchesStorage = storage ? property.storage === true : true;
+
+      console.log(
+        "furnishedFilter:",
+        furnished,
+        "property:",
+        property.furnished,
+        "match:",
+        matchesFurnished
+      );
+
       return (
         matchesTitle &&
         matchesCity &&
         matchesRooms &&
         matchesPrice &&
         matchesSize &&
-        matchesType
+        matchesType &&
+        matchesFurnished &&
+        matchesAirConditioning &&
+        matchesParking &&
+        matchesBalcony &&
+        matchesElevator &&
+        matchesStorage
       );
     });
     setSort("");
-    setBaseFilteredProperties(filtered);
+    setFilteredProperties(filtered);
     setCurrentPage(1);
   }
   return (
@@ -183,7 +233,7 @@ const SearchProperty = () => {
                 placeholder="בחר סוג נכס"
                 className="custom-select"
                 className2="select-btn"
-                onChange={(value) => setTitle(value)}
+                onChange={(value) => setHeader(value)}
               />
             </div>
             <div className={styles.selectProperty}>
@@ -229,13 +279,13 @@ const SearchProperty = () => {
                   error={roomsError}
                 />
               </div>
-              <p className={styles.error}>
+              <div className={styles.error}>
                 {roomsError && (
                   <div className={styles.errorText}>
-                    לא ניתן לסנן כאשר המקסימום קטן מהמינימום
+                    מינימום לא יכול להיות גדול יותר ממקסימום
                   </div>
                 )}
-              </p>
+              </div>
             </div>
             <div className={styles.selectProperty}>
               <label className={styles.labelSelect} htmlFor="">
@@ -273,13 +323,13 @@ const SearchProperty = () => {
                   error={priceError}
                 />
               </div>
-              <p className={styles.error}>
+              <div className={styles.error}>
                 {priceError && (
                   <div className={styles.errorText}>
-                    לא ניתן לסנן כאשר המקסימום קטן מהמינימום
+                    מינימום לא יכול להיות גדול ממקסימום
                   </div>
                 )}
-              </p>
+              </div>
             </div>
           </div>
           <div className={styles.moreSearch}>
@@ -303,6 +353,7 @@ const SearchProperty = () => {
                       type="number"
                       placeholder="מינימום"
                       min={0}
+                      value={minSize}
                       onChange={(e) => setMinSize(e.target.value)}
                     />
                     <CustomInput
@@ -312,39 +363,80 @@ const SearchProperty = () => {
                       className={styles.input2}
                       type="number"
                       placeholder="מקסימום"
+                      value={maxSize}
                       min={1}
                       onChange={(e) => setMaxSize(e.target.value)}
                     />
                   </div>
-                  <p className={styles.error}>
+                  <div className={styles.error}>
                     {sizeError && (
                       <div className={styles.errorText}>
-                        לא ניתן לסנן כאשר המקסימום קטן מהמינימום
+                        מינימום לא יכול להיות גדול ממקסימום
                       </div>
                     )}
-                  </p>
+                  </div>
                 </div>
                 <div>
                   <label htmlFor="">מאפיינים</label>
                   <div className={styles.divCheckBox}>
                     <div className={styles.column}>
                       <label className={styles.checkboxLabel}>
-                        <CustomInput className={styles.checkBox} type="checkbox" />
-                        מרפסת
+                        <CustomInput
+                          className={styles.checkBox}
+                          type="checkbox"
+                          checked={furnished}
+                          onClick={() => setFurnished((prev) => !prev)}
+                        />
+                        מרוהט
                       </label>
                       <label className={styles.checkboxLabel}>
-                        <CustomInput className={styles.checkBox} type="checkbox" />
-                        מחסן
+                        <CustomInput
+                          className={styles.checkBox}
+                          type="checkbox"
+                          checked={airConditioning}
+                          onClick={() => setAirConditioning((prev) => !prev)}
+                        />
+                        מיזוג
                       </label>
                     </div>
                     <div className={styles.column}>
                       <label className={styles.checkboxLabel}>
-                        <CustomInput className={styles.checkBox} type="checkbox" />
+                        <CustomInput
+                          className={styles.checkBox}
+                          type="checkbox"
+                          checked={parking}
+                          onClick={() => setParking((prev) => !prev)}
+                        />
                         חניה
                       </label>
                       <label className={styles.checkboxLabel}>
-                        <CustomInput className={styles.checkBox} type="checkbox" />
+                        <CustomInput
+                          className={styles.checkBox}
+                          type="checkbox"
+                          checked={balcony}
+                          onClick={() => setBalcony((prev) => !prev)}
+                        />
+                        מרפסת
+                      </label>
+                    </div>
+                    <div className={styles.column}>
+                      <label className={styles.checkboxLabel}>
+                        <CustomInput
+                          className={styles.checkBox}
+                          type="checkbox"
+                          checked={elevator}
+                          onClick={() => setElevator((prev) => !prev)}
+                        />
                         מעלית
+                      </label>
+                      <label className={styles.checkboxLabel}>
+                        <CustomInput
+                          className={styles.checkBox}
+                          type="checkbox"
+                          checked={storage}
+                          onClick={() => setStorage((prev) => !prev)}
+                        />
+                        מחסן
                       </label>
                     </div>
                   </div>
@@ -353,15 +445,33 @@ const SearchProperty = () => {
                   <label htmlFor="">סטטוס</label>
                   <div className={styles.divRadio}>
                     <label className={styles.checkboxLabel}>
-                      <CustomInput value="" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
+                      <CustomInput
+                        value=""
+                        checked={status === ""}
+                        name="type"
+                        type="radio"
+                        onChange={(e) => setStatus(e.target.value)}
+                      />
                       הכל
                     </label>
                     <label className={styles.checkboxLabel}>
-                      <CustomInput value="להשכרה" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
+                      <CustomInput
+                        value="להשכרה"
+                        checked={status === "להשכרה"}
+                        name="type"
+                        type="radio"
+                        onChange={(e) => setStatus(e.target.value)}
+                      />
                       להשכרה
                     </label>
                     <label className={styles.checkboxLabel}>
-                      <CustomInput value="למכירה" name="type" type="radio" onChange={(e) => setType(e.target.value)} />
+                      <CustomInput
+                        value="למכירה"
+                        checked={status === "למכירה"}
+                        name="type"
+                        type="radio"
+                        onChange={(e) => setStatus(e.target.value)}
+                      />
                       למכירה
                     </label>
                   </div>
@@ -370,7 +480,7 @@ const SearchProperty = () => {
             )}
             <div className={styles.btnSearchPropertyDiv}>
               <button onClick={filterProp} className={styles.btnSearchProperty}>
-                🔍 חפש נכסים{" "}
+                🔍 חפש נכסים
               </button>
             </div>
           </div>
@@ -391,13 +501,20 @@ const SearchProperty = () => {
               ]}
               className="myCustomSelect2"
               className2="select-btn-half2"
-              value = {sort}
+              value={sort}
               onChange={(value) => setSort(value)}
             />
           </div>
         </div>
         <div className={styles.containerProperties}>
-          <Property properties={currentProperties} />
+          {loading ? (
+            <div className={styles.loadingSpinner}></div>
+          ) : (
+            <Property properties={currentProperties} />
+          )}
+          {messageErrorFetchVisibility && (
+            <div className={styles.errorMessage}>{messageErrorFetch}</div>
+          )}
         </div>
         <div className={styles.pagination}>
           <button
