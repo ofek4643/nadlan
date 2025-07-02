@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styles from "../MyProfile/MyProfile.module.css";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
-// import allProperties from "../../data/properties.js";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/properties.js";
+import axios from "axios";
 
 const requirements = [
   {
@@ -31,6 +31,8 @@ const requirements = [
 ];
 
 const MyProfile = () => {
+  const [show, setShow] = useState(false);
+
   const [myProfileActive, setMyProfileActive] = useState(true);
   const [myPropertiesActive, setmyPropertiesActive] = useState(false);
   const [myAlertsActive, setMyAlertsActive] = useState(false);
@@ -45,10 +47,10 @@ const MyProfile = () => {
   const [results, setResults] = useState([]);
   const [score, setScore] = useState(0);
 
+  const [userName, setUserName] = useState("");
   const [fullName, setFullName] = useState("");
   const [fullNameError, setFullNameError] = useState(false);
   const [email, setEmail] = useState("");
-  const [emailError, setEmailError] = useState(false);
   const [phoneNumber, setPhoneNumber] = useState("");
   const [phoneNumberError, setPhoneNumberError] = useState(false);
   const [password, setPassword] = useState("");
@@ -57,7 +59,59 @@ const MyProfile = () => {
   const [newPasswordError, setNewPasswordError] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [confirmPasswordError, setConfirmNewPasswordError] = useState(false);
+  const [searchParams] = useSearchParams();
+  const section = searchParams.get("section");
 
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/users", {
+          withCredentials: true,
+        });
+
+        if (res.data) {
+          setFullName(res.data.fullName || "");
+          setUserName(res.data.userName || "");
+          setPhoneNumber(res.data.phoneNumber || "");
+          setEmail(res.data.email || "");
+        }
+      } catch (error) {
+        console.error("Failed to fetch user profile:", error);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  const verifyCurrentPassword = async () => {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/users/verify-password",
+        { password }, // הסיסמה הנוכחית שהמשתמש הזין
+        { withCredentials: true }
+      );
+      return res.data.valid; // תחזיר true אם תקין
+    } catch (err) {
+      console.error("שגיאה באימות סיסמה", err);
+      return false;
+    }
+  };
+
+  useEffect(() => {
+    switch (section) {
+      case "properties":
+        changeMyPropertiesActive();
+        break;
+      case "alerts":
+        changeMyAlertsActive();
+        break;
+      case "favorites":
+        changeMyFavoriteActive();
+        break;
+      default:
+        changeMyProfileActive();
+    }
+  }, [section]);
   useEffect(() => {
     const checks = requirements.map((req) => ({
       ...req,
@@ -107,23 +161,47 @@ const MyProfile = () => {
     setMyFavoriteActive(true);
   }
 
-  function onSubmit() {
+  async function onSubmit(e) {
+    e.preventDefault();
     setSubmited(true);
+    let hasErrors = false;
+
     if (fullName.length <= 3) {
       setFullNameError(true);
-    }
-    if (!/^[^\s@]+@[^\s@]+\.(com|co\.il)$/.test(email)) {
-      setEmailError(true);
+      hasErrors = true;
     }
     if (phoneNumber.length < 9) {
       setPhoneNumberError(true);
+      hasErrors = true;
     }
-
+    const isPasswordValid = await verifyCurrentPassword();
+    if (!isPasswordValid) {
+      setPasswordError(true);
+      hasErrors = true;
+    } else {
+      setPasswordError(false);
+    }
     if (newPassword !== confirmNewPassword || newPassword === "") {
       setConfirmNewPasswordError(true);
+      hasErrors = true;
     }
+
     if (score !== 5) {
       setNewPasswordError(true);
+      hasErrors = true;
+    }
+    if (hasErrors) {
+      return;
+    }
+    try {
+      const res = await axios.put(
+        "http://localhost:5000/users/update-information",
+        { fullName, phoneNumber, newPassword },
+        { withCredentials: true }
+      );
+      console.log("העדכון בוצע בהצלחה", res.data);
+    } catch (error) {
+      console.log("שגיאה בעדכון מידע משתמש:", error);
     }
   }
 
@@ -133,11 +211,6 @@ const MyProfile = () => {
         setFullNameError(false);
       } else {
         setFullNameError(true);
-      }
-      if (/^[^\s@]+@[^\s@]+\.(com|co\.il)$/i.test(email)) {
-        setEmailError(false);
-      } else {
-        setEmailError(true);
       }
       if (phoneNumber.length >= 10) {
         setPhoneNumberError(false);
@@ -275,31 +348,27 @@ const MyProfile = () => {
                   <div className={styles.field}>
                     <label>שם משתמש</label>
                     <CustomInput
-                      placeholder="dw"
+                      placeholder={userName}
                       type="text"
                       className={styles.input}
                       readOnly
                     />
                   </div>
                   <div className={styles.field}>
-                    <label style={labelStyle(emailError)}>אימייל</label>
+                    <label>אימייל</label>
                     <CustomInput
-                      placeholder="your@email.com"
+                      placeholder={email}
                       type="text"
                       className={styles.input}
-                      onChange={(e) => setEmail(e.target.value)}
+                      readOnly
                     />
-                    <div className={styles.error}>
-                      {emailError && (
-                        <div className={styles.errorText}>אימייל לא תקין </div>
-                      )}
-                    </div>
                   </div>
                 </div>
                 <div className={styles.row}>
                   <div className={styles.field}>
                     <label style={labelStyle(fullNameError)}>שם מלא</label>
                     <CustomInput
+                      value={fullName}
                       type="text"
                       className={`${styles.input} ${styles.marginBottom}`}
                       onChange={(e) => setFullName(e.target.value)}
@@ -315,9 +384,33 @@ const MyProfile = () => {
                   <div className={styles.field}>
                     <label style={labelStyle(phoneNumberError)}>טלפון</label>
                     <CustomInput
-                      type="text"
+                      type="tel"
                       className={`${styles.input} ${styles.marginBottom}`}
+                      placeholder="0501234567"
+                      value = {phoneNumber}
+                      autoComplete = "phoneNumber"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      maxLength={10}
                       onChange={(e) => setPhoneNumber(e.target.value)}
+                      onKeyDown={(e) => {
+                        const allowed = [
+                          "0",
+                          "1",
+                          "2",
+                          "3",
+                          "4",
+                          "5",
+                          "6",
+                          "7",
+                          "8",
+                          "9",
+                          "Backspace",
+                        ];
+                        if (!allowed.includes(e.key)) {
+                          e.preventDefault();
+                        }
+                      }}
                     />
                     <div className={styles.error}>
                       {phoneNumberError && (
@@ -334,14 +427,23 @@ const MyProfile = () => {
                 </h2>
                 <div className={styles.containerInputs}>
                   <div className={styles.field}>
-                    <label>סיסמה נוכחית</label>
+                    <label style={labelStyle(passwordError)}>
+                      סיסמה נוכחית
+                    </label>
                     <CustomInput
                       placeholder="הזן את הסיסמה הנוכחית"
                       autoComplete="current-password"
-                      type="password"
+                      type={show ? "text" : "password"}
                       className={styles.input}
                       onChange={(e) => setPassword(e.target.value)}
                     />
+                    <div className={styles.error}>
+                      {passwordError && (
+                        <div className={styles.errorText}>
+                          סיסמה נוכחית לא נכונה
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className={styles.row}>
                     <div className={styles.field}>
@@ -351,7 +453,7 @@ const MyProfile = () => {
                       <CustomInput
                         placeholder="הזן את הסיסמה החדשה"
                         autoComplete="new-password"
-                        type="password"
+                        type={show ? "text" : "password"}
                         className={styles.input}
                         onChange={(e) => setNewPassword(e.target.value)}
                       />
@@ -370,7 +472,7 @@ const MyProfile = () => {
                       <CustomInput
                         placeholder="הזן שוב את הסיסמה החדשה"
                         autoComplete="new-password"
-                        type="password"
+                        type={show ? "text" : "password"}
                         className={styles.input}
                         onChange={(e) => setConfirmNewPassword(e.target.value)}
                       />
@@ -383,6 +485,7 @@ const MyProfile = () => {
                       </div>
                     </div>
                   </div>
+
                   <div className={styles.containerReq}>
                     <ul>
                       {results.map((req) => (
@@ -396,7 +499,7 @@ const MyProfile = () => {
                       ))}
                     </ul>
                     <div style={{ marginTop: 20 }}>
-                      חוזק הסיסמא:{" "}
+                      חוזק הסיסמא:
                       <strong>{strengthLabel[strengthIndex]}</strong>
                     </div>
                     <div
@@ -417,6 +520,15 @@ const MyProfile = () => {
                         }}
                       />
                     </div>
+                  </div>
+                  <div className={styles.showPass}>
+                    <button
+                      onClick={() => setShow(show ? false : true)}
+                      className={styles.buttonShowPassword}
+                      type="button"
+                    >
+                      {show ? "הסתר" : "הצג"} סיסמאות
+                    </button>
                   </div>
                   <button
                     onClick={onSubmit}

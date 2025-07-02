@@ -48,7 +48,6 @@ a {
 .authButtons button {
   padding: 10px 20px;
   border-radius: 5px;
-  font-size: 1.1rem;
   cursor: pointer;
   transition: all 0.1s ease-in-out;
   border: 1px solid hsl(214.3 31.8% 91.4%);
@@ -92,4 +91,28 @@ a {
   width: 300px;
   z-index: 10;
   border-radius: 8px;
+}
+.authButtonsLogin {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+}
+.userProfile {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  gap: 10px;
+  border-radius: 12px;
+}
+
+.firstLetter {
+  display: flex;
+  border-radius: 100%;
+  background-color: hsl(222 47% 24%);
+  width: 40px;
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  color: white;
 }

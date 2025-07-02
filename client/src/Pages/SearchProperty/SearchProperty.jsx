@@ -1,14 +1,12 @@
 import styles from "../SearchProperty/SearchProperty.module.css";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
-// import allProperties from "../../data/properties.js";
 import Property from "../../components/Property/Property.jsx";
-
 import { useEffect, useState } from "react";
 import axios from "axios";
 const SearchProperty = () => {
   useEffect(() => {
-    const ofek = async () => {
+    const fetchProperties = async () => {
       try {
         const res = await axios.get("http://localhost:5000/properties");
         setAllProperties(res.data);
@@ -16,12 +14,11 @@ const SearchProperty = () => {
       } catch (error) {
         console.error("שגיאה:", error);
         setMessageErrorFetchVisibility(true);
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     };
-    ofek();
+    fetchProperties();
   }, []);
 
   const [loading, setLoading] = useState(true);
@@ -501,6 +498,7 @@ const SearchProperty = () => {
               ]}
               className="myCustomSelect2"
               className2="select-btn-half2"
+              placeholder="הכי חדש"
               value={sort}
               onChange={(value) => setSort(value)}
             />

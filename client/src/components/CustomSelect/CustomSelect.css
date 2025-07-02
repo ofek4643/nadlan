@@ -4,7 +4,24 @@
   direction: rtl;
   font-family: sans-serif;
 }
-
+.custom-selectHeader {
+  position: relative;
+  direction: rtl;
+  font-family: sans-serif;
+}
+.select-btnHeader {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  text-align: right;
+  cursor: pointer;
+  font-size: 1rem;
+  position: relative;
+  display: flex;
+  gap: 10px;
+}
 .select-btn {
   width: 100%;
   padding: 10px 15px;
@@ -15,10 +32,10 @@
   cursor: pointer;
   font-size: 1rem;
   position: relative;
-    display: flex;
+  display: flex;
   justify-content: space-between;
 }
-.select-btn-addProperty{
+.select-btn-addProperty {
   width: 100%;
   cursor: pointer;
   display: flex;
@@ -29,10 +46,10 @@
   background-color: hsl(210 20% 98%);
   margin-top: 5px;
   position: relative;
-    display: flex;
+  display: flex;
   justify-content: space-between;
 }
-.select-btn-addProperty1{
+.select-btn-addProperty1 {
   width: 200px;
   cursor: pointer;
   display: flex;
@@ -43,7 +60,7 @@
   background-color: hsl(210 20% 98%);
   margin-top: 5px;
   position: relative;
-    display: flex;
+  display: flex;
   justify-content: space-between;
 }
 .select-btn-half1 {
@@ -57,7 +74,7 @@
   cursor: pointer;
   font-size: 1rem;
   position: relative;
-    display: flex;
+  display: flex;
   justify-content: space-between;
 }
 .select-btn-half2 {
@@ -100,22 +117,20 @@
   cursor: pointer;
   min-height: 43px;
   list-style: none;
-  
 }
 
 .option-item:hover {
   background-color: orange;
   color: white;
-
 }
-.myCustomSelect1{
-position: relative;
+.myCustomSelect1 {
+  position: relative;
   width: 175px;
   direction: rtl;
   font-family: sans-serif;
 }
-.myCustomSelect2{
-position: relative;
+.myCustomSelect2 {
+  position: relative;
   width: 175px;
   direction: rtl;
   font-family: sans-serif;

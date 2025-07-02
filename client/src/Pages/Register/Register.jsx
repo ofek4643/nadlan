@@ -69,7 +69,8 @@ const Register = () => {
     setScore(checks.filter((c) => c.passed).length);
   }, [password]);
 
-  const onSubmit = async () => {
+  const onSubmit = async (e) => {
+    e.preventDefault()
     setSubmited(true);
     let hasErrors = false;
 
@@ -119,13 +120,17 @@ const Register = () => {
     try {
       setLoading(true);
 
-      const res = await axios.post("http://localhost:5000/register", {
-        fullName,
-        userName,
-        email,
-        phoneNumber,
-        password,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/register",
+        {
+          fullName,
+          userName,
+          email,
+          phoneNumber,
+          password,
+        },
+        { withCredentials: true }
+      );
       console.log("התגובה מהשרת:", res.data.message);
       navigate("/", { state: { showMessage: res.data.message } });
     } catch (error) {
@@ -226,212 +231,218 @@ const Register = () => {
         </div>
 
         <form action="">
-        <div className={styles.formgroup}>
-          <div className={styles.field}>
-            <label style={labelStyle(fullNameError)}>שם מלא</label>
-            <CustomInput
-              type="text"
-              placeholder="הזן שם מלא"
-              onChange={(e) => setFullName(e.target.value)}
-            />
-            <div className={styles.error}>
-              {fullNameError && (
-                <div className={styles.errorText}>
-                  שם מלא חייב להכיל לפחות 4 תווים ושני מילים
-                </div>
-              )}
-            </div>
-          </div>
-          <div className={styles.row}>
-            <div>
-              <label style={labelStyle(userNameError)}>שם משתמש</label>
+          <div className={styles.formgroup}>
+            <div className={styles.field}>
+              <label style={labelStyle(fullNameError)}>שם מלא</label>
               <CustomInput
                 type="text"
-                placeholder="הזן שם משתמש"
-                onChange={(e) => setUserName(e.target.value)}
+                placeholder="הזן שם מלא"
+                onChange={(e) => setFullName(e.target.value)}
               />
               <div className={styles.error}>
-                {userNameError && (
+                {fullNameError && (
                   <div className={styles.errorText}>
-                    שם משתמש חייב להכיל לפחות 8 תווים
+                    שם מלא חייב להכיל לפחות 4 תווים ושני מילים
                   </div>
                 )}
               </div>
             </div>
-            <div>
-              <label style={labelStyle(emailError)}>אימייל</label>
-              <CustomInput
-                type="email"
-                placeholder="your@email.com"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              <div className={styles.error}>
-                {emailError && (
-                  <div className={styles.errorText}>כתובת אימייל לא תקינה</div>
-                )}
+            <div className={styles.row}>
+              <div>
+                <label style={labelStyle(userNameError)}>שם משתמש</label>
+                <CustomInput
+                  type="text"
+                  placeholder="הזן שם משתמש"
+                  onChange={(e) => setUserName(e.target.value)}
+                />
+                <div className={styles.error}>
+                  {userNameError && (
+                    <div className={styles.errorText}>
+                      שם משתמש חייב להכיל לפחות 8 תווים
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle(emailError)}>אימייל</label>
+                <CustomInput
+                  type="email"
+                  placeholder="your@email.com"
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <div className={styles.error}>
+                  {emailError && (
+                    <div className={styles.errorText}>
+                      כתובת אימייל לא תקינה
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className={styles.field}>
-            <label style={labelStyle(phoneNumberError)}>מספר טלפון</label>
-            <CustomInput
-              type="tel"
-              placeholder="0501234567"
-              inputMode="numeric"
-              pattern="[0-9]*"
-              maxLength={10}
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              onKeyDown={(e) => {
-                const allowed = [
-                  "0",
-                  "1",
-                  "2",
-                  "3",
-                  "4",
-                  "5",
-                  "6",
-                  "7",
-                  "8",
-                  "9",
-                  "Backspace",
-                ];
-                if (!allowed.includes(e.key)) {
-                  e.preventDefault();
-                }
-              }}
-            />
-            <div className={styles.error}>
-              {phoneNumberError && (
-                <div className={styles.errorText}>מספר טלפון לא תקין</div>
-              )}
-            </div>
-          </div>
-
-          <div className={styles.field}>
-            <label>כתובת</label>
-            <CustomInput type="text" autoComplete = "address" placeholder="עיר, רחוב ומספר" />
-          </div>
-
-          <div className={styles.row}>
-            <div>
-              <label style={labelStyle(passwordError)}>סיסמה</label>
+            <div className={styles.field}>
+              <label style={labelStyle(phoneNumberError)}>מספר טלפון</label>
               <CustomInput
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                type={show ? "text" : "password"}
-                autoComplete="new-password"
-                placeholder="הזן סיסמה"
-              />
-              <div className={styles.error}>
-                {passwordError && (
-                  <div className={styles.errorText}>
-                    סיסמה חייבת להיות ברמה חזקה
-                  </div>
-                )}
-              </div>
-            </div>
-            <div>
-              <label style={labelStyle(confirmPasswordError)}>
-                אימות סיסמה
-              </label>
-              <CustomInput
-                value={confirmPassword}
-                type={show ? "text" : "password"}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                autoComplete="new-password"
-                placeholder="הזן שוב סיסמה"
-              />
-              <div className={styles.error}>
-                {confirmPasswordError && (
-                  <div className={styles.errorText}>סיסמאות לא תואמות</div>
-                )}
-              </div>
-            </div>
-          </div>
-          <div className={styles.containerReq}>
-            <ul>
-              {results.map((req) => (
-                <li
-                  className={styles.listResult}
-                  key={req.id}
-                  style={{ color: req.passed ? "green" : "red" }}
-                >
-                  {req.passed ? "✔️" : "❌"} {req.message}
-                </li>
-              ))}
-            </ul>
-            <div style={{ marginTop: 20 }}>
-              חוזק הסיסמא: <strong>{strengthLabel[strengthIndex]}</strong>
-            </div>
-            <div
-              style={{
-                marginTop: 10,
-                height: 15,
-                backgroundColor: "#ddd",
-                borderRadius: 10,
-              }}
-            >
-              <div
-                style={{
-                  width: `${(score / 5) * 100}%`,
-                  height: "100%",
-                  backgroundColor: strengthColor[strengthIndex],
-                  borderRadius: 10,
-                  transition: "width 0.3s ease",
+                type="tel"
+                placeholder="0501234567"
+                inputMode="numeric"
+                pattern="[0-9]*"
+                maxLength={10}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                onKeyDown={(e) => {
+                  const allowed = [
+                    "0",
+                    "1",
+                    "2",
+                    "3",
+                    "4",
+                    "5",
+                    "6",
+                    "7",
+                    "8",
+                    "9",
+                    "Backspace",
+                  ];
+                  if (!allowed.includes(e.key)) {
+                    e.preventDefault();
+                  }
                 }}
               />
+              <div className={styles.error}>
+                {phoneNumberError && (
+                  <div className={styles.errorText}>מספר טלפון לא תקין</div>
+                )}
+              </div>
             </div>
-          </div>
-          <div className={styles.showPass}>
+
+            <div className={styles.field}>
+              <label>כתובת</label>
+              <CustomInput
+                type="text"
+                autoComplete="address"
+                placeholder="עיר, רחוב ומספר"
+              />
+            </div>
+
+            <div className={styles.row}>
+              <div>
+                <label style={labelStyle(passwordError)}>סיסמה</label>
+                <CustomInput
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  type={show ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="הזן סיסמה"
+                />
+                <div className={styles.error}>
+                  {passwordError && (
+                    <div className={styles.errorText}>
+                      סיסמה חייבת להיות ברמה חזקה
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div>
+                <label style={labelStyle(confirmPasswordError)}>
+                  אימות סיסמה
+                </label>
+                <CustomInput
+                  value={confirmPassword}
+                  type={show ? "text" : "password"}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  autoComplete="new-password"
+                  placeholder="הזן שוב סיסמה"
+                />
+                <div className={styles.error}>
+                  {confirmPasswordError && (
+                    <div className={styles.errorText}>סיסמאות לא תואמות</div>
+                  )}
+                </div>
+              </div>
+            </div>
+            <div className={styles.containerReq}>
+              <ul>
+                {results.map((req) => (
+                  <li
+                    className={styles.listResult}
+                    key={req.id}
+                    style={{ color: req.passed ? "green" : "red" }}
+                  >
+                    {req.passed ? "✔️" : "❌"} {req.message}
+                  </li>
+                ))}
+              </ul>
+              <div style={{ marginTop: 20 }}>
+                חוזק הסיסמא: <strong>{strengthLabel[strengthIndex]}</strong>
+              </div>
+              <div
+                style={{
+                  marginTop: 10,
+                  height: 15,
+                  backgroundColor: "#ddd",
+                  borderRadius: 10,
+                }}
+              >
+                <div
+                  style={{
+                    width: `${(score / 5) * 100}%`,
+                    height: "100%",
+                    backgroundColor: strengthColor[strengthIndex],
+                    borderRadius: 10,
+                    transition: "width 0.3s ease",
+                  }}
+                />
+              </div>
+            </div>
+            <div className={styles.showPass}>
+              <button
+                onClick={() => setShow(show ? false : true)}
+                className={styles.buttonShowPassword}
+                type="button"
+              >
+                {show ? "הסתר" : "הצג"} סיסמאות
+              </button>
+            </div>
+
+            <div className={styles.agreement}>
+              <CustomInput
+                className={styles.checkBox}
+                type="checkbox"
+                onClick={() => setAccept(accept ? false : true)}
+              />
+              <p>
+                אני מאשר את <Link to="/terms">תנאי השימוש</Link> ו
+                <Link to="/privacy">מדיניות הפרטיות</Link>
+              </p>
+              <div className={styles.error}>
+                {acceptError && (
+                  <div className={styles.errorText}>יש לאשר את תנאי השימוש</div>
+                )}
+              </div>
+            </div>
+
             <button
-              onClick={() => setShow(show ? false : true)}
-              className={styles.buttonShowPassword}
-              type="button"
+              onClick={onSubmit}
+              type="submit"
+              className={
+                loading ? styles.buttonRegisterLoading : styles.buttonRegister
+              }
+              disabled={showMessageVisibilty}
             >
-              {show ? "הסתר" : "הצג"} סיסמאות
-            </button>
-          </div>
-
-          <div className={styles.agreement}>
-            <CustomInput
-              className={styles.checkBox}
-              type="checkbox"
-              onClick={() => setAccept(accept ? false : true)}
-            />
-            <p>
-              אני מאשר את <Link to="/terms">תנאי השימוש</Link> ו
-              <Link to="/privacy">מדיניות הפרטיות</Link>
-            </p>
-            <div className={styles.error}>
-              {acceptError && (
-                <div className={styles.errorText}>יש לאשר את תנאי השימוש</div>
+              {loading ? (
+                <>
+                  <span>נרשם...</span>
+                  <span className={styles.loadingSpinner}></span>
+                </>
+              ) : (
+                "הירשם"
               )}
-            </div>
+            </button>
+
+            <p className={styles.loginLink}>
+              כבר יש לך חשבון? <Link to="/login">התחבר כאן</Link>
+            </p>
           </div>
-
-          <button
-            onClick={onSubmit}
-            type="submit"
-            className={
-              loading ? styles.buttonRegisterLoading : styles.buttonRegister
-            }
-            disabled={showMessageVisibilty}
-          >
-            {loading ? (
-              <>
-                <span>נרשם...</span>
-                <span className={styles.loadingSpinner}></span>
-              </>
-            ) : (
-              "הירשם"
-            )}
-          </button>
-
-          <p className={styles.loginLink}>
-            כבר יש לך חשבון? <Link to="/login">התחבר כאן</Link>
-          </p>
-        </div>
         </form>
       </div>
     </div>

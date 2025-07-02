@@ -212,3 +212,23 @@
   margin-top: 10px;
   list-style: none;
 }
+.input[readonly] {
+  background-color: #f0f0f0;
+  cursor: not-allowed;
+  color: #555;       
+}
+.buttonShowPassword {
+  all: unset;
+  font-size: 1rem;
+  color: #0a2342;
+  cursor: pointer;
+  text-align: center;
+  padding: 7px 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+  transition: all 0.1s ease-in-out;
+}
+.buttonShowPassword:hover {
+  background-color: hsl(30 100% 60%);
+  color: white;
+}

@@ -5,11 +5,19 @@ import bcrypt from "bcrypt";
 import cors from "cors";
 import User from "./models/User.js";
 import Property from "./models/Property.js";
+import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 dotenv.config();
 const app = express();
+app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 const port = process.env.PORT || 3000;
 
@@ -52,6 +60,19 @@ app.post("/register", async (req, res) => {
       role: "user",
     });
     await newUser.save();
+    const token = jwt.sign(
+      { userId: newUser._id, role: newUser.role, fullName: newUser.fullName },
+      process.env.JWT_SECRET,
+      { expiresIn: "2h" }
+    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 2 * 60 * 60 * 1000,
+      path: "/",
+    });
+
     return res.status(201).json({ message: "משתמש נוצר בהצלחה!" });
   } catch (error) {
     console.log(error.message);
@@ -63,7 +84,7 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   try {
-    const { userName, password } = req.body;
+    const { userName, password, rememberMe } = req.body;
 
     const user = await User.findOne({ userName });
     if (!user) {
@@ -75,11 +96,54 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "שם משתמש או סיסמא שגויים" });
     }
 
-    res.status(200).json("התחברת בהצלחה!");
+    const token = jwt.sign(
+      { userId: user._id, role: user.role, fullName: user.fullName },
+      process.env.JWT_SECRET,
+      { expiresIn: rememberMe ? "7d" : "2h" }
+    );
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
+      path: "/",
+    });
+
+    res.status(200).json({
+      message: "התחברת בהצלחה!",
+      user: {
+        id: user._id,
+        fullName: user.fullName,
+        userName: user.userName,
+        role: user.role,
+      },
+    });
   } catch (error) {
     console.log("שגיאה בשרת:", error.message);
     res.status(500).json({ error: "שגיאה בשרת" });
   }
+});
+
+const authenticate = (req, res, next) => {
+  const token = req.cookies.token;
+  if (!token) return res.status(401).json({ error: "לא מחובר" });
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    return res.status(401).json({ error: "טוקן לא תקין" });
+  }
+};
+
+app.post("/logout", (req, res) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    path: "/",
+  });
+  res.status(200).json({ message: "התנתקת בהצלחה" });
 });
 
 app.post("/add-property", async (req, res) => {
@@ -144,6 +208,60 @@ app.get("/properties", async (req, res) => {
     return res
       .status(500)
       .json({ error: "Server error", details: error.message });
+  }
+});
+
+app.get("/users", authenticate, async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId).select(
+      "fullName email phoneNumber userName"
+    );
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/users/verify-password", authenticate, async (req, res) => {
+  try {
+    const { password } = req.body;
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    if (!user) return res.status(404).json({ valid: false });
+
+    const isMatch = await bcrypt.compare(password, user.password);
+    res.json({ valid: isMatch });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ valid: false });
+  }
+});
+app.put("/users/update-information", authenticate, async (req, res) => {
+  try {
+    const { fullName, phoneNumber, newPassword } = req.body;
+    const userId = req.user.userId;
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json("משתמש לא נמצא");
+    }
+    user.phoneNumber = phoneNumber;
+    user.fullName = fullName;
+    
+    if (newPassword && newPassword.trim() !== "") {
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      user.password = hashedPassword;
+    }
+    await user.save();
+    res.status(200).json("הנתונים עודכנו בהצלחה");
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
   }
 });
 app.listen(port, () => {

@@ -15,6 +15,7 @@ const Login = () => {
   const timeoutRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [submited, setSubmited] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const navigate = useNavigate();
 
@@ -46,12 +47,17 @@ const Login = () => {
     }
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:5000/login", {
-        userName,
-        password,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/login",
+        {
+          userName,
+          password,
+          rememberMe,
+        },
+        { withCredentials: true } // <--- חובה כדי לקבל ולשלוח עוגיות
+      );
       console.log("התגובה מהשרת:", res.data);
-      navigate("/", { state: { showMessage: res.data } });
+      navigate("/", { state: { showMessage: res.data.message } });
     } catch (error) {
       if (!error.response) {
         setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
@@ -156,7 +162,12 @@ const Login = () => {
 
           <div className={styles.options}>
             <label>
-              <CustomInput type="checkbox" />
+              <CustomInput
+                type="checkbox"
+                name="rememberMe"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
               זכור אותי
             </label>
             <Link to="/forgot-password" className={styles.link}>
