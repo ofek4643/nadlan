@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 const Home = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState(null);
   const location = useLocation();
   const initialMessage = location.state?.showMessage || "";
   const [message, setMessage] = useState(initialMessage);
@@ -16,6 +17,22 @@ const Home = () => {
     useState(false);
   const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const res = await axios.get("http://localhost:5000/users", {
+          withCredentials: true,
+        });
+        setUser(res.data);
+      } catch (error) {
+        console.log(error);
+        setUser(null);
+      }
+    };
+
+    fetchProfile();
+  }, []);
 
   useEffect(() => {
     async function fetchProperties() {
@@ -59,8 +76,8 @@ const Home = () => {
           <Link to="properties">
             <button className={styles.searchProp}>🔍 חיפוש נכסים </button>
           </Link>
-          {/* login ? "properties" : "login" */}
-          <Link to="/add-property">
+
+          <Link to={user ? "add-property" : "login"}>
             <button className={styles.postProp}>🏠 פרסם נכס</button>
           </Link>
         </div>
@@ -114,21 +131,23 @@ const Home = () => {
             </p>
           </div>
         </div>
-        <div className={styles.ad}>
-          <h2 className={styles.adHeader}>מחפש לקנות או למכור נכס?</h2>
-          <p className={styles.adSubTitle}>
-            הצטרף למאות המשתמשים שמצאו את הנכס המושלם או את הקונה האידיאלי
-            באמצעות הפלטפורמה שלנו
-          </p>
-          <div className={styles.btnContainer}>
-            <Link to="/login">
-              <button className={styles.adLoginBtn}>הרשם עכשיו</button>
-            </Link>
-            <Link to="/properties">
-              <button className={styles.adSearchProperty}>חפש נכסים</button>
-            </Link>
+        {!user && (
+          <div className={styles.ad}>
+            <h2 className={styles.adHeader}>מחפש לקנות או למכור נכס?</h2>
+            <p className={styles.adSubTitle}>
+              הצטרף למאות המשתמשים שמצאו את הנכס המושלם או את הקונה האידיאלי
+              באמצעות הפלטפורמה שלנו
+            </p>
+            <div className={styles.btnContainer}>
+              <Link to="/register">
+                <button className={styles.adLoginBtn}>הרשם עכשיו</button>
+              </Link>
+              <Link to="/properties">
+                <button className={styles.adSearchProperty}>חפש נכסים</button>
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

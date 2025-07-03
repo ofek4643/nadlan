@@ -60,6 +60,7 @@ const MyProfile = () => {
   const [newPasswordError, setNewPasswordError] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [confirmNewPasswordError, setConfirmNewPasswordError] = useState(false);
+  const [samePasswordError, setSamePasswordError] = useState(false);
   const [searchParams] = useSearchParams();
   const section = searchParams.get("section");
 
@@ -93,10 +94,10 @@ const MyProfile = () => {
     try {
       const res = await axios.post(
         "http://localhost:5000/users/verify-password",
-        { password }, // הסיסמה הנוכחית שהמשתמש הזין
+        { password },
         { withCredentials: true }
       );
-      return res.data.valid; // תחזיר true אם תקין
+      return res.data.valid;
     } catch (err) {
       console.error("שגיאה באימות סיסמה", err);
       return false;
@@ -182,16 +183,16 @@ const MyProfile = () => {
       setFullNameError(true);
       hasErrors = true;
     }
-    if (userName.length <= 7) {
+    if (userName.length <= 7 || userName.includes(" ")) {
       setUserNameError(true);
       hasErrors = true;
     }
-    if (phoneNumber.length < 9) {
+    if (phoneNumber.length < 10) {
       setPhoneNumberError(true);
       hasErrors = true;
     }
 
-    if (newPassword !== "") {
+    if (password !== "" || newPassword !== "") {
       const isPasswordValid = await verifyCurrentPassword();
       if (!isPasswordValid) {
         setPasswordError(true);
@@ -208,17 +209,22 @@ const MyProfile = () => {
         setConfirmNewPasswordError(true);
         hasErrors = true;
       }
+      if (password === newPassword) {
+        setSamePasswordError(true);
+        hasErrors = true;
+      }
     } else {
       setPasswordError(false);
+      setNewPasswordError(false);
+      setConfirmNewPasswordError(false);
     }
 
     if (hasErrors) {
-      setShowMessage(""); // אפס קודם
-      setShowMessageVisibilty(false); // סגור קודם
+      setShowMessageVisibilty(false);
       setTimeout(() => {
         setShowMessage("יש למלא את כל השדות בצורה תקינה");
         setShowMessageVisibilty(true);
-      }, 10); // המתנה קטנה כדי לאלץ React לרנדר מחדש
+      }, 10);
 
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       timeoutRef.current = setTimeout(() => {
@@ -232,12 +238,15 @@ const MyProfile = () => {
       setLoading(true);
       const res = await axios.put(
         "http://localhost:5000/users/update-information",
-        { fullName, phoneNumber, newPassword },
+        { fullName, phoneNumber, newPassword, userName },
         { withCredentials: true }
       );
       console.log(res.data);
       setShowMessageVisibilty(true);
       setShowMessage(res.data);
+      setPassword("");
+      setNewPassword("");
+      setConfirmNewPassword("");
     } catch (error) {
       if (!error.response) {
         setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
@@ -274,7 +283,7 @@ const MyProfile = () => {
       } else {
         setFullNameError(true);
       }
-      if (userName.length > 7) {
+      if (userName.trim().length > 7 && !userName.includes(" ")) {
         setUserNameError(false);
       } else {
         setUserNameError(true);
@@ -284,7 +293,7 @@ const MyProfile = () => {
       } else {
         setPhoneNumberError(true);
       }
-      if (newPassword !== "") {
+      if (password !== "" || newPassword !== "") {
         if (score >= 5) {
           setNewPasswordError(false);
         } else {
@@ -294,6 +303,11 @@ const MyProfile = () => {
           setConfirmNewPasswordError(false);
         } else {
           setConfirmNewPasswordError(true);
+        }
+        if (password !== newPassword) {
+          setSamePasswordError(false);
+        } else {
+          setSamePasswordError(true);
         }
       } else {
         setNewPasswordError(false);
@@ -306,6 +320,7 @@ const MyProfile = () => {
     userName,
     phoneNumber,
     score,
+    password,
     newPassword,
     confirmNewPassword,
   ]);
@@ -439,7 +454,7 @@ const MyProfile = () => {
                     <div className={styles.error}>
                       {userNameError && (
                         <div className={styles.errorText}>
-                          שם משתמש חייב להכיל לפחות 8 תווים
+                          שם משתמש חייב להכיל לפחות 8 תווים ובלי רווחים
                         </div>
                       )}
                     </div>
@@ -521,6 +536,7 @@ const MyProfile = () => {
                       סיסמה נוכחית
                     </label>
                     <CustomInput
+                      value={password}
                       placeholder="הזן את הסיסמה הנוכחית"
                       autoComplete="current-password"
                       type={show ? "text" : "password"}
@@ -537,10 +553,15 @@ const MyProfile = () => {
                   </div>
                   <div className={styles.row}>
                     <div className={styles.field}>
-                      <label style={labelStyle(newPasswordError)}>
+                      <label
+                        style={labelStyle(
+                          newPasswordError || samePasswordError
+                        )}
+                      >
                         סיסמה חדשה
                       </label>
                       <CustomInput
+                        value={newPassword}
                         placeholder="הזן את הסיסמה החדשה"
                         autoComplete="new-password"
                         type={show ? "text" : "password"}
@@ -554,12 +575,20 @@ const MyProfile = () => {
                           </div>
                         )}
                       </div>
+                      <div className={styles.error}>
+                        {samePasswordError && (
+                          <div className={styles.errorText}>
+                            הסיסמא החדשה זהה לסיסמא הנוכחית
+                          </div>
+                        )}
+                      </div>
                     </div>
                     <div className={styles.field}>
                       <label style={labelStyle(confirmNewPasswordError)}>
                         אימות סיסמה חדשה
                       </label>
                       <CustomInput
+                        value={confirmNewPassword}
                         placeholder="הזן שוב את הסיסמה החדשה"
                         autoComplete="new-password"
                         type={show ? "text" : "password"}
@@ -624,7 +653,6 @@ const MyProfile = () => {
                     onClick={onSubmit}
                     type="submit"
                     className={loading ? styles.saveBtnLoading : styles.saveBtn}
-                    // disabled={showMessageVisibilty}
                   >
                     {loading ? (
                       <>

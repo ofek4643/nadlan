@@ -32,17 +32,18 @@ const Login = () => {
       hasErrors = true;
     }
     if (hasErrors) {
-      if (!showMessageVisibilty) {
-        setShowMessage("יש למלא את כל השדות");
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessage("יש למלא את כל השדות בצורה תקינה");
         setShowMessageVisibilty(true);
+      }, 10);
 
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
 
-        timeoutRef.current = setTimeout(() => {
-          setShowMessageVisibilty(false);
-          timeoutRef.current = null;
-        }, 3000);
-      }
       return;
     }
     try {
@@ -54,7 +55,7 @@ const Login = () => {
           password,
           rememberMe,
         },
-        { withCredentials: true } // <--- חובה כדי לקבל ולשלוח עוגיות
+        { withCredentials: true }
       );
       console.log("התגובה מהשרת:", res.data);
       navigate("/", { state: { showMessage: res.data.message } });
@@ -68,19 +69,16 @@ const Login = () => {
       }
     } finally {
       setLoading(false);
-
-      if (!showMessageVisibilty) {
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
         setShowMessageVisibilty(true);
+      }, 10);
 
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-
-        timeoutRef.current = setTimeout(() => {
-          setShowMessageVisibilty(false);
-          timeoutRef.current = null;
-        }, 3000);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
     }
   };
 
@@ -179,7 +177,6 @@ const Login = () => {
             onClick={onSubmit}
             type="submit"
             className={loading ? styles.loginBtnLoading : styles.loginBtn}
-            disabled={showMessageVisibilty}
           >
             {loading ? (
               <>

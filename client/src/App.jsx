@@ -9,10 +9,12 @@ import Terms from "./Pages/Terms/Terms.jsx";
 import Privacy from "./Pages/Privacy/Privacy.jsx";
 import MyProfile from "./Pages/MyProfile/MyProfile.jsx";
 import AddProperty from "./Pages/AddProperty/AddProperty.jsx";
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx"
 
 function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />

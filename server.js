@@ -126,7 +126,7 @@ app.post("/login", async (req, res) => {
 
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
-  if (!token) return res.status(401).json({ error: "לא מחובר" });
+  if (!token) return res.status(401).json({ error: "משתמש לא מחובר" });
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -242,18 +242,23 @@ app.post("/users/verify-password", authenticate, async (req, res) => {
 });
 app.put("/users/update-information", authenticate, async (req, res) => {
   try {
-    const { fullName, phoneNumber, newPassword } = req.body;
+    const { fullName, phoneNumber, newPassword, userName } = req.body;
     const userId = req.user.userId;
     const user = await User.findById(userId);
     const phoneNumberExist = await User.findOne({ phoneNumber });
+    const userNameExist = await User.findOne({ userName });
     if (!user) {
       return res.status(404).json("משתמש לא נמצא");
     }
+    if (userNameExist && userNameExist._id.toString() !== userId) {
+      return res.status(400).json({ error: "שם משתמש כבר קיים במערכת" });
+    }
     if (phoneNumberExist && phoneNumberExist._id.toString() !== userId) {
-      return res.status(400).json({error: "מספר טלפון כבר קיים במערכת"});
+      return res.status(400).json({ error: "מספר טלפון כבר קיים במערכת" });
     }
     user.phoneNumber = phoneNumber;
     user.fullName = fullName;
+    user.userName = userName;
 
     if (newPassword && newPassword.trim() !== "") {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
