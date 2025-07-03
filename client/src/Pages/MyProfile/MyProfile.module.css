@@ -187,6 +187,7 @@
   margin-top: 30px;
 }
 .saveBtn {
+  width: 150px;
   margin-top: 40px;
   padding: 10px 20px;
   border-radius: 5px;
@@ -197,8 +198,26 @@
   color: white;
   background-color: hsl(222 47% 24%);
 }
+
 .saveBtn:hover {
   background-color: hsl(222 47% 34%);
+}
+.saveBtnLoading {
+  background-color: hsl(220, 40%, 62%);
+  width: 150px;
+  margin-top: 40px;
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+}
+.saveBtn:disabled {
+  background-color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 .errorText {
   color: red;
@@ -215,7 +234,7 @@
 .input[readonly] {
   background-color: #f0f0f0;
   cursor: not-allowed;
-  color: #555;       
+  color: #555;
 }
 .buttonShowPassword {
   all: unset;
@@ -230,5 +249,69 @@
 }
 .buttonShowPassword:hover {
   background-color: hsl(30 100% 60%);
+  color: white;
+}
+
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(25, 118, 210, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+@keyframes spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+@keyframes slideInOutLoop {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.successMessage,
+.errorMessage {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideInOutLoop 3.6s ease-in-out infinite;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
+}
+
+.errorMessage {
+  background-color: #db1010;
   color: white;
 }

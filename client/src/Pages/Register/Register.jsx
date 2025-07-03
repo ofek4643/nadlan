@@ -70,11 +70,17 @@ const Register = () => {
   }, [password]);
 
   const onSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     setSubmited(true);
     let hasErrors = false;
 
-    if (fullName.length <= 3 || !fullName.includes(" ")) {
+    if (
+      fullName.trim().length <= 3 ||
+      fullName
+        .trim()
+        .split(" ")
+        .filter((w) => w.length > 0).length < 2
+    ) {
       setFullNameError(true);
       hasErrors = true;
     }
@@ -161,7 +167,13 @@ const Register = () => {
 
   useEffect(() => {
     if (submited) {
-      if (fullName.trim().length > 3 && fullName.includes(" ")) {
+      if (
+        fullName.trim().length > 3 &&
+        fullName
+          .trim()
+          .split(" ")
+          .filter((w) => w.length > 0).length >= 2
+      ) {
         setFullNameError(false);
       } else {
         setFullNameError(true);

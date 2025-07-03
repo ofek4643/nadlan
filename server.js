@@ -245,12 +245,16 @@ app.put("/users/update-information", authenticate, async (req, res) => {
     const { fullName, phoneNumber, newPassword } = req.body;
     const userId = req.user.userId;
     const user = await User.findById(userId);
+    const phoneNumberExist = await User.findOne({ phoneNumber });
     if (!user) {
       return res.status(404).json("משתמש לא נמצא");
     }
+    if (phoneNumberExist && phoneNumberExist._id.toString() !== userId) {
+      return res.status(400).json({error: "מספר טלפון כבר קיים במערכת"});
+    }
     user.phoneNumber = phoneNumber;
     user.fullName = fullName;
-    
+
     if (newPassword && newPassword.trim() !== "") {
       const hashedPassword = await bcrypt.hash(newPassword, 10);
       user.password = hashedPassword;

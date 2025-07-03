@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "../MyProfile/MyProfile.module.css";
 import { Link, useSearchParams } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
@@ -48,6 +48,7 @@ const MyProfile = () => {
   const [score, setScore] = useState(0);
 
   const [userName, setUserName] = useState("");
+  const [userNameError, setUserNameError] = useState(false);
   const [fullName, setFullName] = useState("");
   const [fullNameError, setFullNameError] = useState(false);
   const [email, setEmail] = useState("");
@@ -58,9 +59,14 @@ const MyProfile = () => {
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordError, setNewPasswordError] = useState(false);
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
-  const [confirmPasswordError, setConfirmNewPasswordError] = useState(false);
+  const [confirmNewPasswordError, setConfirmNewPasswordError] = useState(false);
   const [searchParams] = useSearchParams();
   const section = searchParams.get("section");
+
+  const [loading, setLoading] = useState(false);
+  const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
+  const [showMessage, setShowMessage] = useState("");
+  const timeoutRef = useRef(null);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -166,72 +172,138 @@ const MyProfile = () => {
     setSubmited(true);
     let hasErrors = false;
 
-    if (fullName.length <= 3) {
+    if (
+      fullName.trim().length <= 3 ||
+      fullName
+        .trim()
+        .split(" ")
+        .filter((w) => w.length > 0).length < 2
+    ) {
       setFullNameError(true);
+      hasErrors = true;
+    }
+    if (userName.length <= 7) {
+      setUserNameError(true);
       hasErrors = true;
     }
     if (phoneNumber.length < 9) {
       setPhoneNumberError(true);
       hasErrors = true;
     }
-    const isPasswordValid = await verifyCurrentPassword();
-    if (!isPasswordValid) {
-      setPasswordError(true);
-      hasErrors = true;
+
+    if (newPassword !== "") {
+      const isPasswordValid = await verifyCurrentPassword();
+      if (!isPasswordValid) {
+        setPasswordError(true);
+        hasErrors = true;
+      } else {
+        setPasswordError(false);
+      }
+      if (score !== 5) {
+        setNewPasswordError(true);
+        hasErrors = true;
+      }
+
+      if (newPassword !== confirmNewPassword || confirmNewPassword === "") {
+        setConfirmNewPasswordError(true);
+        hasErrors = true;
+      }
     } else {
       setPasswordError(false);
     }
-    if (newPassword !== confirmNewPassword || newPassword === "") {
-      setConfirmNewPasswordError(true);
-      hasErrors = true;
-    }
 
-    if (score !== 5) {
-      setNewPasswordError(true);
-      hasErrors = true;
-    }
     if (hasErrors) {
+      setShowMessage(""); // אפס קודם
+      setShowMessageVisibilty(false); // סגור קודם
+      setTimeout(() => {
+        setShowMessage("יש למלא את כל השדות בצורה תקינה");
+        setShowMessageVisibilty(true);
+      }, 10); // המתנה קטנה כדי לאלץ React לרנדר מחדש
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
+
       return;
     }
     try {
+      setLoading(true);
       const res = await axios.put(
         "http://localhost:5000/users/update-information",
         { fullName, phoneNumber, newPassword },
         { withCredentials: true }
       );
-      console.log("העדכון בוצע בהצלחה", res.data);
+      console.log(res.data);
+      setShowMessageVisibilty(true);
+      setShowMessage(res.data);
     } catch (error) {
-      console.log("שגיאה בעדכון מידע משתמש:", error);
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setLoading(false);
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessageVisibilty(true);
+      }, 10);
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
     }
   }
 
   useEffect(() => {
     if (submited) {
-      if (fullName.trim().length > 3 && fullName.includes(" ")) {
+      if (
+        fullName.trim().length > 3 &&
+        fullName
+          .trim()
+          .split(" ")
+          .filter((w) => w.length > 0).length >= 2
+      ) {
         setFullNameError(false);
       } else {
         setFullNameError(true);
+      }
+      if (userName.length > 7) {
+        setUserNameError(false);
+      } else {
+        setUserNameError(true);
       }
       if (phoneNumber.length >= 10) {
         setPhoneNumberError(false);
       } else {
         setPhoneNumberError(true);
       }
-      if (score >= 5) {
+      if (newPassword !== "") {
+        if (score >= 5) {
+          setNewPasswordError(false);
+        } else {
+          setNewPasswordError(true);
+        }
+        if (newPassword === confirmNewPassword && confirmNewPassword !== "") {
+          setConfirmNewPasswordError(false);
+        } else {
+          setConfirmNewPasswordError(true);
+        }
+      } else {
         setNewPasswordError(false);
-      } else {
-        setNewPasswordError(true);
-      }
-      if (newPassword === confirmNewPassword && newPassword !== "") {
         setConfirmNewPasswordError(false);
-      } else {
-        setConfirmNewPasswordError(true);
       }
     }
   }, [
     submited,
     fullName,
-    email,
+    userName,
     phoneNumber,
     score,
     newPassword,
@@ -244,6 +316,17 @@ const MyProfile = () => {
 
   return (
     <div className={styles.warrper}>
+      {showMessageVisibilty && (
+        <div
+          className={
+            showMessage.includes("הצלחה")
+              ? styles.successMessage
+              : styles.errorMessage
+          }
+        >
+          {showMessage}
+        </div>
+      )}
       <div
         className={navCollapsed ? styles.smallNavProfile : styles.navProfile}
       >
@@ -346,13 +429,20 @@ const MyProfile = () => {
               <form>
                 <div className={styles.row}>
                   <div className={styles.field}>
-                    <label>שם משתמש</label>
+                    <label style={labelStyle()}>שם משתמש</label>
                     <CustomInput
-                      placeholder={userName}
+                      value={userName}
                       type="text"
                       className={styles.input}
-                      readOnly
+                      onChange={(e) => setUserName(e.target.value)}
                     />
+                    <div className={styles.error}>
+                      {userNameError && (
+                        <div className={styles.errorText}>
+                          שם משתמש חייב להכיל לפחות 8 תווים
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className={styles.field}>
                     <label>אימייל</label>
@@ -387,8 +477,8 @@ const MyProfile = () => {
                       type="tel"
                       className={`${styles.input} ${styles.marginBottom}`}
                       placeholder="0501234567"
-                      value = {phoneNumber}
-                      autoComplete = "phoneNumber"
+                      value={phoneNumber}
+                      autoComplete="phoneNumber"
                       inputMode="numeric"
                       pattern="[0-9]*"
                       maxLength={10}
@@ -466,7 +556,7 @@ const MyProfile = () => {
                       </div>
                     </div>
                     <div className={styles.field}>
-                      <label style={labelStyle(confirmPasswordError)}>
+                      <label style={labelStyle(confirmNewPasswordError)}>
                         אימות סיסמה חדשה
                       </label>
                       <CustomInput
@@ -477,7 +567,7 @@ const MyProfile = () => {
                         onChange={(e) => setConfirmNewPassword(e.target.value)}
                       />
                       <div className={styles.error}>
-                        {confirmPasswordError && (
+                        {confirmNewPasswordError && (
                           <div className={styles.errorText}>
                             הסיסמאות לא תואמות
                           </div>
@@ -533,9 +623,17 @@ const MyProfile = () => {
                   <button
                     onClick={onSubmit}
                     type="submit"
-                    className={styles.saveBtn}
+                    className={loading ? styles.saveBtnLoading : styles.saveBtn}
+                    // disabled={showMessageVisibilty}
                   >
-                    שמור שינויים
+                    {loading ? (
+                      <>
+                        <span>שומר...</span>
+                        <span className={styles.loadingSpinner}></span>
+                      </>
+                    ) : (
+                      "שמור שינויים"
+                    )}
                   </button>
                 </div>
               </form>
