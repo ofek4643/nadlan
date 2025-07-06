@@ -437,6 +437,7 @@ const Register = () => {
               className={
                 loading ? styles.buttonRegisterLoading : styles.buttonRegister
               }
+              disabled={loading}
             >
               {loading ? (
                 <>

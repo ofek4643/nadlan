@@ -38,7 +38,9 @@ const MyProfile = () => {
   const [myAlertsActive, setMyAlertsActive] = useState(false);
   const [myFavoriteActive, setMyFavoriteActive] = useState(false);
 
-  const [myProperties, setMyProperties] = useState(null);
+  const [myProperties, setMyProperties] = useState([]);
+  const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
+
   const [alertArray, setAlertArray] = useState(null);
 
   const [navCollapsed, setNavCollapsed] = useState(false);
@@ -68,6 +70,22 @@ const MyProfile = () => {
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
+
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const propertiesPerPage = 9;
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
+
+  const currentProperties = myProperties.slice(
+    indexOfFirstProperty,
+    indexOfLastProperty
+  );
+  const totalPages = Math.ceil(myProperties.length / propertiesPerPage);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, [currentPage]);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -134,13 +152,32 @@ const MyProfile = () => {
         const res = await fetch();
         const data = await res.json();
         setAlertArray(data.alerts);
-        setMyProperties(data.Properties);
       } catch (error) {
         console.error("Error in get alerts", error);
         setAlertArray([]);
       }
     }
     fetchAlerts();
+  }, []);
+
+  useEffect(() => {
+    async function getMyProperties() {
+      const res = await axios.get("http://localhost:5000/my-properties", {
+        withCredentials: true,
+      });
+      setMyProperties(res.data);
+    }
+    getMyProperties();
+  }, []);
+
+  useEffect(() => {
+    async function getMyFavoriteProperties() {
+      const res = await axios.get("http://localhost:5000/add-favorite", {
+        withCredentials: true,
+      });
+      setMyFavoriteProperties(res.data);
+    }
+    getMyFavoriteProperties();
   }, []);
 
   function changeMyProfileActive() {
@@ -653,6 +690,7 @@ const MyProfile = () => {
                     onClick={onSubmit}
                     type="submit"
                     className={loading ? styles.saveBtnLoading : styles.saveBtn}
+                    disabled={loading}
                   >
                     {loading ? (
                       <>
@@ -679,10 +717,44 @@ const MyProfile = () => {
               </Link>
             </div>
             {myProperties?.length > 0 ? (
-              <div className={styles.containerProperties}>
-                <Property
-                  properties={allProperties.slice(0, myProperties.length)}
-                />
+              <div>
+                <div className={styles.containerProperties}>
+                  <Property properties={currentProperties} />
+                </div>
+                <div className={styles.pagination}>
+                  <button
+                    onClick={() => {
+                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                    }}
+                    disabled={currentPage === 1}
+                  >
+                    הקודם
+                  </button>
+                  {(() => {
+                    const buttons = [];
+                    for (let i = 1; i <= totalPages; i++) {
+                      buttons.push(
+                        <button
+                          key={i}
+                          onClick={() => setCurrentPage(i)}
+                          className={currentPage === i ? styles.activePage : ""}
+                        >
+                          {i}
+                        </button>
+                      );
+                    }
+                    return buttons;
+                  })()}
+                  <button
+                    onClick={() => {
+                      if (currentPage < totalPages)
+                        setCurrentPage(currentPage + 1);
+                    }}
+                    disabled={currentPage >= totalPages}
+                  >
+                    הבא
+                  </button>
+                </div>
               </div>
             ) : (
               <div className={styles.Properties}>
@@ -710,7 +782,27 @@ const MyProfile = () => {
             </div>
           </div>
         )}
-        {myFavoriteActive && <div>נכסים מעודפים</div>}
+        {myFavoriteActive && (
+          <div className={styles.containerSelected}>
+            <div className={styles.headerDiv}>
+              <h2 className={styles.headerContainerSelected}>נכסים מעודפים</h2>
+            </div>
+            {myFavoriteProperties?.length > 0 ? (
+              <div className={styles.containerProperties}>
+                <Property properties={myFavoriteProperties} />
+              </div>
+            ) : (
+              <div className={styles.Properties}>
+                <p>אין נכסים מעודפים</p>
+                <Link to="/properties">
+                  <button className={styles.addNewPropertie}>
+                    חיפוש נכסים
+                  </button>
+                </Link>
+              </div>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

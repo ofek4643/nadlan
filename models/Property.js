@@ -35,6 +35,11 @@ const propertySchema = new mongoose.Schema({
     required: true,
     minlength: 3,
   },
+  street: {
+    type: String,
+    required: true,
+    minlength: 2,
+  },
   houseNumber: {
     type: String,
     required: true,
@@ -57,12 +62,12 @@ const propertySchema = new mongoose.Schema({
   rooms: {
     type: Number,
     default: 1,
-    min: 1,
+    min: 0,
   },
   bathrooms: {
     type: Number,
     default: 1,
-    min: 1,
+    min: 0,
   },
   furnished: {
     type: Boolean,
@@ -88,7 +93,20 @@ const propertySchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  userId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: true,
+  },
+  favoriteUserId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    isFavorite: false,
+  },
+  imageUrl: {
+    type: String,
+    required: false,
+  },
 });
 
-
-export default mongoose.model("Property" , propertySchema)
+export default mongoose.model("Property", propertySchema);

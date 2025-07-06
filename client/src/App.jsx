@@ -9,7 +9,8 @@ import Terms from "./Pages/Terms/Terms.jsx";
 import Privacy from "./Pages/Privacy/Privacy.jsx";
 import MyProfile from "./Pages/MyProfile/MyProfile.jsx";
 import AddProperty from "./Pages/AddProperty/AddProperty.jsx";
-import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx"
+import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
+import PropertyPage from "./Pages/PropertyPage/PropertyPage.jsx";
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="privacy" element={<Privacy />} />
           <Route path="my-profile" element={<MyProfile />} />
           <Route path="add-property" element={<AddProperty />} />
+          <Route path="/properties/prop/:id" element={<PropertyPage />} />
         </Route>
       </Routes>
     </Router>

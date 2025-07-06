@@ -1,31 +1,44 @@
 import { Link } from "react-router-dom";
 import styles from "../Property/Property.module.css";
 import { useState } from "react";
+import axios from "axios";
 
 const Property = ({ properties }) => {
   const [favorites, setFavorites] = useState([]);
 
-  function toggleFavorite(index) {
-    if (favorites.includes(index)) {
-      setFavorites(favorites.filter((favIndex) => favIndex !== index));
-    } else {
-      setFavorites([...favorites, index]);
+  async function toggleFavorite(propertyId) {
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/add-favorite",
+        { propertyId },
+        { withCredentials: true }
+      );
+      setFavorites(res.data);
+    } catch (error) {
+      console.error("שגיאה בעדכון מועדף", error);
     }
   }
 
   return (
     <>
-      {properties.map((item, index) => {
-        
-        const isFavorite = favorites.includes(index);
+      {properties.map((item) => {
+        const isFavorite = favorites.includes(item._id);
 
         return (
-          <div key={index} className={styles.property}>
-            <div className={styles.imgDiv}>
+          <div key={item._id} className={styles.property}>
+            <div
+              style={{
+                backgroundImage: item.imageUrl
+                  ? `url("${item.imageUrl}")`
+                  : "url('https://images.unsplash.com/photo-1627616010739-78ee1aacf431?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmlnJTIwaG9tZSUyMHdpdGglMjBnYXJkZW4lMjBwb29sfGVufDB8fDB8fHww')",
+              }}
+              className={styles.imgDiv}
+            >
               <div className={styles.imgDivHeader}>
                 <span
                   style={{
-                    backgroundColor: item.status === "להשכרה" ? "orange" : "hsl(222 47% 24%)"
+                    backgroundColor:
+                      item.status === "להשכרה" ? "orange" : "hsl(222 47% 24%)",
                   }}
                   className={styles.title}
                 >
@@ -36,7 +49,7 @@ const Property = ({ properties }) => {
                     backgroundColor: isFavorite ? "orange" : "hsl(0, 0%, 67%)",
                     color: isFavorite ? "white" : "rgb(82 82 82)",
                   }}
-                  onClick={() => toggleFavorite(index)}
+                  onClick={() => toggleFavorite(item._id)}
                   className={styles.addToFavorite}
                 >
                   <i className="fa-regular fa-heart"></i>
@@ -46,9 +59,17 @@ const Property = ({ properties }) => {
             <div className={styles.infoDiv}>
               <div className={styles.infoDivHeader}>
                 <h3>{item.header}</h3>
-                <p className={styles.infoPrice}>{item.status === "להשכרה" ? `${item.price.toLocaleString()} ₪ / לחודש` : `${item.price.toLocaleString()} ₪`}</p>
+                <p className={styles.infoPrice}>
+                  {item.price
+                    ? item.status === "להשכרה"
+                      ? `${item.price.toLocaleString()} ₪ / לחודש`
+                      : `${item.price.toLocaleString()} ₪`
+                    : "מחיר לא זמין"}
+                </p>
               </div>
-              <p className={styles.addressProperty}>{`${item.neighborhood}, ${item.city}`}</p>
+              <p
+                className={styles.addressProperty}
+              >{`${item.neighborhood}, ${item.city}`}</p>
               <div className={styles.moreInfoProperty}>
                 <p className={styles.moreInfo}>
                   <i
@@ -66,7 +87,7 @@ const Property = ({ properties }) => {
                 </p>
               </div>
               <div className={styles.callDiv}>
-                <Link to={`/properties/`}>
+                <Link to={`/properties/prop/${item._id}`}>
                   <button className={styles.moreInfoBtn}>פרטים נוספים</button>
                 </Link>
                 <Link to={`formCallMe`}>

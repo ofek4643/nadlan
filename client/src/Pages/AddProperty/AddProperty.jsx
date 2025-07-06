@@ -39,6 +39,8 @@ const AddProperty = () => {
 
   const [floorError, setFloorError] = useState(false);
 
+  const [imageUrl, setImageUrl] = useState(null);
+
   const [size, setSize] = useState(0);
   const [sizeError, setSizeError] = useState(false);
 
@@ -56,6 +58,7 @@ const AddProperty = () => {
   const [submited, setSubmited] = useState(false);
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const timeoutRef = useRef(null);
 
@@ -108,41 +111,51 @@ const AddProperty = () => {
       setSizeError(true);
       hasErrors = true;
     }
-    if (hasErrors) {if (!showMessageVisibilty) {
-        setShowMessage("יש למלא את כל השדות");
+    if (hasErrors) {
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessage("יש למלא את כל השדות בצורה תקינה");
         setShowMessageVisibilty(true);
+      }, 10);
 
-        if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
 
-        timeoutRef.current = setTimeout(() => {
-          setShowMessageVisibilty(false);
-          timeoutRef.current = null;
-        }, 3000);
-      }
       return;
     }
     try {
-      const res = await axios.post("http://localhost:5000/add-property", {
-        header,
-        description,
-        price,
-        status,
-        type,
-        city,
-        neighborhood,
-        houseNumber,
-        floor,
-        maxFloor,
-        size,
-        rooms,
-        bathrooms,
-        furnished,
-        airConditioning,
-        parking,
-        balcony,
-        elevator,
-        storage,
-      });
+      setLoading(true);
+
+      const res = await axios.post(
+        "http://localhost:5000/add-property",
+        {
+          header,
+          description,
+          price,
+          status,
+          type,
+          city,
+          neighborhood,
+          street,
+          houseNumber,
+          floor,
+          maxFloor,
+          imageUrl,
+          size,
+          rooms,
+          bathrooms,
+          furnished,
+          airConditioning,
+          parking,
+          balcony,
+          elevator,
+          storage,
+        },
+        { withCredentials: true }
+      );
       console.log("התגובה מהשרת:", res.data);
       setShowMessage(res.data);
 
@@ -157,6 +170,7 @@ const AddProperty = () => {
       setHouseNumber("");
       setFloor(0);
       setMaxFloor(0);
+      setImageUrl(null);
       setSize(0);
       setRooms(1);
       setBathrooms(1);
@@ -176,18 +190,17 @@ const AddProperty = () => {
         );
       }
     } finally {
-      if (!showMessageVisibilty) {
+      setLoading(false);
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
         setShowMessageVisibilty(true);
+      }, 10);
 
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-        }
-
-        timeoutRef.current = setTimeout(() => {
-          setShowMessageVisibilty(false);
-          timeoutRef.current = null;
-        }, 3000);
-      }
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
     }
   }
   useEffect(() => {
@@ -572,6 +585,16 @@ const AddProperty = () => {
                     />
                   </div>
                 </div>
+                <div className={styles.field}>
+                  <label className={styles.label}>תמונת נכס</label>
+                  <CustomInput
+                    type="text"
+                    placeholder="הדבק כתובת תמונה"
+                    value={imageUrl || ""}
+                    className={styles.input}
+                    onChange={(e) => setImageUrl(e.target.value)}
+                  />
+                </div>
               </div>
             </div>
             <hr />
@@ -612,7 +635,7 @@ const AddProperty = () => {
                       placeholder="חדרים"
                       className={styles.input}
                       value={rooms}
-                      min={1}
+                      min={0}
                       onChange={(e) => setRooms(e.target.value)}
                     />
                   </div>
@@ -623,7 +646,7 @@ const AddProperty = () => {
                       placeholder="חדרי רחצה"
                       className={styles.input}
                       value={bathrooms}
-                      min={1}
+                      min={0}
                       onChange={(e) => setBathrooms(e.target.value)}
                     />
                   </div>
@@ -708,8 +731,23 @@ const AddProperty = () => {
                   <button className={styles.cancelBtn}>ביטול</button>
                 </Link>
                 <div>
-                  <button disabled={showMessageVisibilty} onClick={submit} className={styles.postPropertyBtn}>
-                    פרסם נכס
+                  <button
+                    onClick={submit}
+                    className={
+                      loading
+                        ? styles.postPropertyBtnLoading
+                        : styles.postPropertyBtn
+                    }
+                    disabled = {loading}
+                  >
+                    {loading ? (
+                      <>
+                        <span>מפרסם נכס...</span>
+                        <span className={styles.loadingSpinner}></span>
+                      </>
+                    ) : (
+                      "פרסם נכס"
+                    )}
                   </button>
                 </div>
               </div>

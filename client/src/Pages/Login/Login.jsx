@@ -177,6 +177,7 @@ const Login = () => {
             onClick={onSubmit}
             type="submit"
             className={loading ? styles.loginBtnLoading : styles.loginBtn}
+            disabled={loading}
           >
             {loading ? (
               <>

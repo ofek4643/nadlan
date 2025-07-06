@@ -85,7 +85,7 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   try {
     const { userName, password, rememberMe } = req.body;
-
+    console.log("rememberMe:", rememberMe);
     const user = await User.findOne({ userName });
     if (!user) {
       return res.status(401).json({ error: "שם משתמש או סיסמא שגויים" });
@@ -146,7 +146,7 @@ app.post("/logout", (req, res) => {
   res.status(200).json({ message: "התנתקת בהצלחה" });
 });
 
-app.post("/add-property", async (req, res) => {
+app.post("/add-property", authenticate, async (req, res) => {
   try {
     const {
       header,
@@ -156,9 +156,11 @@ app.post("/add-property", async (req, res) => {
       type,
       city,
       neighborhood,
+      street,
       houseNumber,
       floor,
       maxFloor,
+      imageUrl,
       size,
       rooms,
       bathrooms,
@@ -177,9 +179,11 @@ app.post("/add-property", async (req, res) => {
       type,
       city,
       neighborhood,
+      street,
       houseNumber,
       floor,
       maxFloor,
+      imageUrl,
       size,
       rooms,
       bathrooms,
@@ -189,9 +193,26 @@ app.post("/add-property", async (req, res) => {
       balcony,
       elevator,
       storage,
+      userId: req.user.userId,
     });
     await newProperty.save();
     return res.status(201).json("הנכס נוסף בהצלחה!");
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
+  }
+});
+
+app.get("/propertyId/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const property = await Property.findById(id);
+    if (!property) {
+      return res.status(404).json({ message: "נכס לא נמצא" });
+    }
+    return res.json(property);
   } catch (error) {
     console.log(error.message);
     return res.status(500).json({
@@ -273,6 +294,59 @@ app.put("/users/update-information", authenticate, async (req, res) => {
     });
   }
 });
+app.get("/my-properties", authenticate, async (req, res) => {
+  try {
+    const properties = await Property.find({ userId: req.user.userId });
+    res.json(properties);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
+  }
+});
+app.post("/add-favorite", authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+
+    const { propertyId } = req.body;
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+
+    const index = user.favoriteProperties.indexOf(propertyId);
+    if (index > -1) {
+      user.favoriteProperties.splice(index, 1);
+    } else {
+      user.favoriteProperties.push(propertyId);
+    }
+
+    await user.save();
+
+    res.json(user.favoriteProperties);
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
+  }
+});
+
+app.get("/add-favorite", authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId).populate(
+      "favoriteProperties"
+    );
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+    const myFavoriteProperties = user.favoriteProperties;
+    res.json(myFavoriteProperties);
+  } catch (error) {
+    console.log(error.message);
+
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
+  }
+});
+
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });

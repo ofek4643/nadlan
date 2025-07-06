@@ -11,6 +11,12 @@ const userSchema = new mongoose.Schema({
     enum: ["user", "admin"],
     default: "user",
   },
+  favoriteProperties: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Property",
+    }
+  ],
 });
 
 export default mongoose.model("User", userSchema);

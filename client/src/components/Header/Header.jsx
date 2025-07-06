@@ -12,8 +12,8 @@ const Header = () => {
 
   const options = [
     { label: "פרופיל שלי", to: "/my-profile" },
-    { label: "הגדרות", to: "/my-profile" },
     { label: "הנכסים שלי", to: "/my-profile?section=properties" },
+    { label: "נכסים מעודפים", to: "/my-profile?section=favorites" },
     { label: "התנתק" },
   ];
 
@@ -25,7 +25,9 @@ const Header = () => {
         });
         setUser(res.data);
       } catch (error) {
-        console.log(error);
+        if (!error.response) {
+          console.error("שגיאת רשת:", error);
+        }
         setUser(null);
       }
     };

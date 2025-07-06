@@ -26,7 +26,9 @@ const Home = () => {
         });
         setUser(res.data);
       } catch (error) {
-        console.log(error);
+        if (!error.response) {
+          console.error("שגיאת רשת:", error);
+        }
         setUser(null);
       }
     };
