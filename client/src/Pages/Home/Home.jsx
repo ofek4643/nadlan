@@ -21,20 +21,21 @@ const Home = () => {
   const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
 
   // מושך את הנכסים בדף הבית
- useEffect(() => {
-  async function fetchProperties() {
-    try {
-      const res = await axios.get("https://nadlan-lxn4.onrender.com/properties");
-      setProperties(res.data);
-    } catch (err) {
-      console.error("שגיאה:", err);
-      setMessageErrorFetchVisibility(true);
-    } finally {
-      setLoading(false);
+  useEffect(() => {
+    async function fetchProperties() {
+      try {
+        const res = await axios.get("http://localhost:5000/properties");
+        setProperties(res.data);
+      } catch (err) {
+        console.error("שגיאה:", err);
+        setMessageErrorFetchVisibility(true);
+      } finally {
+        setLoading(false);
+      }
     }
-  }
-  fetchProperties();
-}, []);
+    fetchProperties();
+  }, []);
+
   // מראה את ההודעת הצלחה מהתחברות
   useEffect(() => {
     if (message) {
