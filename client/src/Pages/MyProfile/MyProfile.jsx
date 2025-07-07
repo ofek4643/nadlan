@@ -369,6 +369,21 @@ const MyProfile = () => {
   const strengthColor = ["gray", "red", "orange", "green"];
   const strengthIndex = score === 0 ? 0 : score <= 2 ? 1 : score <= 4 ? 2 : 3;
 
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 500) {
+        setNavCollapsed(true);
+      } else {
+        setNavCollapsed(false);
+      }
+    }
+
+    handleResize(); // בדיקה ראשונית
+
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className={styles.warrper}>
       {showMessageVisibilty && (

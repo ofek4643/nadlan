@@ -47,9 +47,6 @@ const MortgageCalculator = () => {
     } else {
       setErrorMoney(false);
     }
-    {
-      console.log(moneyMortgage);
-    }
 
     if (total === 100) {
       setErrorPercent(false);

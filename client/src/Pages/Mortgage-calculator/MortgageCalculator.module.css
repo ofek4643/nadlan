@@ -194,3 +194,65 @@
   font-weight: bold;
   color: #1f1f3e;
 }
+@media (max-width: 500px) {
+  .calculatorContainer {
+    flex-direction: column;
+    gap: 20px;
+    padding: 16px;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .input,
+  .inputRange,
+  .inputRangeSmall {
+    width: 100%;
+  }
+
+  .TypeMortgage {
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .resultInfoContainer {
+    padding: 1rem;
+  }
+
+  .btnContainer {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .buttonHeader {
+    width: 50%;
+  }
+
+  .noteInfo {
+    font-size: 16px;
+  }
+
+  .resultInfo {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .titleTypeMortgage {
+    flex-direction: row;
+    justify-content: space-between;
+  }
+
+  .rangeSubTitles {
+    font-size: 14px;
+  }
+   .listItem {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+    margin-bottom: 10px;
+  }
+}

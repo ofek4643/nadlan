@@ -98,7 +98,7 @@ footer {
 }
 @media (max-width: 500px) {
   footer {
-    padding: 20px 15px; /* צמצום ריווח פנימי */
+    padding: 20px 15px;
   }
 
   .containerInfo {

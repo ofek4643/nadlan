@@ -276,3 +276,78 @@
     transform: translateX(-50%) rotate(360deg);
   }
 }
+@media (max-width: 500px) {
+  .warrper {
+    padding: 10px;
+  }
+
+  .allContainerAddProperty {
+    width: 100%;
+    gap: 15px;
+    padding: 0 10px;
+  }
+
+  .ContainerAddPropert {
+    padding: 16px;
+  }
+
+  .ContainerAddPropertFlex {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form1 {
+    width: 100%;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .divCheckBox {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+  }
+
+  .column {
+    width: 48%;
+  }
+
+  .input,
+  .textAreaInput {
+    font-size: 1rem;
+  }
+
+  .containerButton {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .cancelBtn,
+  .postPropertyBtn,
+  .postPropertyBtnLoading {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+
+  .headerAllContainerAddProperty {
+    font-size: 1.4rem;
+  }
+
+  .headerAddProperty,
+  .headerRulesContainer {
+    font-size: 1.1rem;
+  }
+
+.form1 input[type = text] {
+  width: 100% !important;
+}
+
+  .ContainerAddPropertFlex > div {
+    width: 100% !important;
+  }
+}

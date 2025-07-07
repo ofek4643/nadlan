@@ -2,7 +2,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  color: black;
 }
 body {
   background-color: #f8f8f8;
@@ -117,69 +116,117 @@ a {
   align-items: center;
   color: white;
 }
+
 @media (max-width: 500px) {
   .container {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+    align-items: center;
+    gap: 20px;
+    padding: 0 15px;
   }
-  .header,
-  .headerSpan {
-    text-align: center;
-    display: block;
-    width: 100%;
-  }
+
   .logo {
-    font-size: 1.3rem;
+    font-size: 1.5rem;
     text-align: center;
     width: 100%;
+    user-select: none;
+    margin-bottom: 10px;
   }
 
   .navList {
     flex-direction: column;
-    gap: 10px;
-    font-size: 1.2rem;
+    gap: 12px;
+    font-size: 1.1rem;
     width: 100%;
-    padding-right: 10px;
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+    padding: 15px 20px;
+  }
+
+  .navList a {
+    padding: 12px 16px;
+    border-radius: 8px;
+    color: hsl(222 47% 24%);
+    font-weight: 600;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    display: block;
+    text-align: center;
+  }
+
+  .navList a:hover {
+    background-color: hsl(30 100% 60%);
+    color: white;
+    box-shadow: 0 2px 8px hsl(30 100% 60% / 0.6);
   }
 
   .authButtons {
     flex-direction: column;
     width: 100%;
-    gap: 10px;
+    gap: 15px;
   }
 
   .authButtons button {
     width: 100%;
-    max-width: 300px;
+    max-width: none;
+    padding: 14px 0;
+    font-size: 1.1rem;
+    border-radius: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .authButtons button:hover {
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
   }
 
   .authButtonsLogin {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     width: 100%;
-    gap: 10px;
+    gap: 15px;
   }
 
   .userProfile {
     width: 100%;
-    justify-content: flex-start;
-    gap: 12px;
+    justify-content: center;
+    gap: 15px;
+    background-color: hsl(222 47% 24% / 0.1);
+    padding: 10px 15px;
+    border-radius: 14px;
   }
 
   .alertDiv {
     top: 60px;
-    left: 0;
+    left: 50%;
+    transform: translateX(-50%);
     width: 90vw;
+    max-width: 350px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   }
 
   .alertButton {
-    padding: 10px;
+    display: block;
+    font-size: 1.3rem;
+    padding: 12px 16px;
+    border-radius: 8px;
+    background-color: transparent;
+    color: hsl(222 47% 24%);
+    transition: background-color 0.25s ease;
+  }
+
+  .alertButton:hover {
+    background-color: hsl(30 100% 60%);
+    color: white;
   }
 
   .firstLetter {
-    width: 36px;
-    height: 36px;
-    font-size: 1rem;
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
   }
 }
