@@ -3,10 +3,11 @@ import { Link } from "react-router-dom";
 import styles from "../AddProperty/AddProperty.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
-import { labelStyle } from "../../data/properties.js";
+import { labelStyle } from "../../data/data.js";
 import axios from "axios";
 
 const AddProperty = () => {
+  //משתנים של בדיקה ומידע של נכס
   const [header, setHeader] = useState("");
   const [headerError, setHeaderError] = useState(false);
 
@@ -45,9 +46,9 @@ const AddProperty = () => {
   const [sizeError, setSizeError] = useState(false);
 
   const [rooms, setRooms] = useState(1);
-
   const [bathrooms, setBathrooms] = useState(1);
 
+  //משתנים מאפייני נכס
   const [furnished, setFurnished] = useState(false);
   const [airConditioning, setAirConditioning] = useState(false);
   const [parking, setParking] = useState(false);
@@ -55,16 +56,19 @@ const AddProperty = () => {
   const [elevator, setElevator] = useState(false);
   const [storage, setStorage] = useState(false);
 
-  const [submited, setSubmited] = useState(false);
+  //משתנים של הודעה
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
-  const [loading, setLoading] = useState(false);
-
   const timeoutRef = useRef(null);
+
+  const [submited, setSubmited] = useState(false);
+
+  const [loading, setLoading] = useState(false);
 
   async function submit() {
     setSubmited(true);
 
+    // בדיקה ראשונית אם הוזנו ערכים תקינים
     let hasErrors = false;
 
     if (header.length <= 8 || !header.includes(" ")) {
@@ -126,6 +130,7 @@ const AddProperty = () => {
 
       return;
     }
+    // אם הכל תקין מפקסם את הנכס
     try {
       setLoading(true);
 
@@ -203,6 +208,7 @@ const AddProperty = () => {
       }, 3000);
     }
   }
+  // מבצע בזמן אמת אם השדות עדיין תקינים
   useEffect(() => {
     if (submited) {
       if (header.length > 8 && header.includes(" ")) {
@@ -738,7 +744,7 @@ const AddProperty = () => {
                         ? styles.postPropertyBtnLoading
                         : styles.postPropertyBtn
                     }
-                    disabled = {loading}
+                    disabled={loading}
                   >
                     {loading ? (
                       <>

@@ -3,6 +3,7 @@ import CustomInput from "../../components/CustomInput/CustomInput";
 import styles from "../Mortgage-calculator/MortgageCalculator.module.css";
 
 const MortgageCalculator = () => {
+  // משתנים של משכנתא
   const [activeTab, setActiveTab] = useState("calculator");
   const [propertyMoney, setpropertyMoney] = useState(1500000);
   const [myMoney, setMyMoney] = useState(450000);
@@ -24,6 +25,7 @@ const MortgageCalculator = () => {
   const [errorPercent, setErrorPercent] = useState(false);
   const [errorMoney, setErrorMoney] = useState(false);
 
+  //חישוה משכנתא
   function calc() {
     setSubmited(true);
     let total =
@@ -94,6 +96,7 @@ const MortgageCalculator = () => {
       setErrorPercent(true);
     }
   }
+  //בודק בזמן אמת אם הריבית תיקנה
   useEffect(() => {
     if (submited) {
       let total =

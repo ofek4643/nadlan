@@ -5,6 +5,77 @@ import Property from "../../components/Property/Property.jsx";
 import { useEffect, useState } from "react";
 import axios from "axios";
 const SearchProperty = () => {
+  // משתנים של טעינה הודעה והאם פתוח הרשימה
+  const [loading, setLoading] = useState(true);
+  const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
+    useState(false);
+  const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  // משתנים של חיפוש נכס
+  const [allProperties, setAllProperties] = useState([]);
+  const [filteredProperties, setFilteredProperties] = useState(allProperties);
+  const [header, setHeader] = useState("");
+  const [city, setCity] = useState("");
+  const [minRooms, setMinRooms] = useState("");
+  const [maxRooms, setMaxRooms] = useState("");
+  const [minPrice, setMinPrice] = useState("");
+  const [maxPrice, setMaxPrice] = useState("");
+  const [minSize, setMinSize] = useState("");
+  const [maxSize, setMaxSize] = useState("");
+  const [status, setStatus] = useState("");
+  const [sort, setSort] = useState("");
+  // משתנים של חיפוש מאפייני נכס
+  const [furnished, setFurnished] = useState(false);
+  const [airConditioning, setAirConditioning] = useState(false);
+  const [parking, setParking] = useState(false);
+  const [balcony, setBalcony] = useState(false);
+  const [elevator, setElevator] = useState(false);
+  const [storage, setStorage] = useState(false);
+  // שגיאות בחיפוש נכס
+  const [priceError, setPriceError] = useState(false);
+  const [roomsError, setRoomsError] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+
+  // בדיקת כמות עמודים לנכסים
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const propertiesPerPage = 9;
+  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
+
+  const currentProperties = filteredProperties.slice(
+    indexOfFirstProperty,
+    indexOfLastProperty
+  );
+  const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
+
+  // המרת ערכים מ־string ל־number
+  // על מנת שאוכל להשוואות בין מספרים
+  const parsedMinSize = minSize ? parseInt(minSize) : 0;
+  const parsedMaxSize = maxSize ? parseInt(maxSize) : Infinity;
+
+  const parsedMinPrice = minPrice
+    ? parseInt(minPrice.replace(/[^0-9]/g, ""))
+    : 0;
+  const parsedMaxPrice = maxPrice
+    ? maxPrice.includes("+")
+      ? Infinity
+      : parseInt(maxPrice.replace(/[^0-9]/g, ""))
+    : Infinity;
+
+  const parsedMinRooms =
+    minRooms === "5+" ? 5 : minRooms ? parseInt(minRooms) : 0;
+  const parsedMaxRooms =
+    maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
+
+  // שולח אותי ללמעלה בשינוי של עמוד
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0 });
+  }, [currentPage]);
+
+  // שליפת הנכסים
   useEffect(() => {
     const fetchProperties = async () => {
       try {
@@ -21,99 +92,7 @@ const SearchProperty = () => {
     fetchProperties();
   }, []);
 
-  const [loading, setLoading] = useState(true);
-  const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
-    useState(false);
-  const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
-
-  //useState - passwordBtn
-  const [isOpen, setIsOpen] = useState(false);
-
-  //useState - errorFilter
-  const [priceError, setPriceError] = useState(false);
-  const [roomsError, setRoomsError] = useState(false);
-  const [sizeError, setSizeError] = useState(false);
-
-  //useStates - filter
-  const [allProperties, setAllProperties] = useState([]);
-  const [filteredProperties, setFilteredProperties] = useState(allProperties);
-  const [header, setHeader] = useState("");
-  const [city, setCity] = useState("");
-  const [minRooms, setMinRooms] = useState("");
-  const [maxRooms, setMaxRooms] = useState("");
-  const [minPrice, setMinPrice] = useState("");
-  const [maxPrice, setMaxPrice] = useState("");
-  const [minSize, setMinSize] = useState("");
-  const [maxSize, setMaxSize] = useState("");
-  const [status, setStatus] = useState("");
-  const [sort, setSort] = useState("");
-
-  const [furnished, setFurnished] = useState(false);
-  const [airConditioning, setAirConditioning] = useState(false);
-  const [parking, setParking] = useState(false);
-  const [balcony, setBalcony] = useState(false);
-  const [elevator, setElevator] = useState(false);
-  const [storage, setStorage] = useState(false);
-
-  // useStates - page
-  const [currentPage, setCurrentPage] = useState(1);
-
-  // culc pages
-  const propertiesPerPage = 9;
-  const indexOfLastProperty = currentPage * propertiesPerPage;
-  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
-
-  const currentProperties = filteredProperties.slice(
-    indexOfFirstProperty,
-    indexOfLastProperty
-  );
-  const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
-
-  //variablesFilterSize
-  const parsedMinSize = minSize ? parseInt(minSize) : 0;
-  const parsedMaxSize = maxSize ? parseInt(maxSize) : Infinity;
-
-  //variablesFilterPrice
-  const parsedMinPrice = minPrice
-    ? parseInt(minPrice.replace(/[^0-9]/g, ""))
-    : 0;
-  const parsedMaxPrice = maxPrice
-    ? maxPrice.includes("+")
-      ? Infinity
-      : parseInt(maxPrice.replace(/[^0-9]/g, ""))
-    : Infinity;
-
-  //variablesFilterRooms
-  const parsedMinRooms =
-    minRooms === "5+" ? 5 : minRooms ? parseInt(minRooms) : 0;
-  const parsedMaxRooms =
-    maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
-
-  //checkWhenInputIsOk
-  useEffect(() => {
-    if (parsedMaxSize >= parsedMinSize) {
-      setSizeError(false);
-    }
-    if (parsedMaxPrice >= parsedMinPrice) {
-      setPriceError(false);
-    }
-    if (parsedMaxRooms >= parsedMinRooms) {
-      setRoomsError(false);
-    }
-  }, [
-    parsedMaxSize,
-    parsedMinSize,
-    parsedMaxPrice,
-    parsedMinPrice,
-    parsedMaxRooms,
-    parsedMinRooms,
-  ]);
-  
-  useEffect(() => {
-    window.scrollTo({ top: 0, left: 0 });
-  }, [currentPage]);
-
-  //Sort
+  // מיון בזמת אמת של הנכסים
   useEffect(() => {
     const sorted = [...allProperties];
 
@@ -130,22 +109,19 @@ const SearchProperty = () => {
     setFilteredProperties(sorted);
     setCurrentPage(1);
   }, [sort, allProperties]);
-  // functions
+
   function filterProp() {
-    //variableError
     let hasError = false;
 
-    //errorcheckIf
+    // בדיקת שגיאות של שדות
     if (parsedMaxPrice < parsedMinPrice) {
       setPriceError(true);
       hasError = true;
     }
-    //checkErrorRoomsFilter
     if (parsedMaxRooms < parsedMinRooms) {
       setRoomsError(true);
       hasError = true;
     }
-    //checkErrorSizeFilter
     if (parsedMaxSize < parsedMinSize) {
       setSizeError(true);
       hasError = true;
@@ -157,7 +133,7 @@ const SearchProperty = () => {
       return;
     }
 
-    //filter
+    // הסינון של הנכסים
     const filtered = allProperties.filter((property) => {
       const matchesTitle = header ? property.header.includes(header) : true;
       const matchesCity = city ? property.header.includes(city) : true;
@@ -182,15 +158,6 @@ const SearchProperty = () => {
       const matchesElevator = elevator ? property.elevator === true : true;
       const matchesStorage = storage ? property.storage === true : true;
 
-      console.log(
-        "furnishedFilter:",
-        furnished,
-        "property:",
-        property.furnished,
-        "match:",
-        matchesFurnished
-      );
-
       return (
         matchesTitle &&
         matchesCity &&
@@ -210,6 +177,25 @@ const SearchProperty = () => {
     setFilteredProperties(filtered);
     setCurrentPage(1);
   }
+  // בדיקה האם השדות תקינים
+  useEffect(() => {
+    if (parsedMaxSize >= parsedMinSize) {
+      setSizeError(false);
+    }
+    if (parsedMaxPrice >= parsedMinPrice) {
+      setPriceError(false);
+    }
+    if (parsedMaxRooms >= parsedMinRooms) {
+      setRoomsError(false);
+    }
+  }, [
+    parsedMaxSize,
+    parsedMinSize,
+    parsedMaxPrice,
+    parsedMinPrice,
+    parsedMaxRooms,
+    parsedMinRooms,
+  ]);
   return (
     <div>
       <div className={styles.allContainerSearchProperty}>

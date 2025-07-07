@@ -7,6 +7,7 @@ const PropertyPage = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
 
+  //שליפת נתוני הנכס הנבחר
   useEffect(() => {
     async function getProp() {
       try {

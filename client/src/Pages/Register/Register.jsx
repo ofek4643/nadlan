@@ -3,9 +3,10 @@ import { useNavigate } from "react-router-dom";
 import styles from "./Register.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { Link } from "react-router-dom";
-import { labelStyle } from "../../data/properties.js";
+import { labelStyle } from "../../data/data.js";
 import axios from "axios";
-
+import { useAuth } from "../../data/AuthContext.jsx";
+// דרישות סיסמא
 const requirements = [
   {
     id: "length",
@@ -31,7 +32,7 @@ const requirements = [
 ];
 
 const Register = () => {
-  const [show, setShow] = useState(false);
+  // משתנים של התחברות
   const [submited, setSubmited] = useState(false);
   const [fullName, setFullName] = useState("");
   const [userName, setUserName] = useState("");
@@ -39,11 +40,14 @@ const Register = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [show, setShow] = useState(false);
   const [accept, setAccept] = useState(false);
 
+  // בדיקת סיסמא
   const [results, setResults] = useState([]);
   const [score, setScore] = useState(0);
 
+  // הודעות שגיאה של השדות
   const [fullNameError, setFullNameError] = useState(false);
   const [userNameError, setUserNameError] = useState(false);
   const [emailError, setEmailError] = useState(false);
@@ -51,15 +55,17 @@ const Register = () => {
   const [passwordError, setPasswordError] = useState(false);
   const [confirmPasswordError, setConfirmPasswordError] = useState(false);
   const [acceptError, setAcceptError] = useState(false);
-
+  // הודעות
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
-
+  // טעינה
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
+  const { fetchUser } = useAuth();
 
+  // בודק את החוזק הסיסמא המוזנת בזמן אמת
   useEffect(() => {
     const checks = requirements.map((req) => ({
       ...req,
@@ -69,9 +75,11 @@ const Register = () => {
     setScore(checks.filter((c) => c.passed).length);
   }, [password]);
 
+
   const onSubmit = async (e) => {
     e.preventDefault();
     setSubmited(true);
+    // בדיקת ראשונית של שדות
     let hasErrors = false;
 
     if (
@@ -123,7 +131,7 @@ const Register = () => {
 
       return;
     }
-
+    // שליחת נתונים לשרת בשביל שירשם
     try {
       setLoading(true);
 
@@ -139,6 +147,7 @@ const Register = () => {
         { withCredentials: true }
       );
       console.log("התגובה מהשרת:", res.data.message);
+      await fetchUser();
       navigate("/", { state: { showMessage: res.data.message } });
     } catch (error) {
       if (!error.response) {
@@ -162,7 +171,7 @@ const Register = () => {
       }, 3000);
     }
   };
-
+  // בדיקה בזמן אמת את השדות
   useEffect(() => {
     if (submited) {
       if (
@@ -216,7 +225,7 @@ const Register = () => {
     confirmPassword,
     accept,
   ]);
-
+  // הגדרת נראות חוזק סיסמא
   const strengthLabel = ["", "חלש", "בינונית", "חזקה"];
   const strengthColor = ["gray", "red", "orange", "green"];
   const strengthIndex = score === 0 ? 0 : score <= 2 ? 1 : score <= 4 ? 2 : 3;

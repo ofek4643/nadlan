@@ -3,9 +3,10 @@ import styles from "../MyProfile/MyProfile.module.css";
 import { Link, useSearchParams } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
-import { labelStyle } from "../../data/properties.js";
+import { labelStyle } from "../../data/data.js";
 import axios from "axios";
-
+import { useAuth } from "../../data/AuthContext.jsx";
+// דרישות סיסמא
 const requirements = [
   {
     id: "length",
@@ -31,24 +32,19 @@ const requirements = [
 ];
 
 const MyProfile = () => {
-  const [show, setShow] = useState(false);
-
+  // משתנים של בדיקת חלון בפרופיל
   const [myProfileActive, setMyProfileActive] = useState(true);
   const [myPropertiesActive, setmyPropertiesActive] = useState(false);
   const [myAlertsActive, setMyAlertsActive] = useState(false);
   const [myFavoriteActive, setMyFavoriteActive] = useState(false);
 
+  // משתנים של הנכסים שלי המעודפים והתראות
   const [myProperties, setMyProperties] = useState([]);
-  const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
-
+  const { myFavoriteProperties } = useAuth();
   const [alertArray, setAlertArray] = useState(null);
-
+  // סגירה ופתיחת הnav
   const [navCollapsed, setNavCollapsed] = useState(false);
-
-  const [submited, setSubmited] = useState(false);
-  const [results, setResults] = useState([]);
-  const [score, setScore] = useState(0);
-
+  // משתנים של עדכון פרטים אישיים ושגיאות
   const [userName, setUserName] = useState("");
   const [userNameError, setUserNameError] = useState(false);
   const [fullName, setFullName] = useState("");
@@ -63,14 +59,20 @@ const MyProfile = () => {
   const [confirmNewPassword, setConfirmNewPassword] = useState("");
   const [confirmNewPasswordError, setConfirmNewPasswordError] = useState(false);
   const [samePasswordError, setSamePasswordError] = useState(false);
+  const [show, setShow] = useState(false);
+
+  // בדיקת הסיסמא
+  const [results, setResults] = useState([]);
+  const [score, setScore] = useState(0);
+
+  // משתנים של הודעות, בדיקת חלונות, טעינה ושגיאות וכמות דפים של נכסים
+  const [submited, setSubmited] = useState(false);
   const [searchParams] = useSearchParams();
   const section = searchParams.get("section");
-
   const [loading, setLoading] = useState(false);
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
-
   const [currentPage, setCurrentPage] = useState(1);
 
   const propertiesPerPage = 9;
@@ -83,10 +85,12 @@ const MyProfile = () => {
   );
   const totalPages = Math.ceil(myProperties.length / propertiesPerPage);
 
+  // מתחיל את הדף למעלה אם השתנה החלון
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
   }, [currentPage]);
 
+  // טעינת פרטי המשתמש
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
@@ -108,6 +112,7 @@ const MyProfile = () => {
     fetchUserProfile();
   }, []);
 
+  // בדיקת סיסמא נוכחית 
   const verifyCurrentPassword = async () => {
     try {
       const res = await axios.post(
@@ -122,6 +127,7 @@ const MyProfile = () => {
     }
   };
 
+  // בדיקת חלון
   useEffect(() => {
     switch (section) {
       case "properties":
@@ -137,6 +143,8 @@ const MyProfile = () => {
         changeMyProfileActive();
     }
   }, [section]);
+
+  //  בדיקת חוזק סיסמא עם התנאים שלה
   useEffect(() => {
     const checks = requirements.map((req) => ({
       ...req,
@@ -146,6 +154,7 @@ const MyProfile = () => {
     setScore(checks.filter((c) => c.passed).length);
   }, [newPassword]);
 
+  //התראות עדיין לא מוכן
   useEffect(() => {
     async function fetchAlerts() {
       try {
@@ -160,6 +169,7 @@ const MyProfile = () => {
     fetchAlerts();
   }, []);
 
+  // הוצאת נכסים שלי ממסד נתונים
   useEffect(() => {
     async function getMyProperties() {
       const res = await axios.get("http://localhost:5000/my-properties", {
@@ -170,16 +180,7 @@ const MyProfile = () => {
     getMyProperties();
   }, []);
 
-  useEffect(() => {
-    async function getMyFavoriteProperties() {
-      const res = await axios.get("http://localhost:5000/add-favorite", {
-        withCredentials: true,
-      });
-      setMyFavoriteProperties(res.data);
-    }
-    getMyFavoriteProperties();
-  }, []);
-
+  // איזה חלון להציג
   function changeMyProfileActive() {
     setMyProfileActive(true);
     setmyPropertiesActive(false);
@@ -208,6 +209,7 @@ const MyProfile = () => {
   async function onSubmit(e) {
     e.preventDefault();
     setSubmited(true);
+    //בדיקת ראשונית של שגיאות
     let hasErrors = false;
 
     if (
@@ -271,6 +273,7 @@ const MyProfile = () => {
 
       return;
     }
+    // עדכון הנתונים
     try {
       setLoading(true);
       const res = await axios.put(
@@ -306,7 +309,7 @@ const MyProfile = () => {
       }, 3000);
     }
   }
-
+  // בדיקה בזמן אמת שהכל תקין
   useEffect(() => {
     if (submited) {
       if (
@@ -361,7 +364,7 @@ const MyProfile = () => {
     newPassword,
     confirmNewPassword,
   ]);
-
+  // הגדרות של נראות חוזק הסיסמא
   const strengthLabel = ["", "חלש", "בינונית", "חזקה"];
   const strengthColor = ["gray", "red", "orange", "green"];
   const strengthIndex = score === 0 ? 0 : score <= 2 ? 1 : score <= 4 ? 2 : 3;

@@ -3,38 +3,22 @@ import styles from "./Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import CustomSelect from "../CustomSelect/CustomSelect";
+import { useAuth } from "../../data/AuthContext.jsx";
 
 const Header = () => {
+  //משתנים
   const [alertActive, setAlertActive] = useState(false);
-  const [user, setUser] = useState(null);
+  const { user, setUser } = useAuth();
   const ref = useRef();
   const navigate = useNavigate();
-
+  // ערכים לרשימה של הפרופיל
   const options = [
     { label: "פרופיל שלי", to: "/my-profile" },
     { label: "הנכסים שלי", to: "/my-profile?section=properties" },
     { label: "נכסים מעודפים", to: "/my-profile?section=favorites" },
     { label: "התנתק" },
   ];
-
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/users", {
-          withCredentials: true,
-        });
-        setUser(res.data);
-      } catch (error) {
-        if (!error.response) {
-          console.error("שגיאת רשת:", error);
-        }
-        setUser(null);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
+  // התנתקות
   const logout = async () => {
     try {
       await axios.post(
@@ -43,12 +27,13 @@ const Header = () => {
         { withCredentials: true }
       );
       setUser(null);
-      window.location.href = "/";
+      navigate("/");
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
 
+  // בודר האם הערך שנלחץ הוא התנתקות אם לא אז הוא ישלח אותי לכתובת שנלחצה
   const handleSelectChange = (label) => {
     if (label === "התנתק") {
       logout();
@@ -60,11 +45,14 @@ const Header = () => {
     }
   };
 
+  //בדיקה האם היוזר לחץ מחוץ להתראות אם כן סוגר
   const handleClickOutside = (event) => {
     if (ref.current && !ref.current.contains(event.target)) {
       setAlertActive(false);
     }
   };
+
+  // מוסיף אירוע לחיצה על הרשימה בשביל הבדיקה
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -111,7 +99,7 @@ const Header = () => {
             </>
             <div className={styles.userProfile}>
               <div className={styles.firstLetter}>
-                {user.fullName.charAt(0)}
+                {user.fullName?.charAt(0) || ""}
               </div>
               <CustomSelect
                 options={options}

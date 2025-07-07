@@ -3,22 +3,26 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import axios from "axios";
+import { useAuth } from "../../data/AuthContext";
 
 const Login = () => {
-  const [show, setShow] = useState(false);
+  // משתנים של התחברות
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [userNameError, setUserNameError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
+  const [show, setShow] = useState(false);
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
+
   const timeoutRef = useRef(null);
   const [loading, setLoading] = useState(false);
   const [submited, setSubmited] = useState(false);
-  const [rememberMe, setRememberMe] = useState(false);
-
+  const { fetchUser } = useAuth();
   const navigate = useNavigate();
 
+  // בדיקה ראשונית אם השדות תקינים
   const onSubmit = async (e) => {
     e.preventDefault();
     setSubmited(true);
@@ -46,6 +50,7 @@ const Login = () => {
 
       return;
     }
+    // אם כן בודק האם יש יוזר במסד נתונים 
     try {
       setLoading(true);
       const res = await axios.post(
@@ -58,6 +63,7 @@ const Login = () => {
         { withCredentials: true }
       );
       console.log("התגובה מהשרת:", res.data);
+      await fetchUser();
       navigate("/", { state: { showMessage: res.data.message } });
     } catch (error) {
       if (!error.response) {
@@ -81,7 +87,7 @@ const Login = () => {
       }, 3000);
     }
   };
-
+  // בדיקה בזמן אמת עם השדות תקינים
   useEffect(() => {
     if (submited) {
       if (userName !== "") {

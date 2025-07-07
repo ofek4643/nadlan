@@ -11,26 +11,32 @@ import MyProfile from "./Pages/MyProfile/MyProfile.jsx";
 import AddProperty from "./Pages/AddProperty/AddProperty.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import PropertyPage from "./Pages/PropertyPage/PropertyPage.jsx";
+import { AuthProvider } from "./data/AuthContext.jsx";
 
 function App() {
   return (
-    <Router>
-      <ScrollToTop />
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="properties" element={<SearchProperty />} />
-          <Route path="mortgage-calculator" element={<MortgageCalculator />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="terms" element={<Terms />} />
-          <Route path="privacy" element={<Privacy />} />
-          <Route path="my-profile" element={<MyProfile />} />
-          <Route path="add-property" element={<AddProperty />} />
-          <Route path="/properties/prop/:id" element={<PropertyPage />} />
-        </Route>
-      </Routes>
-    </Router>
+    <AuthProvider>
+      <Router>
+        <ScrollToTop />
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Home />} />
+            <Route path="properties" element={<SearchProperty />} />
+            <Route
+              path="mortgage-calculator"
+              element={<MortgageCalculator />}
+            />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="terms" element={<Terms />} />
+            <Route path="privacy" element={<Privacy />} />
+            <Route path="my-profile" element={<MyProfile />} />
+            <Route path="add-property" element={<AddProperty />} />
+            <Route path="/properties/prop/:id" element={<PropertyPage />} />
+          </Route>
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

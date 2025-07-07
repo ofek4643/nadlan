@@ -1,24 +1,11 @@
 import { Link } from "react-router-dom";
 import styles from "../Property/Property.module.css";
-import { useState } from "react";
-import axios from "axios";
+import { useAuth } from "../../data/AuthContext";
 
 const Property = ({ properties }) => {
-  const [favorites, setFavorites] = useState([]);
-
-  async function toggleFavorite(propertyId) {
-    try {
-      const res = await axios.post(
-        "http://localhost:5000/add-favorite",
-        { propertyId },
-        { withCredentials: true }
-      );
-      setFavorites(res.data);
-    } catch (error) {
-      console.error("שגיאה בעדכון מועדף", error);
-    }
-  }
-
+  
+  const { user, toggleFavorite } = useAuth();
+  const favorites = user?.favoriteProperties || [];
   return (
     <>
       {properties.map((item) => {
@@ -52,7 +39,11 @@ const Property = ({ properties }) => {
                   onClick={() => toggleFavorite(item._id)}
                   className={styles.addToFavorite}
                 >
-                  <i className="fa-regular fa-heart"></i>
+                  <i
+                    className={
+                      isFavorite ? "fa-solid fa-heart" : "fa-regular fa-heart"
+                    }
+                  ></i>
                 </button>
               </div>
             </div>
@@ -67,9 +58,9 @@ const Property = ({ properties }) => {
                     : "מחיר לא זמין"}
                 </p>
               </div>
-              <p
-                className={styles.addressProperty}
-              >{`${item.neighborhood}, ${item.city}`}</p>
+              <p className={styles.addressProperty}>
+                {`${item.neighborhood}, ${item.city}`}
+              </p>
               <div className={styles.moreInfoProperty}>
                 <p className={styles.moreInfo}>
                   <i

@@ -3,39 +3,24 @@ import styles from "../Home/Home.module.css";
 import Property from "../../components/Property/Property";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../data/AuthContext";
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [user, setUser] = useState(null);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+
+  // משתנים של הודעה
   const initialMessage = location.state?.showMessage || "";
   const [message, setMessage] = useState(initialMessage);
   const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
     useState(false);
   const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
-  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const res = await axios.get("http://localhost:5000/users", {
-          withCredentials: true,
-        });
-        setUser(res.data);
-      } catch (error) {
-        if (!error.response) {
-          console.error("שגיאת רשת:", error);
-        }
-        setUser(null);
-      }
-    };
-
-    fetchProfile();
-  }, []);
-
+  // מושך את הנכסים בדף הבית
   useEffect(() => {
     async function fetchProperties() {
       try {
@@ -51,6 +36,7 @@ const Home = () => {
     fetchProperties();
   }, []);
 
+  // מראה את ההודעת הצלחה מהתחברות
   useEffect(() => {
     if (message) {
       const timer = setTimeout(() => {
@@ -63,9 +49,8 @@ const Home = () => {
 
   return (
     <div>
-      <div>
-        {message && <div className={styles.successMessage}>{message}</div>}
-      </div>
+      {message && <div className={styles.successMessage}>{message}</div>}
+
       <div className={styles.container}>
         <h2 className={styles.header}>
           מצא את הנכס <span className={styles.headerSpan}>המושלם </span>עבורך
@@ -84,6 +69,7 @@ const Home = () => {
           </Link>
         </div>
       </div>
+
       <div className={styles.containerProperty}>
         <div className={styles.containerPropertyHeader}>
           <h2 className={styles.PropertyHeader}>נכסים מומלצים</h2>
@@ -103,6 +89,7 @@ const Home = () => {
           )}
         </div>
       </div>
+
       <div className={styles.servicesContainer}>
         <div className={styles.servicesHeaderDiv}>
           <h2 className={styles.servicesHeader}>השירותים שלנו</h2>

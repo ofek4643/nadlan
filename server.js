@@ -21,6 +21,7 @@ app.use(
 
 const port = process.env.PORT || 3000;
 
+// חיבור המסד נתונים
 async function connectDB() {
   try {
     await mongoose.connect(process.env.MONGO_URI);
@@ -29,6 +30,7 @@ async function connectDB() {
     console.error("❌ MongoDB connection error:", err);
   }
 }
+// הרשמה
 app.post("/register", async (req, res) => {
   try {
     const { fullName, userName, email, phoneNumber, password } = req.body;
@@ -82,10 +84,10 @@ app.post("/register", async (req, res) => {
   }
 });
 
+// התחברות
 app.post("/login", async (req, res) => {
   try {
     const { userName, password, rememberMe } = req.body;
-    console.log("rememberMe:", rememberMe);
     const user = await User.findOne({ userName });
     if (!user) {
       return res.status(401).json({ error: "שם משתמש או סיסמא שגויים" });
@@ -124,6 +126,8 @@ app.post("/login", async (req, res) => {
   }
 });
 
+// בדיקת יוזר שנוצר מטוקן תקין
+
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ error: "משתמש לא מחובר" });
@@ -137,6 +141,8 @@ const authenticate = (req, res, next) => {
   }
 };
 
+// התנתקות
+
 app.post("/logout", (req, res) => {
   res.cookie("token", "", {
     httpOnly: true,
@@ -146,6 +152,7 @@ app.post("/logout", (req, res) => {
   res.status(200).json({ message: "התנתקת בהצלחה" });
 });
 
+// הוספת נכס
 app.post("/add-property", authenticate, async (req, res) => {
   try {
     const {
@@ -204,7 +211,7 @@ app.post("/add-property", authenticate, async (req, res) => {
     });
   }
 });
-
+// מציאת מידע על הנכס
 app.get("/propertyId/:id", async (req, res) => {
   try {
     const id = req.params.id;
@@ -220,7 +227,7 @@ app.get("/propertyId/:id", async (req, res) => {
     });
   }
 });
-
+// הוצאת כל הנכסים באתר
 app.get("/properties", async (req, res) => {
   try {
     const properties = await Property.find();
@@ -231,7 +238,7 @@ app.get("/properties", async (req, res) => {
       .json({ error: "Server error", details: error.message });
   }
 });
-
+// שליפת נתונים אישיים
 app.get("/users", authenticate, async (req, res) => {
   try {
     const userId = req.user.userId;
@@ -247,6 +254,7 @@ app.get("/users", authenticate, async (req, res) => {
   }
 });
 
+// בדיקת אימות סיסמא
 app.post("/users/verify-password", authenticate, async (req, res) => {
   try {
     const { password } = req.body;
@@ -261,6 +269,7 @@ app.post("/users/verify-password", authenticate, async (req, res) => {
     res.status(500).json({ valid: false });
   }
 });
+// עדכון נתונים אישיים
 app.put("/users/update-information", authenticate, async (req, res) => {
   try {
     const { fullName, phoneNumber, newPassword, userName } = req.body;
@@ -294,6 +303,7 @@ app.put("/users/update-information", authenticate, async (req, res) => {
     });
   }
 });
+// שליפת נכסים שלי
 app.get("/my-properties", authenticate, async (req, res) => {
   try {
     const properties = await Property.find({ userId: req.user.userId });
@@ -305,6 +315,7 @@ app.get("/my-properties", authenticate, async (req, res) => {
     });
   }
 });
+// הוספת למעודפים
 app.post("/add-favorite", authenticate, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
@@ -329,7 +340,7 @@ app.post("/add-favorite", authenticate, async (req, res) => {
     });
   }
 });
-
+// שליפת נכסים מעודפים
 app.get("/add-favorite", authenticate, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId).populate(
@@ -347,6 +358,7 @@ app.get("/add-favorite", authenticate, async (req, res) => {
   }
 });
 
+// יצירת השרת
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);
 });
