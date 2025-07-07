@@ -116,3 +116,69 @@ a {
   align-items: center;
   color: white;
 }
+@media (max-width: 500px) {
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  .header,
+  .headerSpan {
+    text-align: center;
+    display: block; /* לוודא שהם לא inline */
+    width: 100%;
+  }
+  .logo {
+    font-size: 1.3rem;
+    text-align: center;
+    width: 100%;
+  }
+
+  .navList {
+    flex-direction: column;
+    gap: 10px;
+    font-size: 1.2rem;
+    width: 100%;
+    padding-right: 10px;
+  }
+
+  .authButtons {
+    flex-direction: column;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .authButtons button {
+    width: 100%;
+    max-width: 300px;
+  }
+
+  .authButtonsLogin {
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    gap: 10px;
+  }
+
+  .userProfile {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 12px;
+  }
+
+  .alertDiv {
+    top: 60px;
+    left: 0;
+    width: 90vw;
+  }
+
+  .alertButton {
+    padding: 10px;
+  }
+
+  .firstLetter {
+    width: 36px;
+    height: 36px;
+    font-size: 1rem;
+  }
+}

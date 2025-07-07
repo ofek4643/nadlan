@@ -256,3 +256,75 @@
   transform: translateX(-50%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+@media (max-width: 500px) {
+  .header,
+  .headerSpan {
+    font-size: 30px;
+    text-align: center;
+  }
+
+  .subtitles {
+    font-size: 16px;
+    padding: 0 10px;
+  }
+
+  .btnContainer {
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .containerPropertyHeader {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .Properties {
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+  }
+
+  .services {
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+  }
+
+  .cardService {
+    width: 90%;
+  }
+
+  .ad {
+    padding: 20px;
+    height: auto;
+  }
+
+  .adHeader {
+    font-size: 24px;
+    text-align: center;
+  }
+
+  .adSubTitle {
+    width: 100%;
+    font-size: 16px;
+    padding: 0 10px;
+    text-align: center;
+  }
+
+  .adLoginBtn,
+  .adSearchProperty {
+    width: 100%;
+    max-width: 280px;
+  }
+
+  .successMessage,
+  .errorMessage {
+    width: 90%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+  }
+}
