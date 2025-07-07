@@ -143,3 +143,45 @@
   direction: rtl;
   font-family: sans-serif;
 }
+@media (max-width: 500px) {
+  .custom-select,
+  .custom-selectHeader,
+  .custom-select-addProperty,
+  .myCustomSelect1,
+  .myCustomSelect2 {
+    width: 100%;
+  }
+
+  .select-btn,
+  .select-btnHeader,
+  .select-btn-addProperty,
+  .select-btn-addProperty1,
+  .select-btn-half1,
+  .select-btn-half2 {
+    width: 100%;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .select-btn-half1,
+  .select-btn-half2 {
+    border-radius: 6px;
+    border-right-width: 1px;
+    border-left-width: 1px;
+  }
+
+  .options-list {
+    width: 100%;
+    font-size: 0.9rem;
+  }
+
+  .option-item {
+    padding: 8px 16px;
+    min-height: 36px;
+  }
+
+  .arrow {
+    font-size: 14px;
+  }
+}

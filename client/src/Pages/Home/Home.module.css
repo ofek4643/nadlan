@@ -23,6 +23,7 @@
   max-width: 800px;
 }
 .searchProp {
+  width: 190px;
   padding: 10px 30px;
   border-radius: 5px;
   border: none;
@@ -36,6 +37,7 @@
   background-color: hsl(39, 100%, 60%);
 }
 .postProp {
+  width: 190px;
   padding: 10px 30px;
   border-radius: 5px;
   border: none;
@@ -241,20 +243,16 @@
 }
 .errorMessage {
   height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   background-color: #db1010;
   color: white;
-  padding: 12px 20px;
-  border-radius: 6px;
+  padding: 14px 24px;
+  border-radius: 8px;
   font-weight: bold;
-  margin-top: 16px;
-  position: absolute;
-  bottom: 220px;
-  left: 50%;
-  transform: translateX(-50%);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin: auto;
+  width: 90%;
+  max-width: 500px;
+  text-align: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 @media (max-width: 500px) {
   .header,
@@ -298,8 +296,8 @@
   }
 
   .ad {
-    padding: 20px;
-    height: auto;
+    padding: 30px;
+    min-height: 250px;
   }
 
   .adHeader {
@@ -324,7 +322,9 @@
   .errorMessage {
     width: 90%;
     left: 50%;
-    transform: translateX(-50%);
     text-align: center;
+  }
+    .link {
+    display: none;
   }
 }

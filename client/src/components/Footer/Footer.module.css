@@ -3,7 +3,7 @@
 }
 footer {
   direction: rtl;
-  padding: 40px 100px; /* רק למעלה ולמטה */
+  padding: 40px 100px;
   background-color: #1e2d50;
   color: rgb(202, 202, 202);
   
@@ -95,4 +95,63 @@ footer {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+@media (max-width: 500px) {
+  footer {
+    padding: 20px 15px; /* צמצום ריווח פנימי */
+  }
+
+  .containerInfo {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .containerAll {
+    width: 100%;
+  }
+
+  .twoGap,
+  .oneGap {
+    width: 100%;
+  }
+
+  .inputField {
+    width: 100%;
+  }
+
+  .form {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .sendBtn {
+    width: 100%;
+    border-radius: 5px;
+    padding: 10px 0;
+  }
+
+  .iconDiv {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .copyRight {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  .btnContainer {
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    width: 100%;
+  }
+
+  .btnFooter {
+    font-size: 0.9rem;
+    padding: 6px 10px;
+  }
 }

@@ -210,3 +210,53 @@
     transform: rotate(360deg);
   }
 }
+@media (max-width: 500px) {
+  .pageContainer {
+    padding: 1rem 1rem;
+    margin: 1rem;
+  }
+
+  .title {
+    font-size: 1.6rem;
+  }
+
+  .price {
+    font-size: 1.3rem;
+  }
+
+  .descriptionSection h2,
+  .locationSection h2,
+  .mainFeaturesSection h2,
+  .additionalFeaturesSection h2 {
+    font-size: 1.2rem;
+  }
+
+  .descriptionSection p {
+    font-size: 0.95rem;
+    padding: 0.8rem;
+  }
+
+  .detailsGrid {
+    grid-template-columns: 1fr;
+    gap: 0.6rem 1rem;
+    padding: 0.8rem 1rem;
+  }
+
+  .detailsGrid > div {
+    font-size: 0.95rem;
+  }
+
+  .divBackBtn {
+    font-size: 0.9rem;
+    padding: 10px 12px;
+  }
+
+  .mainImage {
+    border-radius: 10px;
+  }
+
+  .imageWrapper {
+    border-radius: 10px;
+    max-height: 300px;
+  }
+}

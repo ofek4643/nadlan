@@ -215,3 +215,70 @@
   font-weight: bold;
   cursor: pointer;
 }
+@media (max-width: 500px) {
+  .wrapper {
+    padding: 20px;
+  }
+
+  .card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .header .title {
+    font-size: 1.2rem;
+  }
+
+  .header .subtitle {
+    font-size: 0.8rem;
+  }
+
+  .field label,
+  .row label {
+    font-size: 0.9rem;
+  }
+
+  .field input,
+  .row input {
+    font-size: 0.9rem;
+    width: 100%;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+
+  .buttonRegister,
+  .buttonRegisterLoading {
+    width: 100%;
+    font-size: 1rem;
+  }
+
+  .successMessage,
+  .errorMessage {
+    left: 10px;
+    right: 10px;
+    width: calc(100% - 20px);
+    font-size: 0.85rem;
+    padding: 10px 16px;
+  }
+
+  .listResult {
+    font-size: 0.85rem;
+  }
+
+  .errorText {
+    font-size: 0.8rem;
+  }
+
+  .loginLink {
+    font-size: 0.9rem;
+  }
+  .agreementInfo {
+    font-size: 0.9rem;
+  }
+
+  .agreementInfo a {
+    font-size: 0.8rem;
+  }
+}

@@ -194,3 +194,92 @@
   transform: translateX(-50%);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
+@media (max-width: 500px) {
+  .containerSearchProperty {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .selectProperty {
+    width: 100%;
+  }
+
+  .halfSelect {
+    flex-direction: column;
+    gap: 10px;
+    
+  }
+
+  .divMoreSearch {
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .divCheckBox {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+
+  .column {
+    width: 45%;
+  }
+
+  .btnMoreSearch {
+    justify-content: center;
+    font-size: 1.1rem;
+  }
+
+  .btnSearchPropertyDiv {
+    margin-top: 20px;
+  }
+
+  .btnSearchProperty {
+    width: 100%;
+    padding: 12px 0;
+    font-size: 1.2rem;
+  }
+
+  .SearchProperty {
+    padding: 20px 15px;
+  }
+
+  .headerProperty {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .sortDiv {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .containerProperties {
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .pagination {
+    gap: 4px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .pagination button {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+    margin: 4px 2px;
+    min-width: 36px;
+    border-radius: 4px;
+  }
+  .divInput {
+    flex-direction: column;
+  }
+  .input1,
+  .input2 {
+    width: 100%;
+    border-radius: 0;
+  }
+}

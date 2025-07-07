@@ -125,7 +125,7 @@ a {
   .header,
   .headerSpan {
     text-align: center;
-    display: block; /* לוודא שהם לא inline */
+    display: block;
     width: 100%;
   }
   .logo {

@@ -429,7 +429,7 @@ const Register = () => {
                 type="checkbox"
                 onClick={() => setAccept(accept ? false : true)}
               />
-              <p>
+              <p className={styles.agreementInfo}>
                 אני מאשר את <Link to="/terms">תנאי השימוש</Link> ו
                 <Link to="/privacy">מדיניות הפרטיות</Link>
               </p>

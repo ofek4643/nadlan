@@ -39,3 +39,36 @@
 .backButton:hover {
   background-color: hsl(222 47% 34%);
 }
+@media (max-width: 500px) {
+  .warrper {
+    padding: 20px;
+    min-height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+  }
+
+  .card {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .title {
+    font-size: 1.3rem;
+  }
+
+  .secendHeader {
+    font-size: 1.1rem;
+  }
+
+  .subTitle {
+    font-size: 1rem;
+  }
+
+  .backButton {
+    width: 100%;
+    font-size: 1rem;
+    padding: 10px 0;
+    margin-bottom: 15px;
+  }
+}

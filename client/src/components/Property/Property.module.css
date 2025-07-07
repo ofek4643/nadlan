@@ -96,3 +96,44 @@
 .callMeBtn:hover {
   text-decoration: underline;
 }
+@media (max-width: 500px) {
+  .property {
+    width: 90%;
+    height: auto;       /* שגובה הכרטיס יתאים לתוכן */
+    margin-top: 20px;
+    box-sizing: border-box;
+  }
+
+  /* הקטנת גודל פונט עבור אלמנטים בכרטיס */
+  .title {
+    font-size: 12px;
+    width: 60px;
+    height: 25px;
+  }
+
+  .infoDivHeader h3 {
+    font-size: 14px;
+  }
+
+  .infoPrice {
+    font-size: 14px;
+  }
+
+  .addressProperty {
+    font-size: 14px;
+  }
+
+  .moreInfoProperty {
+    font-size: 14px;
+  }
+
+  /* גם עבור הטקסטים של חדרים, רחצה ומ"ר */
+  .moreInfo {
+    font-size: 14px;
+  }
+
+  .moreInfoBtn,
+  .callMeBtn {
+    font-size: 14px;
+  }
+}
