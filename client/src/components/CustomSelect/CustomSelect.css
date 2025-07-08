@@ -23,6 +23,7 @@
   display: flex;
   justify-content: space-between;
   gap: 10px;
+  color: black;
 }
 .select-btn {
   width: 100%;
@@ -36,6 +37,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  color: black;
 }
 .select-btn-addProperty {
   width: 100%;
@@ -50,6 +52,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  color: black;
 }
 .select-btn-addProperty1 {
   width: 200px;
@@ -64,6 +67,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  color: black;
 }
 .select-btn-half1 {
   width: 100%;
@@ -78,6 +82,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  color: black;
 }
 .select-btn-half2 {
   width: 100%;
@@ -92,6 +97,7 @@
   position: relative;
   display: flex;
   justify-content: space-between;
+  color: black;
 }
 
 .arrow {
@@ -99,6 +105,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  color: black;
 }
 
 .options-list {

@@ -4,6 +4,7 @@ import styles from "./Login.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import axios from "axios";
 import { useAuth } from "../../data/AuthContext";
+import { useLocation } from "react-router-dom";
 
 const Login = () => {
   // משתנים של התחברות
@@ -17,6 +18,8 @@ const Login = () => {
   const [rememberMe, setRememberMe] = useState(false);
 
   const timeoutRef = useRef(null);
+  const location = useLocation();
+
   const [loading, setLoading] = useState(false);
   const [submited, setSubmited] = useState(false);
   const { fetchUser } = useAuth();
@@ -50,7 +53,7 @@ const Login = () => {
 
       return;
     }
-    // אם כן בודק האם יש יוזר במסד נתונים 
+    // אם כן בודק האם יש יוזר במסד נתונים
     try {
       setLoading(true);
       const res = await axios.post(
@@ -102,6 +105,16 @@ const Login = () => {
       }
     }
   }, [submited, userName, password]);
+
+  useEffect(() => {
+    if (location.state?.showMessage) {
+      setShowMessage(location.state.showMessage);
+      setShowMessageVisibilty(true);
+      // אופציונלי: להסתיר אחרי כמה שניות
+      const timer = setTimeout(() => setShowMessageVisibilty(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [location.state]);
 
   return (
     <div className={styles.wrapper}>

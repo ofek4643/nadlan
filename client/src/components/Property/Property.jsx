@@ -1,11 +1,13 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import styles from "../Property/Property.module.css";
 import { useAuth } from "../../data/AuthContext";
 
 const Property = ({ properties }) => {
-  
+  const navigate = useNavigate();
+
   const { user, toggleFavorite } = useAuth();
   const favorites = user?.favoriteProperties || [];
+
   return (
     <>
       {properties.map((item) => {
@@ -36,7 +38,13 @@ const Property = ({ properties }) => {
                     backgroundColor: isFavorite ? "orange" : "hsl(0, 0%, 67%)",
                     color: isFavorite ? "white" : "rgb(82 82 82)",
                   }}
-                  onClick={() => toggleFavorite(item._id)}
+                  onClick={() => {
+                    if (user) {
+                      toggleFavorite(item._id);
+                    } else {
+                      navigate("/login", { state: { showMessage: "עליך להתחבר על מנת להוסיף נכסים למעודפים" } });
+                    }
+                  }}
                   className={styles.addToFavorite}
                 >
                   <i

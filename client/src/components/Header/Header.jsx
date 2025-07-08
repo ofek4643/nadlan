@@ -11,6 +11,7 @@ const Header = () => {
   const { user, setUser } = useAuth();
   const ref = useRef();
   const navigate = useNavigate();
+
   // ערכים לרשימה של הפרופיל
   const options = [
     { label: "פרופיל שלי", to: "/my-profile" },
@@ -21,13 +22,13 @@ const Header = () => {
   // התנתקות
   const logout = async () => {
     try {
-      await axios.post(
+      const res = await axios.post(
         "http://localhost:5000/logout",
         {},
         { withCredentials: true }
       );
       setUser(null);
-      navigate("/");
+      navigate("/", { state: { showMessage: res.data.message } });
     } catch (error) {
       console.error("Error logging out:", error);
     }

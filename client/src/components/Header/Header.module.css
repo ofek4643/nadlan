@@ -54,6 +54,7 @@ a {
 }
 .LoginBtn {
   background-color: hsl(210 20% 98%);
+  color: black;
 }
 .RegisterBtn {
   color: white;

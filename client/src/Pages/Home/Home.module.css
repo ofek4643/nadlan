@@ -172,7 +172,6 @@
 }
 .adSearchProperty {
   width: 140px;
-
   padding: 10px 20px;
   border-radius: 5px;
   font-size: 1.1rem;
@@ -180,6 +179,7 @@
   transition: all 0.1s ease-in-out;
   border: 1px solid hsl(214.3 31.8% 91.4%);
   background-color: hsl(210 20% 98%);
+  color: black;
 }
 .adSearchProperty:hover {
   color: white;

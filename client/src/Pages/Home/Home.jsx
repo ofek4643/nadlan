@@ -14,8 +14,7 @@ const Home = () => {
   const { user } = useAuth();
 
   // משתנים של הודעה
-  const initialMessage = location.state?.showMessage || "";
-  const [message, setMessage] = useState(initialMessage);
+  const [message, setMessage] = useState(""); // הודעת הצלחה
   const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
     useState(false);
   const messageErrorFetch = "אירעה שגיאה בטעינת הנתונים";
@@ -38,15 +37,17 @@ const Home = () => {
 
   // מראה את ההודעת הצלחה מהתחברות
   useEffect(() => {
-    if (message) {
+    if (location.state?.showMessage) {
+      setMessage(location.state.showMessage);
+
       const timer = setTimeout(() => {
         setMessage("");
-        navigate(location.pathname, { replace: true });
+        navigate(location.pathname, { replace: true }); // מנקה את ה־state מה־URL
       }, 3000);
+
       return () => clearTimeout(timer);
     }
-  }, [message, location.pathname, navigate]);
-
+  }, [location, navigate]);
   return (
     <div>
       {message && <div className={styles.successMessage}>{message}</div>}
