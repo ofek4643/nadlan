@@ -7,6 +7,7 @@ import User from "./models/User.js";
 import Property from "./models/Property.js";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import rateLimit from "express-rate-limit";
 
 dotenv.config();
 const app = express();
@@ -30,6 +31,16 @@ async function connectDB() {
     console.error("❌ MongoDB connection error:", err);
   }
 }
+
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות"
+});
+
+app.use(globalLimiter);
 // הרשמה
 app.post("/register", async (req, res) => {
   try {

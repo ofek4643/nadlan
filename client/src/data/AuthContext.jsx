@@ -1,16 +1,15 @@
-import React, { createContext, useContext, useEffect, useState, useCallback } from "react";
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
 import axios from "axios";
 
-// הגדרת אובייקט קונטקסט גלובלי בשביל העברת נתונים לכל הפרויקט
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
-  // משתנים
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
+  const didInitialFavoritesFetch = useRef(false);
 
-  // פונקציה שמטענת את המשתמש
+  // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
       setIsLoadingUser(true);
@@ -25,8 +24,8 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
-  // פונקציה שמטענת את הנכסים המעודפים
-  const fetchFavorites = useCallback(async () => {
+  // טעינת נכסים מעודפים
+  const fetchFavorites = async () => {
     try {
       const res = await axios.get("http://localhost:5000/add-favorite", {
         withCredentials: true,
@@ -34,59 +33,57 @@ export const AuthProvider = ({ children }) => {
       setMyFavoriteProperties(res.data);
 
       const favIds = res.data.map((p) => p._id);
-
       setUser((prev) => {
-        const currentFavs = prev?.favoriteProperties || [];
-        const sameFavs =
-          currentFavs.length === favIds.length &&
-          currentFavs.every((id) => favIds.includes(id));
-
-        if (sameFavs) return prev; // לא מעדכן כדי לא ליצור לולאה אינסופית
-
         return { ...prev, favoriteProperties: favIds };
       });
     } catch (error) {
-      if (error.response && error.response.status === 401) {
+      if (error.response?.status === 401) {
         setUser(null);
         setMyFavoriteProperties([]);
       } else {
-        console.error("Error loading favorites", error);
+        console.error("שגיאה בטעינת המעודפים", error);
       }
     }
-  }, []);
+  };
 
-  // פונקציה שמוסיפה או מסירה נכס מעודף
+  // פונקציה המשנה את הנכס למועדף או לא
   const toggleFavorite = async (propertyId) => {
-  if (!user) return;
-  try {
-    const res = await axios.post(
-      "http://localhost:5000/add-favorite",
-      { propertyId },
-      { withCredentials: true }
-    );
+    if (!user) return;
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/add-favorite",
+        { propertyId },
+        { withCredentials: true }
+      );
 
-    // אל תעדכן את ה-user כאן, רק את המועדפים
-    setMyFavoriteProperties((prev) =>
-      prev.filter((p) => res.data.includes(p._id))
-    );
-  } catch (error) {
-    console.error("Error updating favorites:", error);
-  }
-};
+      const updatedIds = res.data;
+      setUser((prev) => {
+        return { ...prev, favoriteProperties: updatedIds };
+      });
 
-  // בטעינה הראשונית טוענים את המשתמש
+      setMyFavoriteProperties((prev) =>
+        prev.filter((p) => updatedIds.includes(p._id))
+      );
+    } catch (error) {
+      console.error("שגיאה בעדכון המעודפים", error);
+    }
+  };
+
+  // טוען את היוזר בכל פעם שיש שבו שינוי
   useEffect(() => {
     fetchUser();
   }, [fetchUser]);
 
-  // בכל שינוי של המשתמש נטען את המועדפים או מאפסים אותם
+  // טען מועדפים רק פעם אחת אחרי שהיוזר נטען
   useEffect(() => {
-    if (user) {
+    if (user && !didInitialFavoritesFetch.current) {
       fetchFavorites();
-    } else {
+      didInitialFavoritesFetch.current = true;
+    } else if (!user) {
       setMyFavoriteProperties([]);
+      didInitialFavoritesFetch.current = false;
     }
-  }, [user, fetchFavorites]);
+  }, [user]);
 
   return (
     <AuthContext.Provider
@@ -104,5 +101,4 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-// מקצרת את הקריאה בתוך הקומפוננטות
 export const useAuth = () => useContext(AuthContext);
