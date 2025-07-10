@@ -24,7 +24,7 @@ const Home = () => {
     async function fetchProperties() {
       try {
         const res = await axios.get("http://localhost:5000/properties");
-        setProperties(res.data);
+        setProperties(res.data.properties);
       } catch (err) {
         console.error("שגיאה:", err);
         setMessageErrorFetchVisibility(true);
@@ -42,7 +42,6 @@ const Home = () => {
 
       const timer = setTimeout(() => {
         setMessage("");
-        navigate(location.pathname, { replace: true }); // מנקה את ה־state מה־URL
       }, 3000);
 
       return () => clearTimeout(timer);

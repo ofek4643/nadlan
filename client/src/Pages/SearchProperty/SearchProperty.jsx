@@ -16,7 +16,7 @@ const SearchProperty = () => {
   // משתנים של חיפוש נכס
   const [allProperties, setAllProperties] = useState([]);
   const [filteredProperties, setFilteredProperties] = useState(allProperties);
-  const [header, setHeader] = useState("");
+  const [type, setType] = useState("");
   const [city, setCity] = useState("");
   const [minRooms, setMinRooms] = useState("");
   const [maxRooms, setMaxRooms] = useState("");
@@ -26,6 +26,7 @@ const SearchProperty = () => {
   const [maxSize, setMaxSize] = useState("");
   const [status, setStatus] = useState("");
   const [sort, setSort] = useState("");
+  const [isFiltering, setIsFiltering] = useState(false);
   // משתנים של חיפוש מאפייני נכס
   const [furnished, setFurnished] = useState(false);
   const [airConditioning, setAirConditioning] = useState(false);
@@ -40,16 +41,7 @@ const SearchProperty = () => {
 
   // בדיקת כמות עמודים לנכסים
   const [currentPage, setCurrentPage] = useState(1);
-
-  const propertiesPerPage = 9;
-  const indexOfLastProperty = currentPage * propertiesPerPage;
-  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
-
-  const currentProperties = filteredProperties.slice(
-    indexOfFirstProperty,
-    indexOfLastProperty
-  );
-  const totalPages = Math.ceil(filteredProperties.length / propertiesPerPage);
+  const [totalPages, setTotalPages] = useState(1);
 
   // המרת ערכים מ־string ל־number
   // על מנת שאוכל להשוואות בין מספרים
@@ -69,6 +61,27 @@ const SearchProperty = () => {
     minRooms === "5+" ? 5 : minRooms ? parseInt(minRooms) : 0;
   const parsedMaxRooms =
     maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
+    
+  // בודקת אם יש סינון
+  function hasFilters() {
+    return (
+      type !== "" ||
+      city !== "" ||
+      minRooms !== "" ||
+      maxRooms !== "" ||
+      minPrice !== "" ||
+      maxPrice !== "" ||
+      minSize !== "" ||
+      maxSize !== "" ||
+      status !== "" ||
+      furnished ||
+      airConditioning ||
+      parking ||
+      balcony ||
+      elevator ||
+      storage
+    );
+  }
 
   // שולח אותי ללמעלה בשינוי של עמוד
   useEffect(() => {
@@ -77,43 +90,67 @@ const SearchProperty = () => {
 
   // שליפת הנכסים
   useEffect(() => {
-    const fetchProperties = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const res = await axios.get("http://localhost:5000/properties");
-        setAllProperties(res.data);
-        setFilteredProperties(res.data);
-      } catch (error) {
-        console.error("שגיאה:", error);
+        if (isFiltering) {
+          // שליפה עם סינון
+          const res = await axios.post(
+            "http://localhost:5000/properties/filter",
+            {
+              type,
+              city,
+              minRooms: parsedMinRooms,
+              maxRooms: parsedMaxRooms,
+              minPrice: parsedMinPrice,
+              maxPrice: parsedMaxPrice,
+              minSize: parsedMinSize,
+              maxSize: parsedMaxSize,
+              status,
+              furnished,
+              airConditioning,
+              parking,
+              balcony,
+              elevator,
+              storage,
+              sort,
+              page: currentPage,
+              limit: 9,
+            }
+          );
+
+          setFilteredProperties(res.data.properties);
+          setTotalPages(res.data.totalPages);
+        } else {
+          // שליפה רגילה
+          const res = await axios.get("http://localhost:5000/properties", {
+            params: {
+              page: currentPage,
+              limit: 9,
+              sort,
+            },
+          });
+          setAllProperties(res.data.properties);
+          setFilteredProperties(res.data.properties);
+          setTotalPages(res.data.totalPages);
+        }
+
+        setMessageErrorFetchVisibility(false);
+      } catch (err) {
+        console.error("שגיאה בטעינת נכסים:", err);
         setMessageErrorFetchVisibility(true);
       } finally {
         setLoading(false);
       }
     };
-    fetchProperties();
-  }, []);
 
-  // מיון בזמת אמת של הנכסים
-  useEffect(() => {
-    const sorted = [...allProperties];
+    fetchData();
+  }, [currentPage, isFiltering, sort]);
 
-    if (sort === "מחיר(מהנמוך לגבוה)") {
-      sorted.sort((a, b) => a.price - b.price);
-    } else if (sort === "מחיר(מהגבוה לנמוך)") {
-      sorted.sort((a, b) => b.price - a.price);
-    } else if (sort === "שטח(מהנמוך לגבוה)") {
-      sorted.sort((a, b) => a.size - b.size);
-    } else if (sort === "שטח(מהגבוה לנמוך)") {
-      sorted.sort((a, b) => b.size - a.size);
-    }
-
-    setFilteredProperties(sorted);
-    setCurrentPage(1);
-  }, [sort, allProperties]);
-
-  function filterProp() {
+  // בדיקה התחלתית עם השדות תקינים אם כן בודק אם הוא מנסה לסנן 
+  async function filterProp() {
     let hasError = false;
 
-    // בדיקת שגיאות של שדות
     if (parsedMaxPrice < parsedMinPrice) {
       setPriceError(true);
       hasError = true;
@@ -128,56 +165,19 @@ const SearchProperty = () => {
     }
 
     if (hasError) {
-      setFilteredProperties(allProperties);
-      setCurrentPage(1);
       return;
     }
 
-    // הסינון של הנכסים
-    const filtered = allProperties.filter((property) => {
-      const matchesTitle = header ? property.header.includes(header) : true;
-      const matchesCity = city ? property.header.includes(city) : true;
-
-      const matchesRooms =
-        property.rooms >= parsedMinRooms && property.rooms <= parsedMaxRooms;
-
-      const matchesPrice =
-        property.price >= parsedMinPrice && property.price <= parsedMaxPrice;
-
-      const matchesSize =
-        property.size >= parsedMinSize && property.size <= parsedMaxSize;
-
-      const matchesType = status ? property.status.includes(status) : true;
-
-      const matchesFurnished = furnished ? property.furnished === true : true;
-      const matchesAirConditioning = airConditioning
-        ? property.airConditioning === true
-        : true;
-      const matchesParking = parking ? property.parking === true : true;
-      const matchesBalcony = balcony ? property.balcony === true : true;
-      const matchesElevator = elevator ? property.elevator === true : true;
-      const matchesStorage = storage ? property.storage === true : true;
-
-      return (
-        matchesTitle &&
-        matchesCity &&
-        matchesRooms &&
-        matchesPrice &&
-        matchesSize &&
-        matchesType &&
-        matchesFurnished &&
-        matchesAirConditioning &&
-        matchesParking &&
-        matchesBalcony &&
-        matchesElevator &&
-        matchesStorage
-      );
-    });
-    setSort("");
-    setFilteredProperties(filtered);
     setCurrentPage(1);
+    setSort("")
+    if (hasFilters()) {
+      setIsFiltering(true);
+    } else {
+      setIsFiltering(false);
+    }
   }
-  // בדיקה האם השדות תקינים
+
+  // בדיקה האם השדות תקינים בזמן אמת
   useEffect(() => {
     if (parsedMaxSize >= parsedMinSize) {
       setSizeError(false);
@@ -220,7 +220,7 @@ const SearchProperty = () => {
                 placeholder="בחר סוג נכס"
                 className="custom-select"
                 className2="select-btn"
-                onChange={(value) => setHeader(value)}
+                onChange={(value) => setType(value)}
               />
             </div>
             <div className={styles.selectProperty}>
@@ -473,9 +473,14 @@ const SearchProperty = () => {
           </div>
         </div>
       </div>
+
       <div className={styles.SearchProperty}>
         <div className={styles.headerProperty}>
-          <h2>נמצאו {filteredProperties.length} נכסים</h2>
+          <h2>
+            {loading
+              ? "טוען נכסים"
+              : `נמצאו ${filteredProperties.length} נכסים`}
+          </h2>
           <div className={styles.sortDiv}>
             <label htmlFor="">מיין לפי :</label>
             <CustomSelect
@@ -498,7 +503,7 @@ const SearchProperty = () => {
           {loading ? (
             <div className={styles.loadingSpinner}></div>
           ) : (
-            <Property properties={currentProperties} />
+            <Property properties={filteredProperties} />
           )}
           {messageErrorFetchVisibility && (
             <div className={styles.errorMessage}>{messageErrorFetch}</div>

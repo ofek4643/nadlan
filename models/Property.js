@@ -28,6 +28,9 @@ const propertySchema = new mongoose.Schema({
   },
   city: {
     type: String,
+    enum: ["תל אביב", "ירושלים", "חיפה", "רעננה", "הרצליה","רמת גן",
+      "באר שבע",
+    ],
     required: true,
   },
   neighborhood: {

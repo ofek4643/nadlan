@@ -82,6 +82,9 @@ const PropertyPage = () => {
           <h2>מאפיינים עיקריים</h2>
           <div className={styles.detailsGrid}>
             <div>
+              <strong>סטטוס:</strong> {property.type}
+            </div>
+            <div>
               <strong>סטטוס:</strong> {property.status}
             </div>
             <div>

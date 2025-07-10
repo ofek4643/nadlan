@@ -37,7 +37,7 @@ const globalLimiter = rateLimit({
   max: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות"
+  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
 });
 
 app.use(globalLimiter);
@@ -238,15 +238,150 @@ app.get("/propertyId/:id", async (req, res) => {
     });
   }
 });
-// הוצאת כל הנכסים באתר
+// הוצאת את נכסים עמוד מסוים + ממיין בלי סינון
 app.get("/properties", async (req, res) => {
   try {
-    const properties = await Property.find();
-    res.json(properties);
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 9;
+    const sort = req.query.sort || "";
+
+    const skip = (page - 1) * limit;
+
+    // בניית אפשרות מיון
+    let sortOption = {};
+    switch (sort) {
+      case "מחיר(מהנמוך לגבוה)":
+        sortOption = { price: 1 };
+        break;
+      case "מחיר(מהגבוה לנמוך)":
+        sortOption = { price: -1 };
+        break;
+      case "שטח(מהנמוך לגבוה)":
+        sortOption = { size: 1 };
+        break;
+      case "שטח(מהגבוה לנמוך)":
+        sortOption = { size: -1 };
+        break;
+      case "הכי חדש":
+        sortOption = { createdAt: -1 };
+        break;
+      default:
+        sortOption = {};
+    }
+
+    const total = await Property.countDocuments();
+
+    const properties = await Property.find()
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      properties,
+      totalPages: Math.ceil(total / limit),
+    });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ error: "Server error", details: error.message });
+    console.error("שגיאה בשליפת נכסים", error.message);
+    res.status(500).json({ error: "שגיאה בשרת" });
+  }
+});
+// מטפלת בסינון ומיון ביחד
+app.post("/properties/filter", async (req, res) => {
+  try {
+    const {
+      type,
+      city,
+      minRooms,
+      maxRooms,
+      minPrice,
+      maxPrice,
+      minSize,
+      maxSize,
+      status,
+      furnished,
+      airConditioning,
+      parking,
+      balcony,
+      elevator,
+      storage,
+      sort,
+      page = 1,
+      limit = 9,
+    } = req.body;
+
+    const filter = {};
+
+    if (type && type !== "") {
+      filter.type = type;
+    }
+    if (city && city !== "") {
+      filter.city = city;
+    }
+    if (minRooms != null || maxRooms != null) {
+      filter.rooms = {};
+      if (minRooms != null) filter.rooms.$gte = minRooms;
+      if (maxRooms != null && maxRooms !== Infinity)
+        filter.rooms.$lte = maxRooms;
+    }
+    if (minPrice != null || maxPrice != null) {
+      filter.price = {};
+      if (minPrice != null) filter.price.$gte = minPrice;
+      if (maxPrice != null && maxPrice !== Infinity)
+        filter.price.$lte = maxPrice;
+    }
+    if (minSize != null || maxSize != null) {
+      filter.size = {};
+      if (minSize != null) filter.size.$gte = minSize;
+      if (maxSize != null && maxSize !== Infinity) filter.size.$lte = maxSize;
+    }
+    if (status && status !== "") {
+      filter.status = status;
+    }
+    if (furnished) filter.furnished = true;
+    if (airConditioning) filter.airConditioning = true;
+    if (parking) filter.parking = true;
+    if (balcony) filter.balcony = true;
+    if (elevator) filter.elevator = true;
+    if (storage) filter.storage = true;
+
+    // מיון לפי sort
+    let sortOption = {};
+    switch (sort) {
+      case "מחיר(מהנמוך לגבוה)":
+        sortOption = { price: 1 };
+        break;
+      case "מחיר(מהגבוה לנמוך)":
+        sortOption = { price: -1 };
+        break;
+      case "שטח(מהנמוך לגבוה)":
+        sortOption = { size: 1 };
+        break;
+      case "שטח(מהגבוה לנמוך)":
+        sortOption = { size: -1 };
+        break;
+      case "הכי חדש":
+        sortOption = { createdAt: -1 };
+        break;
+      default:
+        sortOption = {};
+    }
+
+    const skip = (page - 1) * limit;
+
+    const total = await Property.countDocuments(filter);
+
+    const properties = await Property.find(filter)
+      .sort(sortOption)
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      properties,
+      totalPages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error("שגיאה בסינון נכסים:", error.message);
+    res.status(500).json({ error: "שגיאה בשרת" });
   }
 });
 // שליפת נתונים אישיים
