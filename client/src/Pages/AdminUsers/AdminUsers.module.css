@@ -1,0 +1,329 @@
+.warrper {
+  display: flex;
+  min-height: calc(100vh - 400px);
+}
+
+.navProfile {
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  background-color: hsl(222 47% 11%);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.smallNavProfile {
+  display: flex;
+  flex-direction: column;
+  width: 65px;
+  background-color: hsl(222 47% 11%);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.headerNav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.List {
+  list-style: none;
+  padding: 10px;
+}
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  transition: 0.2s all ease-in-out;
+  cursor: pointer;
+  color: white;
+}
+.smallListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  transition: 0.2s all ease-in-out;
+  cursor: pointer;
+  color: white;
+  justify-content: center;
+}
+.listItem:hover,
+.smallListItem:hover {
+  background-color: hsl(30 100% 60%);
+}
+.menu {
+  display: none;
+}
+.menu:checked ~ .NavProfile {
+  width: 100px;
+}
+.label {
+  font-size: 23px;
+  cursor: pointer;
+}
+.label:hover {
+  color: hsl(30 100% 60%);
+}
+.containerAllUsers {
+  padding: 32px 64px;
+  width: 100%;
+}
+.headerUsers {
+  font-family: sans-serif;
+  color: hsl(222 47% 24%);
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.containerUsers {
+  max-width: 1500px;
+  margin-top: 40px;
+  padding: 25px;
+  border-radius: 5px;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  background-color: white;
+}
+.headerContainerSelected {
+  color: hsl(225, 40%, 4%);
+  font-size: 1.4rem;
+  margin-bottom: 30px;
+}
+.input {
+  margin-bottom: 10px;
+  width: 100%;
+  height: 50px;
+  padding: 10px 15px;
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  font-size: 1rem;
+  background-color: hsl(210 20% 98%);
+  outline: none;
+}
+
+.firstLetter {
+  display: flex;
+  border-radius: 100%;
+  background-color: hsl(222 47% 24%);
+  width: 45px;
+  height: 45px;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 22px;
+}
+
+.user {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding: 20px;
+  align-items: center;
+  border-radius: 8px;
+}
+.user:hover {
+  background-color: rgb(236, 236, 236);
+}
+.containerRoleUsers {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.flex {
+  display: flex;
+  gap: 10px;
+}
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.containerButton {
+  width: 200px;
+  display: flex;
+  justify-content: space-between;
+}
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 25px;
+  cursor: pointer;
+  background-color: rgba(0, 255, 255, 0);
+  border: none;
+  border-radius: 5px;
+}
+.button:hover {
+  background-color: hsl(30 100% 60%);
+}
+.headerPopout {
+  margin-bottom: 25px;
+}
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.popout {
+  background: #fff;
+  direction: rtl;
+  width: min(90%, 420px);
+  padding: 2rem 1.5rem;
+  border-radius: 1rem;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  animation: scaleIn 0.25s ease;
+  transform-origin: center;
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.danger {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: hsl(0 80% 60%);
+  color: #fff;
+  transition: all 0.2s;
+}
+
+.danger:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: hsl(0 80% 55%);
+}
+
+.delete {
+  padding: 0.6rem 1.25rem;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  background: #f2f2f2;
+  color: #333;
+  transition: all 0.2s;
+}
+
+.delete:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  background: #e4e4e4;
+}
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(25, 118, 210, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+.dangerLoading {
+  background-color: hsl(0, 40%, 62%);
+  color: white;
+  padding: 0.6rem 1.25rem;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  font-weight: 500;
+  font-family: inherit;
+}
+
+@keyframes slideInOutLoop {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.successMessage,
+.errorMessage {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideInOutLoop 3.6s ease-in-out infinite;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
+}
+
+.errorMessage {
+  background-color: #db1010;
+  color: white;
+}
+.noResults {
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 600;
+  opacity: 0.7;
+}

@@ -31,6 +31,7 @@ async function connectDB() {
     console.error("❌ MongoDB connection error:", err);
   }
 }
+// הגבלת בקשות לשרת מאותו המשתמש
 
 const globalLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -41,6 +42,7 @@ const globalLimiter = rateLimit({
 });
 
 app.use(globalLimiter);
+
 // הרשמה
 app.post("/register", async (req, res) => {
   try {
@@ -109,6 +111,10 @@ app.post("/login", async (req, res) => {
       return res.status(401).json({ error: "שם משתמש או סיסמא שגויים" });
     }
 
+    if (user.isBlocked) {
+      return res.status(401).json({ error: "משתמש חסום" });
+    }
+
     const token = jwt.sign(
       { userId: user._id, role: user.role, fullName: user.fullName },
       process.env.JWT_SECRET,
@@ -150,6 +156,13 @@ const authenticate = (req, res, next) => {
   } catch (err) {
     return res.status(401).json({ error: "טוקן לא תקין" });
   }
+};
+
+const isAdmin = (req, res, next) => {
+  if (req.user.role !== "admin") {
+    return res.status(403).json({ message: "Access denied" });
+  }
+  next();
 };
 
 // התנתקות
@@ -389,7 +402,7 @@ app.get("/users", authenticate, async (req, res) => {
   try {
     const userId = req.user.userId;
     const user = await User.findById(userId).select(
-      "fullName email phoneNumber userName"
+      "fullName email phoneNumber userName role"
     );
     if (!user) {
       return res.status(404).json({ message: "User not found" });
@@ -498,6 +511,86 @@ app.get("/add-favorite", authenticate, async (req, res) => {
   } catch (error) {
     console.log(error.message);
 
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
+  }
+});
+
+//להשיג רשימה של משתמשים
+app.get("/getAllUsers", authenticate, isAdmin, async (req, res) => {
+  try {
+    const users = await User.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.error("שגיאה בסינון נכסים:", error.message);
+    res.status(500).json({ error: "שגיאה בשרת" });
+  }
+});
+//למחוק משתמש
+app.delete("/deleteUser/:id", authenticate, isAdmin, async (req, res) => {
+  try {
+    await User.findByIdAndDelete(req.params.id);
+    await Property.deleteMany({ userId: req.params.id });
+    res.status(200).json({ message: "המשתמש והנכסים נמחקו בהצלחה" });
+  } catch (error) {
+    res.status(500).json({ error: "שגיאה במחיקה" });
+  }
+});
+//לחסום משתמש
+app.put("/blockUser/:id", authenticate, isAdmin, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    user.isBlocked = !user.isBlocked;
+    await user.save();
+    res.json({
+      message: user.isBlocked ? "המשתמש נחסם" : "המשתמש שוחרר בהצלחה",
+      isBlocked: user.isBlocked,
+      id: user._id,
+    });
+  } catch (err) {
+    console.error("שגיאה בחסימה:", err);
+    res.status(500).json({ error: "שגיאת שרת" });
+  }
+});
+// מושכת נתוני משתמש שנבחר לעריכה
+app.get("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
+  const user = await User.findById(req.params.id).select(
+    "fullName email phoneNumber userName"
+  );
+  if (!user) return res.status(404).json({ message: "User not found" });
+  res.json(user);
+});
+
+app.put("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
+  try {
+    const { fullName, phoneNumber, email, userName } = req.body;
+    const userId = req.params.id;
+    const user = await User.findById(userId);
+    const phoneNumberExist = await User.findOne({ phoneNumber });
+    const userNameExist = await User.findOne({ userName });
+    const emailExist = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json("משתמש לא נמצא");
+    }
+    if (userNameExist && userNameExist._id.toString() !== userId) {
+      return res.status(400).json({ error: "שם משתמש כבר קיים במערכת" });
+    }
+    if (phoneNumberExist && phoneNumberExist._id.toString() !== userId) {
+      return res.status(400).json({ error: "מספר טלפון כבר קיים במערכת" });
+    }
+    if (emailExist && emailExist._id.toString() !== userId) {
+      return res.status(400).json({ error: "איימל כבר קיים במערכת" });
+    }
+    user.phoneNumber = phoneNumber;
+    user.fullName = fullName;
+    user.userName = userName;
+    user.email = email;
+    await user.save();
+    res.status(200).json("הנתונים עודכנו בהצלחה");
+  } catch (error) {
+    console.log(error.message);
     return res.status(500).json({
       error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
     });

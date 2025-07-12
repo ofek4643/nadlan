@@ -10,7 +10,7 @@ const Layout = () => {
   const location = useLocation();
   const { isLoadingUser } = useAuth();
   // רק לדף הפרופעל לא רוצה הגבלות
-  const isFullWidth = location.pathname === "/my-profile";
+  const isFullWidth = location.pathname === "/my-profile" || location.pathname === "/admin/users" || location.pathname === "/admin/dashboard" ;
   const mainStyle = isFullWidth
     ? { width: "100%" }
     : { padding: "40px 0", margin: "0 auto", maxWidth: "1500px" };

@@ -1,0 +1,76 @@
+.warrper {
+  display: flex;
+  min-height: calc(100vh - 400px);
+}
+
+.navProfile {
+  display: flex;
+  flex-direction: column;
+  width: 290px;
+  background-color: hsl(222 47% 11%);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.smallNavProfile {
+  display: flex;
+  flex-direction: column;
+  width: 65px;
+  background-color: hsl(222 47% 11%);
+  color: white;
+  transition: all 0.3s ease;
+}
+
+.headerNav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
+  padding: 20px;
+}
+
+.List {
+  list-style: none;
+  padding: 10px;
+}
+.listItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  transition: 0.2s all ease-in-out;
+  cursor: pointer;
+  color: white;
+}
+.smallListItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  padding: 10px;
+  transition: 0.2s all ease-in-out;
+  cursor: pointer;
+  color: white;
+  justify-content: center;
+}
+.listItem:hover,
+.smallListItem:hover {
+  background-color: hsl(30 100% 60%);
+}
+.menu {
+  display: none;
+}
+.menu:checked ~ .NavProfile {
+  width: 100px;
+}
+.label {
+  font-size: 23px;
+  cursor: pointer;
+}
+.label:hover {
+  color: hsl(30 100% 60%);
+}

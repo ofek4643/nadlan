@@ -8,15 +8,20 @@ import { useAuth } from "../../data/AuthContext.jsx";
 const Header = () => {
   //משתנים
   const [alertActive, setAlertActive] = useState(false);
-  const { user, setUser } = useAuth();
+  const { user, setUser, isAdmin } = useAuth();
   const ref = useRef();
   const navigate = useNavigate();
 
   // ערכים לרשימה של הפרופיל
   const options = [
-    { label: "פרופיל שלי", to: "/my-profile" },
-    { label: "הנכסים שלי", to: "/my-profile?section=properties" },
-    { label: "נכסים מעודפים", to: "/my-profile?section=favorites" },
+    { label: "הפרופיל שלי", to: "/my-profile" },
+    { label: "התנתק" },
+  ];
+  // ערכים לרשימה של הפרופיל של אדמין
+  const optionsAdmin = [
+    { label: "הפרופיל שלי", to: "/my-profile" },
+    { label: "ניהול משתמשים", to: "/admin/users" },
+    { label: "לוח בקרה", to: "/admin/dashboard" },
     { label: "התנתק" },
   ];
   // התנתקות
@@ -39,7 +44,8 @@ const Header = () => {
     if (label === "התנתק") {
       logout();
     } else {
-      const option = options.find((opt) => opt.label === label);
+      const list = isAdmin ? optionsAdmin : options;
+      const option = list.find((opt) => opt.label === label);
       if (option && option.to) {
         navigate(option.to);
       }
@@ -103,7 +109,7 @@ const Header = () => {
                 {user.fullName?.charAt(0) || ""}
               </div>
               <CustomSelect
-                options={options}
+                options={isAdmin ? optionsAdmin : options}
                 placeholder={user.fullName}
                 className="custom-selectHeader"
                 className2="select-btnHeader"

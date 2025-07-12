@@ -11,7 +11,11 @@ import MyProfile from "./Pages/MyProfile/MyProfile.jsx";
 import AddProperty from "./Pages/AddProperty/AddProperty.jsx";
 import ScrollToTop from "./components/ScrollToTop/ScrollToTop.jsx";
 import PropertyPage from "./Pages/PropertyPage/PropertyPage.jsx";
+import AdminUsers from "./Pages/AdminUsers/AdminUsers.jsx";
+import AdminDashboard from "./Pages/AdminDashboard/AdminDashboard.jsx";
+import EditUser from "./Pages/EditUser/EditUser.jsx";
 import { AuthProvider } from "./data/AuthContext.jsx";
+
 
 function App() {
   return (
@@ -33,6 +37,9 @@ function App() {
             <Route path="my-profile" element={<MyProfile />} />
             <Route path="add-property" element={<AddProperty />} />
             <Route path="/properties/prop/:id" element={<PropertyPage />} />
+            <Route path="admin/users" element={<AdminUsers />} />
+            <Route path="admin/dashboard" element={<AdminDashboard />} />
+            <Route path="/admin/users/:id/edit" element={<EditUser />} />
           </Route>
         </Routes>
       </Router>

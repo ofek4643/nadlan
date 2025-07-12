@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "../MyProfile/MyProfile.module.css";
-import { Link, useSearchParams } from "react-router-dom";
+import { Link} from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/data.js";
@@ -40,7 +40,7 @@ const MyProfile = () => {
 
   // משתנים של הנכסים שלי המעודפים והתראות
   const [myProperties, setMyProperties] = useState([]);
-  const { myFavoriteProperties } = useAuth();
+  const { myFavoriteProperties, isAdmin } = useAuth();
   const [alertArray, setAlertArray] = useState(null);
   // סגירה ופתיחת הnav
   const [navCollapsed, setNavCollapsed] = useState(false);
@@ -67,16 +67,16 @@ const MyProfile = () => {
 
   // משתנים של הודעות, בדיקת חלונות, טעינה ושגיאות וכמות דפים של נכסים
   const [submited, setSubmited] = useState(false);
-  const [searchParams] = useSearchParams();
-  const section = searchParams.get("section");
   const [loading, setLoading] = useState(false);
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPageMyProperties, setCurrentPageMyProperties] = useState(1);
+  const [currentPageMyFavoriteProperties, setCurrentPageMyFavoriteProperties] =
+    useState(1);
 
   const propertiesPerPage = 9;
-  const indexOfLastProperty = currentPage * propertiesPerPage;
+  const indexOfLastProperty = currentPageMyProperties * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
 
   const currentProperties = myProperties.slice(
@@ -85,10 +85,21 @@ const MyProfile = () => {
   );
   const totalPages = Math.ceil(myProperties.length / propertiesPerPage);
 
+  const indexOfLastFavorite =
+    currentPageMyFavoriteProperties * propertiesPerPage;
+  const indexOfFirstFavorite = indexOfLastFavorite - propertiesPerPage;
+  const currentFavoriteProperties = myFavoriteProperties.slice(
+    indexOfFirstFavorite,
+    indexOfLastFavorite
+  );
+  const totalFavoritePages = Math.ceil(
+    myFavoriteProperties.length / propertiesPerPage
+  );
+
   // מתחיל את הדף למעלה אם השתנה החלון
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
-  }, [currentPage]);
+  }, [currentPageMyProperties, currentPageMyFavoriteProperties]);
 
   // טעינת פרטי המשתמש
   useEffect(() => {
@@ -105,14 +116,14 @@ const MyProfile = () => {
           setEmail(res.data.email || "");
         }
       } catch (error) {
-        console.error("Failed to fetch user profile:", error);
+        console.error("שגיאה בשליפת נתוני היוזר", error);
       }
     };
 
     fetchUserProfile();
   }, []);
 
-  // בדיקת סיסמא נוכחית 
+  // בדיקת סיסמא נוכחית
   const verifyCurrentPassword = async () => {
     try {
       const res = await axios.post(
@@ -126,23 +137,6 @@ const MyProfile = () => {
       return false;
     }
   };
-
-  // בדיקת חלון
-  useEffect(() => {
-    switch (section) {
-      case "properties":
-        changeMyPropertiesActive();
-        break;
-      case "alerts":
-        changeMyAlertsActive();
-        break;
-      case "favorites":
-        changeMyFavoriteActive();
-        break;
-      default:
-        changeMyProfileActive();
-    }
-  }, [section]);
 
   //  בדיקת חוזק סיסמא עם התנאים שלה
   useEffect(() => {
@@ -209,6 +203,7 @@ const MyProfile = () => {
   async function onSubmit(e) {
     e.preventDefault();
     setSubmited(true);
+
     //בדיקת ראשונית של שגיאות
     let hasErrors = false;
 
@@ -378,8 +373,6 @@ const MyProfile = () => {
       }
     }
 
-    handleResize(); // בדיקה ראשונית
-
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
@@ -401,7 +394,11 @@ const MyProfile = () => {
         className={navCollapsed ? styles.smallNavProfile : styles.navProfile}
       >
         <div className={styles.headerNav}>
-          {navCollapsed ? "" : <h2>איזור אישי</h2>}
+          {navCollapsed ? (
+            ""
+          ) : (
+            <h2> {isAdmin ? "ניהול מערכת" : "איזור אישי"}</h2>
+          )}
           <label className={styles.label}>
             <input
               onClick={() => setNavCollapsed((prev) => !prev)}
@@ -414,6 +411,29 @@ const MyProfile = () => {
         <hr />
         <nav>
           <ul className={styles.List}>
+            {isAdmin && (
+              <>
+                <Link
+                  to="/admin/dashboard"
+                  className={
+                    navCollapsed ? styles.smallListItem : styles.listItem
+                  }
+                >
+                  <span>📊</span>
+                  {navCollapsed ? "" : <span>לוח בקרה</span>}
+                </Link>
+                <Link
+                  to="/admin/users"
+                  className={
+                    navCollapsed ? styles.smallListItem : styles.listItem
+                  }
+                >
+                  <span>👩‍👦</span>
+                  {navCollapsed ? "" : <span>ניהול משתמשים</span>}
+                </Link>
+              </>
+            )}
+
             <Link
               to="/properties"
               className={navCollapsed ? styles.smallListItem : styles.listItem}
@@ -423,6 +443,7 @@ const MyProfile = () => {
             </Link>
             <Link
               className={navCollapsed ? styles.smallListItem : styles.listItem}
+              style={{ backgroundColor: "hsl(30, 100%, 60%)" }}
             >
               <span>⚙</span>
               {navCollapsed ? "" : <span>הגדרות פרופיל</span>}
@@ -499,7 +520,7 @@ const MyProfile = () => {
               <form>
                 <div className={styles.row}>
                   <div className={styles.field}>
-                    <label style={labelStyle()}>שם משתמש</label>
+                    <label style={labelStyle(userNameError)}>שם משתמש</label>
                     <CustomInput
                       value={userName}
                       type="text"
@@ -583,7 +604,7 @@ const MyProfile = () => {
                 </div>
                 <hr />
                 <h2 className={styles.secendHeaderContainerSelected}>
-                  פרטים אישיים
+                  שינוי סיסמא
                 </h2>
                 <div className={styles.containerInputs}>
                   <div className={styles.field}>
@@ -742,9 +763,10 @@ const MyProfile = () => {
                 <div className={styles.pagination}>
                   <button
                     onClick={() => {
-                      if (currentPage > 1) setCurrentPage(currentPage - 1);
+                      if (currentPageMyProperties > 1)
+                        setCurrentPageMyProperties(currentPageMyProperties - 1);
                     }}
-                    disabled={currentPage === 1}
+                    disabled={currentPageMyProperties === 1}
                   >
                     הקודם
                   </button>
@@ -754,8 +776,12 @@ const MyProfile = () => {
                       buttons.push(
                         <button
                           key={i}
-                          onClick={() => setCurrentPage(i)}
-                          className={currentPage === i ? styles.activePage : ""}
+                          onClick={() => setCurrentPageMyProperties(i)}
+                          className={
+                            currentPageMyProperties === i
+                              ? styles.activePage
+                              : ""
+                          }
                         >
                           {i}
                         </button>
@@ -765,10 +791,10 @@ const MyProfile = () => {
                   })()}
                   <button
                     onClick={() => {
-                      if (currentPage < totalPages)
-                        setCurrentPage(currentPage + 1);
+                      if (currentPageMyProperties < totalPages)
+                        setCurrentPageMyProperties(currentPageMyProperties + 1);
                     }}
-                    disabled={currentPage >= totalPages}
+                    disabled={currentPageMyProperties >= totalPages}
                   >
                     הבא
                   </button>
@@ -802,13 +828,55 @@ const MyProfile = () => {
         )}
         {myFavoriteActive && (
           <div className={styles.containerSelected}>
-            <div className={styles.headerDiv}>
-              <h2 className={styles.headerContainerSelected}>נכסים מעודפים</h2>
-            </div>
+            <h2 className={styles.headerContainerSelected}>נכסים מעודפים</h2>
             {myFavoriteProperties?.length > 0 ? (
-              <div className={styles.containerProperties}>
-                <Property properties={myFavoriteProperties} />
-              </div>
+              <>
+                <div className={styles.containerProperties}>
+                  <Property properties={currentFavoriteProperties} />
+                </div>
+                <div className={styles.pagination}>
+                  <button
+                    onClick={() => {
+                      if (currentPageMyFavoriteProperties > 1)
+                        setCurrentPageMyFavoriteProperties(
+                          currentPageMyFavoriteProperties - 1
+                        );
+                    }}
+                    disabled={currentPageMyFavoriteProperties === 1}
+                  >
+                    הקודם
+                  </button>
+                  {Array.from(
+                    { length: totalFavoritePages },
+                    (_, i) => i + 1
+                  ).map((num) => (
+                    <button
+                      key={num}
+                      onClick={() => setCurrentPageMyFavoriteProperties(num)}
+                      className={
+                        currentPageMyFavoriteProperties === num
+                          ? styles.activePage
+                          : ""
+                      }
+                    >
+                      {num}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => {
+                      if (currentPageMyFavoriteProperties < totalFavoritePages)
+                        setCurrentPageMyFavoriteProperties(
+                          currentPageMyFavoriteProperties + 1
+                        );
+                    }}
+                    disabled={
+                      currentPageMyFavoriteProperties >= totalFavoritePages
+                    }
+                  >
+                    הבא
+                  </button>
+                </div>
+              </>
             ) : (
               <div className={styles.Properties}>
                 <p>אין נכסים מעודפים</p>

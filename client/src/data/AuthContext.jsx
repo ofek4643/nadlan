@@ -8,6 +8,7 @@ export const AuthProvider = ({ children }) => {
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
   const didInitialFavoritesFetch = useRef(false);
+  const [isAdmin , setIsAdmin] = useState(false)
 
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
@@ -17,6 +18,7 @@ export const AuthProvider = ({ children }) => {
         withCredentials: true,
       });
       setUser(res.data);
+      setIsAdmin(res.data.role === "admin" ? true : false)      
     } catch {
       setUser(null);
     } finally {
@@ -64,6 +66,7 @@ export const AuthProvider = ({ children }) => {
       setMyFavoriteProperties((prev) =>
         prev.filter((p) => updatedIds.includes(p._id))
       );
+      fetchFavorites()
     } catch (error) {
       console.error("שגיאה בעדכון המעודפים", error);
     }
@@ -94,6 +97,7 @@ export const AuthProvider = ({ children }) => {
         isLoadingUser,
         toggleFavorite,
         myFavoriteProperties,
+        isAdmin,
       }}
     >
       {children}
