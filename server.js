@@ -597,6 +597,188 @@ app.put("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
   }
 });
 
+app.get(
+  "/api/admin/dashboard-stats",
+  authenticate,
+  isAdmin,
+  async (req, res) => {
+    try {
+      const daysBack = 30;
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      const fromDate = new Date(today);
+      fromDate.setDate(today.getDate() - daysBack + 1); 
+
+      /* 1. כמה משתמשים היו לפני הטווח? */
+      const baseUserCountPromise = User.countDocuments({
+        createdAt: { $lt: fromDate },
+      });
+
+      /* 2. כמה נכסים היו לפני הטווח? */
+      const basePropertyCountPromise = Property.countDocuments({
+        createdAt: { $lt: fromDate },
+      });
+
+      /* 3. שאילתות במקביל */
+      const [
+        baseUserCount,
+        basePropertyCount,
+        totalUsers,
+        totalProperties,
+        lastUsers,
+        propertyTypesRaw,
+        userGrowthDailyRaw,
+        propertyGrowthDailyRaw,
+      ] = await Promise.all([
+        baseUserCountPromise,
+        basePropertyCountPromise,
+
+        User.countDocuments(),
+        Property.countDocuments(),
+
+        User.find().sort({ createdAt: -1 }).limit(6).select("fullName email"),
+
+        Property.aggregate([
+          { $group: { _id: "$type", value: { $sum: 1 } } },
+          { $project: { _id: 0, name: "$_id", value: 1 } },
+          { $sort: { value: -1 } },
+        ]),
+
+        /* משתמשים חדשים יומיים */
+        User.aggregate([
+          { $match: { createdAt: { $gte: fromDate } } },
+          {
+            $group: {
+              _id: {
+                $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+              },
+              count: { $sum: 1 },
+            },
+          },
+          { $sort: { _id: 1 } },
+        ]),
+
+        /* מודעות נכסים חדשות יומיות */
+        Property.aggregate([
+          { $match: { createdAt: { $gte: fromDate } } },
+          {
+            $group: {
+              _id: {
+                $dateToString: { format: "%Y-%m-%d", date: "$createdAt" },
+              },
+              count: { $sum: 1 },
+            },
+          },
+          { $sort: { _id: 1 } },
+        ]),
+      ]);
+
+      /* 4. השלמת ימים חסרים + מצטבר משתמשים */
+      const dayMapUsers = new Map(
+        userGrowthDailyRaw.map(({ _id, count }) => [_id, count])
+      );
+      const userGrowthDaily = [];
+      let runningUserTotal = baseUserCount;
+      for (let i = 0; i < daysBack; i++) {
+        const d = new Date(fromDate);
+        d.setDate(fromDate.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        const added = dayMapUsers.get(key) || 0;
+        runningUserTotal += added;
+        userGrowthDaily.push({ day: key, count: runningUserTotal });
+      }
+
+      /* 5. השלמת ימים חסרים + מצטבר נכסים */
+      const dayMapProperties = new Map(
+        propertyGrowthDailyRaw.map(({ _id, count }) => [_id, count])
+      );
+      const propertyGrowthDaily = [];
+      let runningPropertyTotal = basePropertyCount;
+      for (let i = 0; i < daysBack; i++) {
+        const d = new Date(fromDate);
+        d.setDate(fromDate.getDate() + i);
+        const key = d.toISOString().slice(0, 10);
+        const added = dayMapProperties.get(key) || 0;
+        runningPropertyTotal += added;
+        propertyGrowthDaily.push({ day: key, count: runningPropertyTotal });
+      }
+
+      /* 6. חישוב טרנד משתמשים (אחוז שינוי בין היום לאתמול) */
+      let trendUsers = null;
+      if (userGrowthDaily.length >= 2) {
+        const last = userGrowthDaily[userGrowthDaily.length - 1].count;
+        const prev = userGrowthDaily[userGrowthDaily.length - 2].count;
+        trendUsers =
+          prev > 0 ? Number((((last - prev) / prev) * 100).toFixed(1)) : null;
+      }
+
+      /* 7. חישוב טרנד נכסים (אחוז שינוי בין היום לאתמול) */
+      let trendProperties = null;
+      if (propertyGrowthDaily.length >= 2) {
+        const last = propertyGrowthDaily[propertyGrowthDaily.length - 1].count;
+        const prev = propertyGrowthDaily[propertyGrowthDaily.length - 2].count;
+        trendProperties =
+          prev > 0 ? Number((((last - prev) / prev) * 100).toFixed(1)) : null;
+      }
+      const [recentUsersRaw, recentPropsRaw, recentProfileUpdates] =
+        await Promise.all([
+          User.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select("fullName createdAt")
+            .lean(),
+          Property.find()
+            .sort({ createdAt: -1 })
+            .limit(10)
+            .select("header createdAt")
+            .lean(),
+          User.find({ $expr: { $gt: ["$updatedAt", "$createdAt"] } })
+            .sort({ updatedAt: -1 })
+            .limit(10)
+            .select("fullName updatedAt")
+            .lean(),
+        ]);
+
+      const activities = [
+        ...recentUsersRaw.map((u) => ({
+          text: `🆕 משתמש ${u.fullName} נרשם`,
+          date: u.createdAt,
+        })),
+        ...recentPropsRaw.map((p) => ({
+          text: `🏠 נוספה מודעה “${p.header}”`,
+          date: p.createdAt,
+        })),
+        ...recentProfileUpdates.map((u) => ({
+          id: `upd-${u._id}`,
+          text: `🔧 ${u.fullName} עדכן את הפרופיל שלו`,
+          date: u.updatedAt,
+        })),
+      ]
+        .sort((a, b) => b.date - a.date)
+        .slice(0, 10);
+
+      /* --- JSON ל‑Frontend --- */
+      res.json({
+        users: totalUsers,
+        properties: totalProperties,
+        trendUsers,
+        trendProperties,
+        userGrowthDaily,
+        propertyGrowthDaily,
+        propertyTypes: propertyTypesRaw,
+        activities,
+        quickUsers: lastUsers,
+        messages: 0,
+        visitors: 0,
+      });
+    } catch (err) {
+      console.error("Dashboard stats error:", err);
+      res.status(500).json({ error: "שגיאה בשרת" });
+    }
+  }
+);
+
 // יצירת השרת
 app.listen(port, () => {
   console.log(`🚀 Server running at http://localhost:${port}`);

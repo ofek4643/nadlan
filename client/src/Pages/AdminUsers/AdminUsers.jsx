@@ -264,7 +264,6 @@ const AdminUsers = () => {
             type="text"
             placeholder="חפש משתמשים..."
             value={value}
-            min={1}
             onChange={(e) => setValue(e.target.value)}
           />
           <div className={styles.containerRoleUsers}>
