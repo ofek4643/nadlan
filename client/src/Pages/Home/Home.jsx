@@ -24,7 +24,9 @@ const Home = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await axios.get(`${apiUrl}/properties`);
+        const res = await axios.get(`${apiUrl}/properties`, {
+          withCredentials: true,
+        });
         setProperties(res.data.properties);
       } catch (err) {
         console.error("שגיאה:", err);
