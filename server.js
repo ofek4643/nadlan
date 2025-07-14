@@ -16,7 +16,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://nadlan-lxn4.onrender.com",
+  "https://nadlan-react1.onrender.com",
 ];
 
 app.use(
