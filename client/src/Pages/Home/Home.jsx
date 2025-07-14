@@ -12,6 +12,7 @@ const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // משתנים של הודעה
   const [message, setMessage] = useState(""); // הודעת הצלחה
@@ -23,7 +24,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await axios.get("http://localhost:5000/properties");
+        const res = await axios.get(`${apiUrl}/properties`);
         setProperties(res.data.properties);
       } catch (err) {
         console.error("שגיאה:", err);
