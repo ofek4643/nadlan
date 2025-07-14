@@ -235,6 +235,72 @@ app.post("/add-property", authenticate, async (req, res) => {
     });
   }
 });
+app.put("/edit-property/:id", authenticate, async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    const {
+      header,
+      description,
+      price,
+      status,
+      type,
+      city,
+      neighborhood,
+      street,
+      houseNumber,
+      floor,
+      maxFloor,
+      imageUrl,
+      size,
+      rooms,
+      bathrooms,
+      furnished,
+      airConditioning,
+      parking,
+      balcony,
+      elevator,
+      storage,
+    } = req.body;
+    const updatedProperty = await Property.findByIdAndUpdate(
+      propertyId,
+      {
+        header,
+        description,
+        price,
+        status,
+        type,
+        city,
+        neighborhood,
+        street,
+        houseNumber,
+        floor,
+        maxFloor,
+        imageUrl,
+        size,
+        rooms,
+        bathrooms,
+        furnished,
+        airConditioning,
+        parking,
+        balcony,
+        elevator,
+        storage,
+      },
+      { new: true }
+    );
+
+    if (!updatedProperty) {
+      return res.status(404).json({ error: "הנכס לא נמצא" });
+    }
+
+    return res.status(200).json("הנכס עודכן בהצלחה!");
+  } catch (error) {
+    console.log(error.message);
+    return res.status(500).json({
+      error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר",
+    });
+  }
+});
 // מציאת מידע על הנכס
 app.get("/propertyId/:id", async (req, res) => {
   try {
@@ -597,6 +663,18 @@ app.put("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
   }
 });
 
+app.delete("/properties/prop/delete/:id", authenticate, async (req, res) => {
+  try {
+    const propertyId = req.params.id;
+    await Property.findByIdAndDelete(propertyId);
+    return res.status(200).json("נכס נמחק בהצלחה");
+  } catch (error) {
+    console.log(error);
+    return res
+      .status(500)
+      .json({ error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר" });
+  }
+});
 app.get(
   "/api/admin/dashboard-stats",
   authenticate,
@@ -608,25 +686,33 @@ app.get(
       today.setHours(0, 0, 0, 0);
 
       const fromDate = new Date(today);
-      fromDate.setDate(today.getDate() - daysBack + 1); 
+      fromDate.setDate(today.getDate() - daysBack + 1);
 
-      /* 1. כמה משתמשים היו לפני הטווח? */
       const baseUserCountPromise = User.countDocuments({
         createdAt: { $lt: fromDate },
       });
 
-      /* 2. כמה נכסים היו לפני הטווח? */
       const basePropertyCountPromise = Property.countDocuments({
         createdAt: { $lt: fromDate },
       });
 
-      /* 3. שאילתות במקביל */
+      // ספירת משתמשים ונכסים נכון ל-00:00 אתמול (למגמה מדויקת כולל מחיקות)
+      const yesterdayUserCountPromise = User.countDocuments({
+        createdAt: { $lt: today },
+      });
+
+      const yesterdayPropCountPromise = Property.countDocuments({
+        createdAt: { $lt: today },
+      });
+
       const [
         baseUserCount,
         basePropertyCount,
         totalUsers,
         totalProperties,
-        lastUsers,
+        yesterdayUsers,
+        yesterdayProps,
+        quickUsersRaw,
         propertyTypesRaw,
         userGrowthDailyRaw,
         propertyGrowthDailyRaw,
@@ -637,7 +723,10 @@ app.get(
         User.countDocuments(),
         Property.countDocuments(),
 
-        User.find().sort({ createdAt: -1 }).limit(6).select("fullName email"),
+        yesterdayUserCountPromise,
+        yesterdayPropCountPromise,
+
+        User.find().sort({ createdAt: -1 }).limit(5).select("fullName email"),
 
         Property.aggregate([
           { $group: { _id: "$type", value: { $sum: 1 } } },
@@ -645,7 +734,6 @@ app.get(
           { $sort: { value: -1 } },
         ]),
 
-        /* משתמשים חדשים יומיים */
         User.aggregate([
           { $match: { createdAt: { $gte: fromDate } } },
           {
@@ -659,7 +747,6 @@ app.get(
           { $sort: { _id: 1 } },
         ]),
 
-        /* מודעות נכסים חדשות יומיות */
         Property.aggregate([
           { $match: { createdAt: { $gte: fromDate } } },
           {
@@ -674,13 +761,13 @@ app.get(
         ]),
       ]);
 
-      /* 4. השלמת ימים חסרים + מצטבר משתמשים */
+      // בניית גרף משתמשים מצטבר ל-30 ימים
       const dayMapUsers = new Map(
         userGrowthDailyRaw.map(({ _id, count }) => [_id, count])
       );
       const userGrowthDaily = [];
       let runningUserTotal = baseUserCount;
-      for (let i = 0; i < daysBack; i++) {
+      for (let i = 0; i <= daysBack; i++) {
         const d = new Date(fromDate);
         d.setDate(fromDate.getDate() + i);
         const key = d.toISOString().slice(0, 10);
@@ -689,13 +776,13 @@ app.get(
         userGrowthDaily.push({ day: key, count: runningUserTotal });
       }
 
-      /* 5. השלמת ימים חסרים + מצטבר נכסים */
+      // בניית גרף נכסים מצטבר ל-30 ימים
       const dayMapProperties = new Map(
         propertyGrowthDailyRaw.map(({ _id, count }) => [_id, count])
       );
       const propertyGrowthDaily = [];
       let runningPropertyTotal = basePropertyCount;
-      for (let i = 0; i < daysBack; i++) {
+      for (let i = 0; i <= daysBack; i++) {
         const d = new Date(fromDate);
         d.setDate(fromDate.getDate() + i);
         const key = d.toISOString().slice(0, 10);
@@ -704,23 +791,28 @@ app.get(
         propertyGrowthDaily.push({ day: key, count: runningPropertyTotal });
       }
 
-      /* 6. חישוב טרנד משתמשים (אחוז שינוי בין היום לאתמול) */
-      let trendUsers = null;
-      if (userGrowthDaily.length >= 2) {
-        const last = userGrowthDaily[userGrowthDaily.length - 1].count;
-        const prev = userGrowthDaily[userGrowthDaily.length - 2].count;
-        trendUsers =
-          prev > 0 ? Number((((last - prev) / prev) * 100).toFixed(1)) : null;
-      }
+      // חישוב מגמת משתמשים (אחוז שינוי בין היום לאתמול כולל מחיקות)
+      const trendUsers =
+        yesterdayUsers > 0
+          ? Number(
+              (((totalUsers - yesterdayUsers) / yesterdayUsers) * 100).toFixed(
+                1
+              )
+            )
+          : null;
 
-      /* 7. חישוב טרנד נכסים (אחוז שינוי בין היום לאתמול) */
-      let trendProperties = null;
-      if (propertyGrowthDaily.length >= 2) {
-        const last = propertyGrowthDaily[propertyGrowthDaily.length - 1].count;
-        const prev = propertyGrowthDaily[propertyGrowthDaily.length - 2].count;
-        trendProperties =
-          prev > 0 ? Number((((last - prev) / prev) * 100).toFixed(1)) : null;
-      }
+      // חישוב מגמת נכסים (אחוז שינוי בין היום לאתמול כולל מחיקות)
+      const trendProperties =
+        yesterdayProps > 0
+          ? Number(
+              (
+                ((totalProperties - yesterdayProps) / yesterdayProps) *
+                100
+              ).toFixed(1)
+            )
+          : null;
+
+      // פעילויות אחרונות (רישום משתמשים, נכסים ועדכוני פרופיל)
       const [recentUsersRaw, recentPropsRaw, recentProfileUpdates] =
         await Promise.all([
           User.find()
@@ -758,7 +850,7 @@ app.get(
         .sort((a, b) => b.date - a.date)
         .slice(0, 10);
 
-      /* --- JSON ל‑Frontend --- */
+      // שליחה ל-Frontend
       res.json({
         users: totalUsers,
         properties: totalProperties,
@@ -768,9 +860,7 @@ app.get(
         propertyGrowthDaily,
         propertyTypes: propertyTypesRaw,
         activities,
-        quickUsers: lastUsers,
-        messages: 0,
-        visitors: 0,
+        quickUsers: quickUsersRaw,
       });
     } catch (err) {
       console.error("Dashboard stats error:", err);

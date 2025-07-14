@@ -14,7 +14,7 @@ const PropertyPage = () => {
         const res = await axios.get(`http://localhost:5000/propertyId/${id}`);
         setProperty(res.data);
       } catch (error) {
-        console.error("Error fetching property:", error);
+        console.error("שגיאה בשליפת נתוני נכס:", error);
       }
     }
     getProp();

@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styles from "../MyProfile/MyProfile.module.css";
-import { Link} from "react-router-dom";
+import { Link } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/data.js";
@@ -40,7 +40,8 @@ const MyProfile = () => {
 
   // משתנים של הנכסים שלי המעודפים והתראות
   const [myProperties, setMyProperties] = useState([]);
-  const { myFavoriteProperties, isAdmin } = useAuth();
+  const { myFavoriteProperties, setMyFavoriteProperties, setUser, isAdmin, toggleEdit } =
+    useAuth();
   const [alertArray, setAlertArray] = useState(null);
   // סגירה ופתיחת הnav
   const [navCollapsed, setNavCollapsed] = useState(false);
@@ -376,6 +377,27 @@ const MyProfile = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const deleteProperty = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/properties/prop/delete/${id}`, {
+        withCredentials: true,
+      });
+      setMyProperties((prev) => prev.filter((p) => p._id !== id));
+      setUser((prevUser) => ({
+        ...prevUser,
+        favoriteProperties: prevUser.favoriteProperties.filter(
+          (favId) => favId !== id
+        ),
+      }));
+
+      setMyFavoriteProperties((prevFavs) =>
+        prevFavs.filter((p) => p._id !== id)
+      );
+    } catch (err) {
+      console.error("שגיאה במחיקה", err);
+    }
+  };
 
   return (
     <div className={styles.warrper}>
@@ -749,16 +771,22 @@ const MyProfile = () => {
           <div className={styles.containerSelected}>
             <div className={styles.headerDiv}>
               <h2 className={styles.headerContainerSelected}>הנכסים שלי</h2>
-              <Link to="/add-property">
-                <button className={styles.addNewPropertie}>
-                  הוסף נכנס חדש +
-                </button>
-              </Link>
+              <div className={styles.headerBtn}>
+                <Link to="/add-property">
+                  <button className={styles.addNewPropertie}>
+                    הוסף נכנס חדש +
+                  </button>
+                </Link>
+                <button className={styles.editMyProperties} onClick={toggleEdit}>מצב עריכה</button>
+              </div>
             </div>
             {myProperties?.length > 0 ? (
               <div>
                 <div className={styles.containerProperties}>
-                  <Property properties={currentProperties} />
+                  <Property
+                    properties={currentProperties}
+                    onDelete={deleteProperty}
+                  />
                 </div>
                 <div className={styles.pagination}>
                   <button

@@ -96,15 +96,19 @@
 .callMeBtn:hover {
   text-decoration: underline;
 }
+.btnEdit{
+  display: flex;
+  gap: 20px;
+}
 @media (max-width: 500px) {
   .property {
     width: 90%;
-    height: auto;       /* שגובה הכרטיס יתאים לתוכן */
+    height: auto;
     margin-top: 20px;
     box-sizing: border-box;
   }
 
-  /* הקטנת גודל פונט עבור אלמנטים בכרטיס */
+
   .title {
     font-size: 12px;
     width: 60px;
@@ -127,7 +131,6 @@
     font-size: 14px;
   }
 
-  /* גם עבור הטקסטים של חדרים, רחצה ומ"ר */
   .moreInfo {
     font-size: 14px;
   }

@@ -126,6 +126,10 @@
   padding: 20px;
   margin-top: 10px;
 }
+.headerBtn{
+  display: flex;
+  gap: 10px;
+}
 .addNewPropertie {
   padding: 10px 20px;
   border-radius: 5px;
@@ -136,6 +140,18 @@
   border: 1px solid hsl(214.3 31.8% 91.4%);
   color: white;
   background-color: hsl(222 47% 24%);
+  height: 50px;
+}
+.editMyProperties{
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.05rem;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+  background-color: hsl(17, 91%, 45%);
   height: 50px;
 }
 .icon {

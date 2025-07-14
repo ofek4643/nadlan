@@ -6,6 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
+  const [edit , setEdit] = useState(false)
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
   const didInitialFavoritesFetch = useRef(false);
   const [isAdmin , setIsAdmin] = useState(false)
@@ -72,6 +73,10 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  const toggleEdit = () => {
+      setEdit(!edit)
+  }
+
   // טוען את היוזר בכל פעם שיש שבו שינוי
   useEffect(() => {
     fetchUser();
@@ -97,7 +102,10 @@ export const AuthProvider = ({ children }) => {
         isLoadingUser,
         toggleFavorite,
         myFavoriteProperties,
+        setMyFavoriteProperties,
         isAdmin,
+        toggleEdit,
+        edit,
       }}
     >
       {children}

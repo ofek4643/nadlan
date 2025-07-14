@@ -1,0 +1,353 @@
+.divBackBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  font-size: 1rem;
+  color: #0a2342;
+  padding: 12px 15px;
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  cursor: pointer;
+}
+
+.divBackBtn:hover {
+  background-color: hsl(30 100% 60%);
+  color: white;
+}
+.warrper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.allContainerAddProperty {
+  display: flex;
+  flex-direction: column;
+  width: 900px;
+  gap: 30px;
+}
+.headerAllContainerAddProperty {
+  font-family: sans-serif;
+  color: hsl(222, 47%, 24%);
+  font-size: 1.7rem;
+  font-weight: bold;
+  margin-bottom: 24px;
+}
+
+.rulesContainer {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.headerRulesContainer {
+  margin-bottom: 16px;
+  font-size: 1.2rem;
+}
+
+.listRulesContainer {
+  padding-right: 20px;
+  color: #333333d0;
+}
+.listItem {
+  margin-top: 8px;
+}
+.ContainerAddPropert {
+  background-color: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+.ContainerAddPropertFlex {
+  display: flex;
+  gap: 25px;
+}
+.form1 {
+  width: 50%;
+}
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+.row {
+  display: flex;
+  gap: 1rem;
+}
+.headerAddProperty {
+  margin-bottom: 20px;
+}
+.input {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+  outline: none;
+  width: 100%;
+}
+
+.textAreaInput {
+  padding: 0.6rem;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  font-size: 0.95rem;
+  background-color: hsl(210 20% 98%);
+  margin-top: 5px;
+  outline: none;
+  resize: vertical;
+  min-height: 130px;
+  height: 100px;
+}
+
+.divCheckBox {
+  display: flex;
+  justify-content: space-between;
+  width: 450px;
+  margin-top: 10px;
+}
+.column {
+  display: flex;
+  flex-direction: column;
+}
+.checkboxLabel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+  direction: rtl;
+}
+.checkBox {
+  transform: scale(1.3);
+}
+.hiddenFileInput {
+  display: none;
+}
+
+.uploadLabel {
+  margin-top: 5px;
+  display: inline-block;
+  background-color: hsl(210 20% 98%);
+  border: 1px solid #ddd;
+  padding: 10px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+}
+
+.uploadLabel:hover {
+  background-color: hsl(210 20% 94%);
+}
+
+.fileName {
+  margin-top: 8px;
+  display: block;
+  color: #333;
+  font-size: 0.85rem;
+} 
+.containerButton {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  gap: 10px;
+}
+.cancelBtn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  background-color: hsl(210 20% 98%);
+}
+.postPropertyBtn {
+  padding: 10px 20px;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  color: white;
+  background-color: hsl(222 47% 24%);
+}
+.postPropertyBtnLoading {
+  background-color: hsl(220, 40%, 62%);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 1px solid hsl(214.3 31.8% 91.4%);
+  cursor: pointer;
+}
+.cancelBtn:hover {
+  color: white;
+  background-color: hsl(30 100% 60%);
+}
+.postPropertyBtn:hover {
+  background-color: hsl(222 47% 34%);
+}
+.errorText {
+  color: red;
+  font-size: 0.85rem;
+  margin-top: 5px;
+}
+.errorTextSubmit {
+  color: red;
+  font-size: 1.15rem;
+  margin-top: 5px;
+}
+.error {
+  display: flex;
+}
+.addPropertyFooter {
+  display: flex;
+  justify-content: space-between;
+}
+.errorDiv {
+  display: flex;
+  align-items: center;
+}
+@keyframes slideInOutLoop {
+  0% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  70% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  80% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+}
+
+.successMessage,
+.errorMessage {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  padding: 14px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  animation: slideInOutLoop 3.6s ease-in-out infinite;
+}
+
+.successMessage {
+  background-color: #4caf50;
+  color: white;
+}
+
+.errorMessage {
+  background-color: #db1010;
+  color: white;
+}
+.loadingSpinner {
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(25, 118, 210, 0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 1.2s linear infinite;
+  transform: translateX(-50%);
+  z-index: 1000;
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+@keyframes spin {
+  to {
+    transform: translateX(-50%) rotate(360deg);
+  }
+}
+@media (max-width: 500px) {
+  .warrper {
+    padding: 10px;
+  }
+
+  .allContainerAddProperty {
+    width: 100%;
+    gap: 15px;
+    padding: 0 10px;
+  }
+
+  .ContainerAddPropert {
+    padding: 16px;
+  }
+
+  .ContainerAddPropertFlex {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .form1 {
+    width: 100%;
+  }
+
+  .row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .divCheckBox {
+    width: 100%;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: flex-start;
+  }
+
+  .column {
+    width: 48%;
+  }
+
+  .input,
+  .textAreaInput {
+    font-size: 1rem;
+  }
+
+  .containerButton {
+    flex-direction: column;
+    gap: 10px;
+    align-items: stretch;
+  }
+
+  .cancelBtn,
+  .postPropertyBtn,
+  .postPropertyBtnLoading {
+    width: 100%;
+    font-size: 1.1rem;
+  }
+
+  .headerAllContainerAddProperty {
+    font-size: 1.4rem;
+  }
+
+  .headerAddProperty,
+  .headerRulesContainer {
+    font-size: 1.1rem;
+  }
+
+.form1 input[type = text] {
+  width: 100% !important;
+}
+
+  .ContainerAddPropertFlex > div {
+    width: 100% !important;
+  }
+}

@@ -2,10 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "../Property/Property.module.css";
 import { useAuth } from "../../data/AuthContext";
 
-const Property = ({ properties }) => {
+const Property = ({ properties, onDelete }) => {
   const navigate = useNavigate();
 
-  const { user, toggleFavorite } = useAuth();
+  const { user, toggleFavorite, edit } = useAuth();
   const favorites = user?.favoriteProperties || [];
 
   return (
@@ -42,7 +42,12 @@ const Property = ({ properties }) => {
                     if (user) {
                       toggleFavorite(item._id);
                     } else {
-                      navigate("/login", { state: { showMessage: "עליך להתחבר על מנת להוסיף נכסים למעודפים" } });
+                      navigate("/login", {
+                        state: {
+                          showMessage:
+                            "עליך להתחבר על מנת להוסיף נכסים למעודפים",
+                        },
+                      });
                     }
                   }}
                   className={styles.addToFavorite}
@@ -89,6 +94,21 @@ const Property = ({ properties }) => {
                 <Link to={`/properties/prop/${item._id}`}>
                   <button className={styles.moreInfoBtn}>פרטים נוספים</button>
                 </Link>
+                {edit && (
+                  <div className={styles.btnEdit}>
+                    <Link to={`/properties/prop/${item._id}/edit`}>
+                      <button className={styles.moreInfoBtn}>ערוך נכס</button>
+                    </Link>
+                    <Link>
+                      <button
+                        className={styles.moreInfoBtn}
+                        onClick={() => onDelete(item._id)}
+                      >
+                        מחק נכס
+                      </button>
+                    </Link>
+                  </div>
+                )}
                 <Link to={`formCallMe`}>
                   <button className={styles.callMeBtn}>צור קשר</button>
                 </Link>

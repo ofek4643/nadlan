@@ -14,8 +14,8 @@ import PropertyPage from "./Pages/PropertyPage/PropertyPage.jsx";
 import AdminUsers from "./Pages/AdminUsers/AdminUsers.jsx";
 import AdminDashboard from "./Pages/AdminDashboard/AdminDashboard.jsx";
 import EditUser from "./Pages/EditUser/EditUser.jsx";
+import EditProperty from "./Pages/EditProperty/EditProperty.jsx";
 import { AuthProvider } from "./data/AuthContext.jsx";
-
 
 function App() {
   return (
@@ -40,6 +40,7 @@ function App() {
             <Route path="admin/users" element={<AdminUsers />} />
             <Route path="admin/dashboard" element={<AdminDashboard />} />
             <Route path="/admin/users/:id/edit" element={<EditUser />} />
+            <Route path="/properties/prop/:id/edit" element={<EditProperty />} />
           </Route>
         </Routes>
       </Router>
