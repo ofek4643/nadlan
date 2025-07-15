@@ -179,16 +179,16 @@ const isAdmin = (req, res, next) => {
 };
 
 // התנתקות
+const domain = process.env.NODE_ENV === "production" ? "nadlan-lxn4.onrender.com" : undefined;
 
 app.post("/logout", (req, res) => {
-  res.clearCookie("token", "", {
+  res.clearCookie("token", {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
-    expires: new Date(0), // או maxAge: 0
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    expires: new Date(0),
     path: "/",
-    // אם בלוג‑אין הוספת:
-    // domain: ".onrender.com",      // ← תוסיף גם כאן
+    ...(domain ? { domain } : {}),
   });
   res.status(200).json({ message: "התנתקת בהצלחה" });
 });
