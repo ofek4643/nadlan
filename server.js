@@ -46,15 +46,15 @@ async function connectDB() {
 }
 // הגבלת בקשות לשרת מאותו המשתמש
 
-// const globalLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 100,
-//   standardHeaders: true,
-//   legacyHeaders: false,
-//   message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
-// });
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
+});
 
-// app.use(globalLimiter);
+app.use(globalLimiter);
 
 // הרשמה
 app.post("/register", async (req, res) => {
