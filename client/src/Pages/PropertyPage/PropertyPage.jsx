@@ -7,18 +7,20 @@ const PropertyPage = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   //שליפת נתוני הנכס הנבחר
   useEffect(() => {
     async function getProp() {
       try {
-        const res = await axios.get(`http://localhost:5000/propertyId/${id}`);
+        const res = await axios.get(`${apiUrl}/propertyId/${id}`);
         setProperty(res.data);
       } catch (error) {
         console.error("שגיאה בשליפת נתוני נכס:", error);
       }
     }
     getProp();
-  }, [id]);
+  }, [id , apiUrl]);
 
   if (!property)
     return (

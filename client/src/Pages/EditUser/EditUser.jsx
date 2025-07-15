@@ -16,7 +16,7 @@ const EditUser = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [userName, setUserName] = useState("");
   const [submited, setSubmited] = useState(false);
-  // שגיאות 
+  // שגיאות
   const [userNameError, setUserNameError] = useState(false);
   const [fullNameError, setFullNameError] = useState(false);
   const [phoneNumberError, setPhoneNumberError] = useState(false);
@@ -26,11 +26,14 @@ const EditUser = () => {
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
+
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   // משיכת פרטי משתמש
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/admin/users/${id}`, {
+        const res = await axios.get(`${apiUrl}/admin/users/${id}`, {
           withCredentials: true,
         });
         setFullName(res.data.fullName);
@@ -42,14 +45,14 @@ const EditUser = () => {
       }
     };
     fetchUser();
-  }, [id]);
+  }, [id , apiUrl]);
 
   // עדכון פרטי המשתמש
   const saveHandler = async () => {
     try {
       setLoading(true);
       const res = await axios.put(
-        `http://localhost:5000/admin/users/${id}`,
+        `${apiUrl}/admin/users/${id}`,
         { fullName, phoneNumber, email, userName },
         { withCredentials: true }
       );

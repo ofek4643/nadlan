@@ -20,11 +20,14 @@ const AdminUsers = () => {
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
+
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   // מושך נתוני של כל המשתמשים
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const res = await axios.get("http://localhost:5000/getAllUsers", {
+        const res = await axios.get(`${apiUrl}/getAllUsers`, {
           withCredentials: true,
         });
         setUsers(res.data);
@@ -41,12 +44,12 @@ const AdminUsers = () => {
       }
     }
     fetchUsers();
-  }, []);
+  }, [apiUrl]);
   // מושך את הid שלי להשוואה
   useEffect(() => {
     async function getUserId() {
       try {
-        const res = await axios.get("http://localhost:5000/users", {
+        const res = await axios.get(`${apiUrl}/users`, {
           withCredentials: true,
         });
         setMyId(res.data._id);
@@ -55,7 +58,7 @@ const AdminUsers = () => {
       }
     }
     getUserId();
-  }, []);
+  }, [apiUrl]);
 
   // בודק בזמן אמת את החיפוש של המשתמשים
   useEffect(() => {
@@ -93,12 +96,9 @@ const AdminUsers = () => {
     // אם אין שגיאות אז תמחק את היוזר
     try {
       setLoading(true);
-      const res = await axios.delete(
-        `http://localhost:5000/deleteUser/${userId}`,
-        {
-          withCredentials: true,
-        }
-      );
+      const res = await axios.delete(`${apiUrl}/${userId}`, {
+        withCredentials: true,
+      });
       setUsers(users.filter((i) => i._id !== userId));
       setFilteredUsers(filteredUsers.filter((i) => i._id !== userId));
       setShowMessage(res.data.message);
@@ -148,7 +148,7 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const res = await axios.put(
-        `http://localhost:5000/blockUser/${userId}`,
+        `${apiUrl}/blockUser/${userId}`,
         {},
         { withCredentials: true }
       );

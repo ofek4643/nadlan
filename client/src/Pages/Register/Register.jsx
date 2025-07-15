@@ -65,6 +65,8 @@ const Register = () => {
   const navigate = useNavigate();
   const { fetchUser } = useAuth();
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   // בודק את החוזק הסיסמא המוזנת בזמן אמת
   useEffect(() => {
     const checks = requirements.map((req) => ({
@@ -74,7 +76,6 @@ const Register = () => {
     setResults(checks);
     setScore(checks.filter((c) => c.passed).length);
   }, [password]);
-
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -136,7 +137,7 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5000/register",
+        `${apiUrl}/register`,
         {
           fullName,
           userName,

@@ -52,16 +52,16 @@ export default function AdminDashboard() {
     trendUsers: null,
     trendProperties: null,
   });
+
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   useEffect(() => {
     async function fetchStats() {
       try {
         setLoading(true);
-        const res = await axios.get(
-          "http://localhost:5000/api/admin/dashboard-stats",
-          {
-            withCredentials: true,
-          }
-        );
+        const res = await axios.get(`${apiUrl}/api/admin/dashboard-stats`, {
+          withCredentials: true,
+        });
         setStats(res.data);
         console.log(res.data);
       } catch (err) {
@@ -74,12 +74,12 @@ export default function AdminDashboard() {
       }
     }
     fetchStats();
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const res = await axios.get("http://localhost:5000/getAllUsers", {
+        const res = await axios.get(`${apiUrl}/getAllUsers`, {
           withCredentials: true,
         });
         setUsers(res.data);
@@ -89,7 +89,7 @@ export default function AdminDashboard() {
       }
     }
     fetchUsers();
-  }, []);
+  }, [apiUrl]);
 
   useEffect(() => {
     const search = value.trim().toLowerCase();

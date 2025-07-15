@@ -24,6 +24,7 @@ const Login = () => {
   const [submited, setSubmited] = useState(false);
   const { fetchUser } = useAuth();
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // בדיקה ראשונית אם השדות תקינים
   const onSubmit = async (e) => {
@@ -57,7 +58,7 @@ const Login = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:5000/login",
+        `${apiUrl}/login`,
         {
           userName,
           password,

@@ -61,7 +61,9 @@ const SearchProperty = () => {
     minRooms === "5+" ? 5 : minRooms ? parseInt(minRooms) : 0;
   const parsedMaxRooms =
     maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
-    
+
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   // בודקת אם יש סינון
   function hasFilters() {
     return (
@@ -96,7 +98,7 @@ const SearchProperty = () => {
         if (isFiltering) {
           // שליפה עם סינון
           const res = await axios.post(
-            "http://localhost:5000/properties/filter",
+            `${apiUrl}/properties/filter`,
             {
               type,
               city,
@@ -123,7 +125,7 @@ const SearchProperty = () => {
           setTotalPages(res.data.totalPages);
         } else {
           // שליפה רגילה
-          const res = await axios.get("http://localhost:5000/properties", {
+          const res = await axios.get(`${apiUrl}/properties`, {
             params: {
               page: currentPage,
               limit: 9,
@@ -147,7 +149,7 @@ const SearchProperty = () => {
     fetchData();
   }, [currentPage, isFiltering, sort]);
 
-  // בדיקה התחלתית עם השדות תקינים אם כן בודק אם הוא מנסה לסנן 
+  // בדיקה התחלתית עם השדות תקינים אם כן בודק אם הוא מנסה לסנן
   async function filterProp() {
     let hasError = false;
 
@@ -169,7 +171,7 @@ const SearchProperty = () => {
     }
 
     setCurrentPage(1);
-    setSort("")
+    setSort("");
     if (hasFilters()) {
       setIsFiltering(true);
     } else {

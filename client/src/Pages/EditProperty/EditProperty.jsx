@@ -68,11 +68,13 @@ const EditProperty = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   useEffect(() => {
     async function getProp() {
       try {
         setLoading(true);
-        const res = await axios.get(`http://localhost:5000/propertyId/${id}`);
+        const res = await axios.get(`${apiUrl}/propertyId/${id}`);
         setHeader(res.data.header);
         setDescription(res.data.description);
         setPrice(res.data.price);
@@ -101,7 +103,7 @@ const EditProperty = () => {
       }
     }
     getProp();
-  }, [id]);
+  }, [id , apiUrl]);
   async function submit() {
     setSubmited(true);
 
@@ -172,7 +174,7 @@ const EditProperty = () => {
       setLoading(true);
 
       const res = await axios.put(
-        `http://localhost:5000/edit-property/${id}`,
+        `${apiUrl}/edit-property/${id}`,
         {
           header,
           description,

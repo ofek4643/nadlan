@@ -40,8 +40,13 @@ const MyProfile = () => {
 
   // משתנים של הנכסים שלי המעודפים והתראות
   const [myProperties, setMyProperties] = useState([]);
-  const { myFavoriteProperties, setMyFavoriteProperties, setUser, isAdmin, toggleEdit } =
-    useAuth();
+  const {
+    myFavoriteProperties,
+    setMyFavoriteProperties,
+    setUser,
+    isAdmin,
+    toggleEdit,
+  } = useAuth();
   const [alertArray, setAlertArray] = useState(null);
   // סגירה ופתיחת הnav
   const [navCollapsed, setNavCollapsed] = useState(false);
@@ -97,6 +102,8 @@ const MyProfile = () => {
     myFavoriteProperties.length / propertiesPerPage
   );
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   // מתחיל את הדף למעלה אם השתנה החלון
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
@@ -106,7 +113,7 @@ const MyProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/users", {
+        const res = await axios.get(`${apiUrl}/users`, {
           withCredentials: true,
         });
 
@@ -122,13 +129,13 @@ const MyProfile = () => {
     };
 
     fetchUserProfile();
-  }, []);
+  }, [apiUrl]);
 
   // בדיקת סיסמא נוכחית
   const verifyCurrentPassword = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/users/verify-password",
+        `${apiUrl}/verify-password`,
         { password },
         { withCredentials: true }
       );
@@ -167,13 +174,13 @@ const MyProfile = () => {
   // הוצאת נכסים שלי ממסד נתונים
   useEffect(() => {
     async function getMyProperties() {
-      const res = await axios.get("http://localhost:5000/my-properties", {
+      const res = await axios.get(`${apiUrl}/my-properties`, {
         withCredentials: true,
       });
       setMyProperties(res.data);
     }
     getMyProperties();
-  }, []);
+  }, [apiUrl]);
 
   // איזה חלון להציג
   function changeMyProfileActive() {
@@ -273,7 +280,7 @@ const MyProfile = () => {
     try {
       setLoading(true);
       const res = await axios.put(
-        "http://localhost:5000/users/update-information",
+        `${apiUrl}/users/update-information`,
         { fullName, phoneNumber, newPassword, userName },
         { withCredentials: true }
       );
@@ -380,7 +387,7 @@ const MyProfile = () => {
 
   const deleteProperty = async (id) => {
     try {
-      await axios.delete(`http://localhost:5000/properties/prop/delete/${id}`, {
+      await axios.delete(`${apiUrl}/properties/prop/delete/${id}`, {
         withCredentials: true,
       });
       setMyProperties((prev) => prev.filter((p) => p._id !== id));
@@ -777,7 +784,12 @@ const MyProfile = () => {
                     הוסף נכנס חדש +
                   </button>
                 </Link>
-                <button className={styles.editMyProperties} onClick={toggleEdit}>מצב עריכה</button>
+                <button
+                  className={styles.editMyProperties}
+                  onClick={toggleEdit}
+                >
+                  מצב עריכה
+                </button>
               </div>
             </div>
             {myProperties?.length > 0 ? (

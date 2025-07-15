@@ -65,6 +65,8 @@ const AddProperty = () => {
 
   const [loading, setLoading] = useState(false);
 
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+
   async function submit() {
     setSubmited(true);
 
@@ -135,7 +137,7 @@ const AddProperty = () => {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:5000/add-property",
+        `${apiUrl}/add-property`,
         {
           header,
           description,
