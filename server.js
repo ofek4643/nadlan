@@ -96,7 +96,7 @@ app.post("/register", async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: 2 * 60 * 60 * 1000,
       path: "/",
     });
@@ -111,11 +111,6 @@ app.post("/register", async (req, res) => {
 });
 
 // התחברות
-const domain =
-  process.env.NODE_ENV === "production"
-    ? "nadlan-lxn4.onrender.com"
-    : undefined;
-
 app.post("/login", async (req, res) => {
   try {
     const { userName, password, rememberMe } = req.body;
@@ -145,7 +140,6 @@ app.post("/login", async (req, res) => {
       sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
       path: "/",
-      ...(domain ? { domain } : {}),
     });
 
     res.status(200).json({
@@ -167,7 +161,10 @@ app.post("/login", async (req, res) => {
 
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
+  console.log("Token exists:", !!token);
+  console.log("All cookies:", req.cookies);
   if (!token) return res.status(401).json({ error: "משתמש לא מחובר" });
+  
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -191,9 +188,7 @@ app.post("/logout", (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-    expires: new Date(0),
     path: "/",
-    ...(domain ? { domain } : {}),
   });
   res.status(200).json({ message: "התנתקת בהצלחה" });
 });
