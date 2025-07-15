@@ -94,13 +94,7 @@ export const AuthProvider = ({ children }) => {
 
   // טוען את היוזר בכל פעם שיש שבו שינוי
   useEffect(() => {
-    const tokenExists = document.cookie.includes("token=");
-    if (tokenExists) {
-      fetchUser();
-    } else {
-      setUser(null);
-      setIsLoadingUser(false);
-    }
+    fetchUser();
   }, [fetchUser]);
 
   // טען מועדפים רק פעם אחת אחרי שהיוזר נטען

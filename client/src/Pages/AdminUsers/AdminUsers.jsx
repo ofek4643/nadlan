@@ -272,7 +272,9 @@ const AdminUsers = () => {
             onChange={(e) => setValue(e.target.value)}
           />
           <div className={styles.containerRoleUsers}>
-            {filteredUsers.length === 0 ? (
+            {loading ? (
+              <div className={styles.bigLoadingSpinner}></div>
+            ) : filteredUsers.length === 0 ? (
               <p className={styles.noResults}>לא נמצאו משתמשים</p>
             ) : (
               filteredUsers.map((user) => (
@@ -318,6 +320,7 @@ const AdminUsers = () => {
                 </div>
               ))
             )}
+
             {confirmMessageDelete && saveUserId && (
               <div className={styles.backdrop}>
                 <div className={styles.popout}>
