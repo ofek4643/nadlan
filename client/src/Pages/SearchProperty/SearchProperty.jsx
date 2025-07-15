@@ -145,7 +145,7 @@ const SearchProperty = () => {
     };
 
     fetchData();
-  }, [currentPage, isFiltering, sort , filterTrigger]);
+  }, [currentPage, isFiltering, sort, filterTrigger]);
 
   // בדיקה התחלתית עם השדות תקינים אם כן בודק אם הוא מנסה לסנן
   async function filterProp() {
@@ -165,6 +165,7 @@ const SearchProperty = () => {
     }
 
     if (hasError) {
+      setFilteredProperties(allProperties);
       return;
     }
 

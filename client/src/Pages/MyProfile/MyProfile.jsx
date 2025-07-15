@@ -135,7 +135,7 @@ const MyProfile = () => {
   const verifyCurrentPassword = async () => {
     try {
       const res = await axios.post(
-        `${apiUrl}/verify-password`,
+        `${apiUrl}/users/verify-password`,
         { password },
         { withCredentials: true }
       );
