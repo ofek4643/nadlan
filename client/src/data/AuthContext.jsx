@@ -18,6 +18,7 @@ export const AuthProvider = ({ children }) => {
   const didInitialFavoritesFetch = useRef(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
+  
 
   // טעינת יוזר
   const fetchUser = useCallback(async () => {

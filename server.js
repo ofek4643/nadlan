@@ -46,15 +46,15 @@ async function connectDB() {
 }
 // הגבלת בקשות לשרת מאותו המשתמש
 
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
-});
+// const globalLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 100,
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
+// });
 
-app.use(globalLimiter);
+// app.use(globalLimiter);
 
 // הרשמה
 app.post("/register", async (req, res) => {
@@ -135,8 +135,8 @@ app.post("/login", async (req, res) => {
     );
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "none",
       maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
       path: "/",
     });

@@ -62,6 +62,7 @@ const SearchProperty = () => {
   const parsedMaxRooms =
     maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
 
+  const [filterTrigger, setFilterTrigger] = useState(0);
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // בודקת אם יש סינון
@@ -97,29 +98,26 @@ const SearchProperty = () => {
       try {
         if (isFiltering) {
           // שליפה עם סינון
-          const res = await axios.post(
-            `${apiUrl}/properties/filter`,
-            {
-              type,
-              city,
-              minRooms: parsedMinRooms,
-              maxRooms: parsedMaxRooms,
-              minPrice: parsedMinPrice,
-              maxPrice: parsedMaxPrice,
-              minSize: parsedMinSize,
-              maxSize: parsedMaxSize,
-              status,
-              furnished,
-              airConditioning,
-              parking,
-              balcony,
-              elevator,
-              storage,
-              sort,
-              page: currentPage,
-              limit: 9,
-            }
-          );
+          const res = await axios.post(`${apiUrl}/properties/filter`, {
+            type,
+            city,
+            minRooms: parsedMinRooms,
+            maxRooms: parsedMaxRooms,
+            minPrice: parsedMinPrice,
+            maxPrice: parsedMaxPrice,
+            minSize: parsedMinSize,
+            maxSize: parsedMaxSize,
+            status,
+            furnished,
+            airConditioning,
+            parking,
+            balcony,
+            elevator,
+            storage,
+            sort,
+            page: currentPage,
+            limit: 9,
+          });
 
           setFilteredProperties(res.data.properties);
           setTotalPages(res.data.totalPages);
@@ -147,7 +145,7 @@ const SearchProperty = () => {
     };
 
     fetchData();
-  }, [currentPage, isFiltering, sort]);
+  }, [currentPage, isFiltering, sort , filterTrigger]);
 
   // בדיקה התחלתית עם השדות תקינים אם כן בודק אם הוא מנסה לסנן
   async function filterProp() {
@@ -170,13 +168,10 @@ const SearchProperty = () => {
       return;
     }
 
-    setCurrentPage(1);
     setSort("");
-    if (hasFilters()) {
-      setIsFiltering(true);
-    } else {
-      setIsFiltering(false);
-    }
+    setCurrentPage(1);
+    setIsFiltering(hasFilters());
+    setFilterTrigger((prev) => prev + 1);
   }
 
   // בדיקה האם השדות תקינים בזמן אמת
