@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/data.js";
-import axios from "axios";
+import axios, { Axios } from "axios";
 import { useAuth } from "../../data/AuthContext.jsx";
 // דרישות סיסמא
 const requirements = [
@@ -46,8 +46,11 @@ const MyProfile = () => {
     setUser,
     isAdmin,
     toggleEdit,
+    newAlertArray,
+    triggerRefreshAlerts,
   } = useAuth();
-  const [alertArray, setAlertArray] = useState(null);
+  const [alertArray, setAlertArray] = useState([]);
+
   // סגירה ופתיחת הnav
   const [navCollapsed, setNavCollapsed] = useState(false);
   // משתנים של עדכון פרטים אישיים ושגיאות
@@ -156,20 +159,22 @@ const MyProfile = () => {
     setScore(checks.filter((c) => c.passed).length);
   }, [newPassword]);
 
-  //התראות עדיין לא מוכן
+  //שליפת התראות
   useEffect(() => {
     async function fetchAlerts() {
       try {
-        const res = await fetch();
-        const data = await res.json();
-        setAlertArray(data.alerts);
+        const res = await axios.get(`${apiUrl}/alerts`, {
+          withCredentials: true,
+        });
+        setAlertArray(res.data.alerts);
+        console.log("alerts:", res.data.alerts);
       } catch (error) {
-        console.error("Error in get alerts", error);
+        console.error("Error getting alerts:", error);
         setAlertArray([]);
       }
     }
     fetchAlerts();
-  }, []);
+  }, [apiUrl]);
 
   // הוצאת נכסים שלי ממסד נתונים
   useEffect(() => {
@@ -401,8 +406,121 @@ const MyProfile = () => {
       setMyFavoriteProperties((prevFavs) =>
         prevFavs.filter((p) => p._id !== id)
       );
-    } catch (err) {
-      console.error("שגיאה במחיקה", err);
+      setShowMessage("נכס נמחק בהצלחה");
+    } catch (error) {
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessageVisibilty(true);
+      }, 10);
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
+    }
+  };
+
+  const removeAllAlerts = async () => {
+    try {
+      await axios.delete(`${apiUrl}/deleteAlerts`, {
+        withCredentials: true,
+      });
+      setAlertArray([]);
+      triggerRefreshAlerts();
+      setShowMessage("ההתראות נמחקו בהצלחה");
+    } catch (error) {
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessageVisibilty(true);
+      }, 10);
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
+    }
+  };
+  const removeAlert = async (id) => {
+    try {
+      const res = await axios.delete(`${apiUrl}/deleteAlerts/${id}`, {
+        withCredentials: true,
+      });
+      console.log(res.data.message);
+      triggerRefreshAlerts();
+      setAlertArray((prev) => prev.filter((alert) => alert._id !== id));
+      setShowMessage("ההתראה נמחקה בהצלחה");
+    } catch (error) {
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessageVisibilty(true);
+      }, 10);
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
+    }
+  };
+
+  const unNewAlert = async (id) => {
+    try {
+      await axios.put(
+        `${apiUrl}/unNewAlerts/${id}`,
+        {},
+        { withCredentials: true }
+      );
+
+      setAlertArray((prev) =>
+        prev.map((al) => (al._id === id ? { ...al, isNewAlert: false } : al))
+      );
+      triggerRefreshAlerts();
+      setShowMessage("ההתראה נקראה בהצלחה");
+    } catch (error) {
+      if (!error.response) {
+        setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");
+      } else {
+        setShowMessage(
+          error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
+        );
+      }
+    } finally {
+      setShowMessageVisibilty(false);
+      setTimeout(() => {
+        setShowMessageVisibilty(true);
+      }, 10);
+
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+      timeoutRef.current = setTimeout(() => {
+        setShowMessageVisibilty(false);
+        timeoutRef.current = null;
+      }, 3000);
     }
   };
 
@@ -854,18 +972,50 @@ const MyProfile = () => {
         )}
         {myAlertsActive && (
           <div className={styles.containerSelected}>
-            <h2 className={styles.headerContainerSelected}>התראות</h2>
-            <div className={styles.alerts}>
-              {alertArray?.length > 0
-                ? alertArray.map((alert, index) => (
-                    <div className={styles.alert} key={index}>
-                      {alert}
-                    </div>
-                  ))
-                : "אין התראות חדשות"}
+            <div className={styles.headerDiv}>
+              <h2 className={styles.headerContainerSelected}>ההתראות שלי</h2>
+              <span>{newAlertArray.length} התראות חדשות</span>
             </div>
+
+            {alertArray.length > 0 ? (
+              <div className={styles.alertsList}>
+                {alertArray.map((alert) => (
+                  <div key={alert._id} className={styles.alertItem}>
+                    {alert.text}
+                    <div className={styles.buttonsAlert}>
+                      {alert?.isNewAlert && (
+                        <button
+                          title="צפיתי בהתראה"
+                          onClick={() => unNewAlert(alert._id)}
+                          className={styles.seenBtn}
+                        >
+                          <i className="fa-solid fa-ban" />
+                        </button>
+                      )}
+
+                      <button
+                        title="מחק התראה"
+                        onClick={() => removeAlert(alert._id)}
+                        className={styles.deleteBtn}
+                      >
+                        <i className="fa-solid fa-trash" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+                <button
+                  onClick={removeAllAlerts}
+                  className={styles.removeAllAlerts}
+                >
+                  נקה הכל
+                </button>
+              </div>
+            ) : (
+              <div className={styles.noAlerts}>אין התראות חדשות</div>
+            )}
           </div>
         )}
+
         {myFavoriteActive && (
           <div className={styles.containerSelected}>
             <h2 className={styles.headerContainerSelected}>נכסים מעודפים</h2>

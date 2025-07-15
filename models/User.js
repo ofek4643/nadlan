@@ -18,6 +18,14 @@ const userSchema = new mongoose.Schema(
         ref: "Property",
       },
     ],
+    alerts: [
+      {
+        property: { type: mongoose.Schema.Types.ObjectId, ref: "Property" },
+        viewerName: String,
+        viewedAt: { type: Date, default: Date.now },
+        isNewAlert: { type: Boolean, default: true },
+      },
+    ],
     isBlocked: {
       type: Boolean,
       default: false,

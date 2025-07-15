@@ -3,15 +3,15 @@ import styles from "../Home/Home.module.css";
 import Property from "../../components/Property/Property";
 import { useEffect, useState } from "react";
 import axios from "axios";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useAuth } from "../../data/AuthContext";
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
   const [loading, setLoading] = useState(true);
   const location = useLocation();
-  const navigate = useNavigate();
   const { user } = useAuth();
+
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // משתנים של הודעה
@@ -39,9 +39,12 @@ const Home = () => {
   }, [apiUrl]);
 
   // מראה את ההודעת הצלחה מהתחברות
+
   useEffect(() => {
     if (location.state?.showMessage) {
       setMessage(location.state.showMessage);
+
+      window.history.replaceState({}, document.title);
 
       const timer = setTimeout(() => {
         setMessage("");
@@ -49,7 +52,13 @@ const Home = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [location, navigate]);
+  }, [location.state]);
+
+  useEffect(() => {
+    if (message) {
+      console.log("מציג הודעה:", message);
+    }
+  }, [message]);
   return (
     <div>
       {message && <div className={styles.successMessage}>{message}</div>}

@@ -29,7 +29,7 @@ app.use(
       }
       return callback(null, true);
     },
-    credentials: true, // ← מאפשר עוגיות
+    credentials: true,
   })
 );
 
@@ -44,17 +44,18 @@ async function connectDB() {
     console.error("❌ MongoDB connection error:", err);
   }
 }
+
 // הגבלת בקשות לשרת מאותו המשתמש
 
-const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
-});
+// const globalLimiter = rateLimit({
+//   windowMs: 15 * 60 * 1000,
+//   max: 200,
+//   standardHeaders: true,
+//   legacyHeaders: false,
+//   message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
+// });
 
-app.use(globalLimiter);
+// app.use(globalLimiter);
 
 // הרשמה
 app.post("/register", async (req, res) => {
@@ -161,8 +162,6 @@ app.post("/login", async (req, res) => {
 
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
-  console.log("Token exists:", !!token);
-  console.log("All cookies:", req.cookies);
   if (!token) return res.status(401).json({ error: "משתמש לא מחובר" });
 
   try {
@@ -333,6 +332,137 @@ app.get("/propertyId/:id", async (req, res) => {
     });
   }
 });
+//שולח התראה לבעל הנכס על צפייה
+app.post("/properties/:id/view", authenticate, async (req, res) => {
+  try {
+    const property = await Property.findById(req.params.id);
+    if (!property) return res.status(404).json({ error: "נכס לא נמצא" });
+
+    const ownerId = property.userId.toString();
+    const viewerId = req.user.userId;
+
+    if (ownerId === viewerId) {
+      return res.status(200).json({ message: "זה הנכס שלך – אין התראה" });
+    }
+
+    const viewer = await User.findById(viewerId).select("userName");
+    const viewerName = viewer?.userName || "משתמש";
+
+    // בדוק אם כבר קיימת התראה כזו
+    const owner = await User.findById(ownerId);
+    const existingAlert = owner.alerts.find(
+      (alert) =>
+        alert.property.toString() === property._id.toString() &&
+        alert.viewerName === viewerName
+    );
+
+    if (existingAlert) {
+      return res.status(200).json({ message: "התראה כבר קיימת" });
+    }
+
+    // אם לא קיימת, מוסיפים התראה חדשה
+    await User.findByIdAndUpdate(ownerId, {
+      $push: {
+        alerts: {
+          property: property._id,
+          viewerName,
+          viewedAt: new Date(),
+        },
+      },
+    });
+
+    res.status(200).json({ message: "התראה נשלחה לבעל הנכס" });
+  } catch (err) {
+    console.error("view error:", err);
+    res.status(500).json({ error: "שגיאת שרת" });
+  }
+});
+// מושכים התראות
+app.get("/alerts", authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId)
+      .populate({
+        path: "alerts.property",
+        select: "header",
+      })
+      .select("alerts");
+
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+
+    const sortedAlerts = user.alerts
+      .sort((a, b) => b.viewedAt - a.viewedAt)
+      .slice(0, 20);
+
+    const alertsText = sortedAlerts.map((a) => ({
+      _id: a._id,
+      text: `${a.viewerName} צפה בנכס שלך ${a.property.header}`,
+      isNewAlert: a.isNewAlert,
+    }));
+
+    res.json({ alerts: alertsText });
+  } catch (err) {
+    console.error("alerts error:", err);
+    res.status(500).json({ error: "שגיאת שרת" });
+  }
+});
+
+app.delete("/deleteAlerts", authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+    user.alerts = [];
+    await user.save();
+    res.status(200).json({ message: "ההתראות נמחקו בהצלחה" });
+  } catch (error) {
+    console.error("שגיאה במחיקת התראות:", error);
+    res.status(500).json({ error: "שגיאה במחיקה" });
+  }
+});
+
+app.delete("/deleteAlerts/:id", authenticate, async (req, res) => {
+  try {
+    const alertId = req.params.id;
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+    const alert = user.alerts.id(alertId);
+    if (!alert) return res.status(404).json({ error: "התראה לא נמצאה" });
+    alert.deleteOne();
+    await user.save();
+    res.status(200).json({ message: "ההתראה נמחקה בהצלחה" });
+  } catch (error) {
+    console.error("שגיאה במחיקת התראה:", error);
+    res.status(500).json({ error: "שגיאה במחיקה" });
+  }
+});
+app.get("/newAlerts", authenticate, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+
+    const newAlerts = user.alerts.filter((alert) => alert.isNewAlert === true);
+
+    res.status(200).json({ newAlerts });
+  } catch (error) {
+    console.error("שגיאה בשליפת התראות חדשות:", error);
+    res.status(500).json({ error: "שגיאת שרת" });
+  }
+});
+app.put("/unNewAlerts/:id", authenticate, async (req, res) => {
+  try {
+    const alertId = req.params.id;
+    const user = await User.findById(req.user.userId);
+    if (!user) return res.status(404).json({ error: "משתמש לא נמצא" });
+    const alert = user.alerts.id(alertId);
+    if (!alert) return res.status(404).json({ error: "התראה לא נמצאה" });
+    alert.isNewAlert = false;
+    await user.save();
+    res.status(200).json({ message: "ההתראה נצפתה בהצלחה" });
+  } catch (error) {
+    console.error("שגיאה בהסתכלות על ההתראה:", error);
+    res.status(500).json({ error: "שגיאה בהסתכלות על ההתראה" });
+  }
+});
+
 // הוצאת את נכסים עמוד מסוים + ממיין בלי סינון
 app.get("/properties", async (req, res) => {
   try {

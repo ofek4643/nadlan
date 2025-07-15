@@ -17,20 +17,24 @@ export const AuthProvider = ({ children }) => {
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
   const didInitialFavoritesFetch = useRef(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [newAlertArray, setNewAlertArray] = useState([]);
+  const [refreshAlerts, setRefreshAlerts] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-  
 
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
-      setIsLoadingUser(true);
       const res = await axios.get(`${apiUrl}/users`, {
         withCredentials: true,
       });
       setUser(res.data);
-      setIsAdmin(res.data.role === "admin" ? true : false);
-    } catch {
-      setUser(null);
+      setIsAdmin(res.data.role === "admin");
+    } catch (error) {
+      if (error.response?.status === 401) {
+        setUser(null); // פשוט לא מחובר
+      } else {
+        console.error(error);
+      }
     } finally {
       setIsLoadingUser(false);
     }
@@ -87,9 +91,15 @@ export const AuthProvider = ({ children }) => {
   };
 
   // טוען את היוזר בכל פעם שיש שבו שינוי
-  useEffect(() => {
+ useEffect(() => {
+  const tokenExists = document.cookie.includes('token=');
+  if (tokenExists) {
     fetchUser();
-  }, [fetchUser]);
+  } else {
+    setUser(null);
+    setIsLoadingUser(false);
+  }
+}, [fetchUser]);
 
   // טען מועדפים רק פעם אחת אחרי שהיוזר נטען
   useEffect(() => {
@@ -101,6 +111,31 @@ export const AuthProvider = ({ children }) => {
       didInitialFavoritesFetch.current = false;
     }
   }, [user]);
+
+  // פונקציה לרענון התראות
+  const triggerRefreshAlerts = () => {
+    setRefreshAlerts((prev) => !prev);
+  };
+
+  // שליפת התראות חדשות עם ריענון אוטומטי
+  useEffect(() => {
+    if (!user) {
+      setNewAlertArray([]); // לא מושך התראות אם אין משתמש
+      return;
+    }
+    async function fetchNewAlerts() {
+      try {
+        const res = await axios.get(`${apiUrl}/newAlerts`, {
+          withCredentials: true,
+        });
+        setNewAlertArray(res.data.newAlerts);
+      } catch (error) {
+        console.error("שגיאה במשיכת התראות חדשות", error);
+        setNewAlertArray([]);
+      }
+    }
+    fetchNewAlerts();
+  }, [apiUrl, refreshAlerts]);
 
   return (
     <AuthContext.Provider
@@ -115,6 +150,10 @@ export const AuthProvider = ({ children }) => {
         isAdmin,
         toggleEdit,
         edit,
+        newAlertArray,
+        setNewAlertArray,
+        refreshAlerts,
+        triggerRefreshAlerts,
       }}
     >
       {children}

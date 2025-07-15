@@ -1,71 +1,105 @@
 import { useEffect, useRef, useState } from "react";
 import styles from "./Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { useAuth } from "../../data/AuthContext.jsx";
+import axios from "axios";
 
 const Header = () => {
   //משתנים
+
   const [alertActive, setAlertActive] = useState(false);
-  const { user, setUser, isAdmin } = useAuth();
+  const {
+    user,
+    setUser,
+    isAdmin,
+    newAlertArray,
+    refreshAlerts,
+    setNewAlertArray,
+  } = useAuth();
   const ref = useRef();
   const navigate = useNavigate();
+
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
-  // ערכים לרשימה של הפרופיל
+  // רשימות אפשרויות בתפריט הפרופיל
   const options = [
     { label: "הפרופיל שלי", to: "/my-profile" },
     { label: "התנתק" },
   ];
-  // ערכים לרשימה של הפרופיל של אדמין
   const optionsAdmin = [
     { label: "הפרופיל שלי", to: "/my-profile" },
     { label: "ניהול משתמשים", to: "/admin/users" },
     { label: "לוח בקרה", to: "/admin/dashboard" },
     { label: "התנתק" },
   ];
+
   // התנתקות
   const logout = async () => {
     try {
-      const res = await axios.post(
-        `${apiUrl}/logout`,
-        {},
-        { withCredentials: true }
+      await fetch(
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/logout`,
+        {
+          method: "POST",
+          credentials: "include",
+        }
       );
       setUser(null);
-      navigate("/", { state: { showMessage: res.data.message } });
+      navigate("/", { state: { showMessage: "התנתקת בהצלחה" } });
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
 
-  // בודר האם הערך שנלחץ הוא התנתקות אם לא אז הוא ישלח אותי לכתובת שנלחצה
+  // טיפול בבחירת אפשרות בתפריט הפרופיל
   const handleSelectChange = (label) => {
     if (label === "התנתק") {
       logout();
     } else {
       const list = isAdmin ? optionsAdmin : options;
       const option = list.find((opt) => opt.label === label);
-      if (option && option.to) {
-        navigate(option.to);
-      }
+      if (option?.to) navigate(option.to);
     }
   };
 
-  //בדיקה האם היוזר לחץ מחוץ להתראות אם כן סוגר
+  // סגירת חלון התראות בלחיצה מחוץ לו
   const handleClickOutside = (event) => {
     if (ref.current && !ref.current.contains(event.target)) {
       setAlertActive(false);
     }
   };
 
-  // מוסיף אירוע לחיצה על הרשימה בשביל הבדיקה
+  // הוספת מאזין לחיצות מחוץ להתראות
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // עדכון התראות כשמתבצע טריגר רענון
+  useEffect(() => {
+    if (!user) {
+      setNewAlertArray([]);
+      return;
+    }
+
+    const fetchNewAlerts = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/newAlerts`, {
+          withCredentials: true,
+        });
+        setNewAlertArray(res.data.newAlerts);
+      } catch (error) {
+        if (error.response?.status === 401) {
+          setUser(null);
+          setNewAlertArray([]);
+        } else {
+          console.error("שגיאה במשיכת התראות חדשות", error);
+        }
+      }
+    };
+
+    fetchNewAlerts();
+  }, [apiUrl, refreshAlerts, setNewAlertArray, user, setUser]);
   return (
     <header className={styles.header}>
       <div className={styles.container}>
@@ -101,7 +135,11 @@ const Header = () => {
               {alertActive && (
                 <div ref={ref} className={styles.alertDiv}>
                   <h2>התראות</h2>
-                  <p>אין התראות חדשות</p>
+                  <p>
+                    {newAlertArray.length > 0
+                      ? `יש ${newAlertArray.length} התראות חדשות`
+                      : "אין התראות חדשות"}
+                  </p>
                 </div>
               )}
             </>
@@ -124,4 +162,5 @@ const Header = () => {
     </header>
   );
 };
+
 export default Header;

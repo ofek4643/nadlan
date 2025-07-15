@@ -9,6 +9,24 @@ const PropertyPage = () => {
 
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
+  useEffect(() => {
+    const notifyView = async () => {
+      try {
+         const res = await axios.post(
+            `${apiUrl}/properties/${id}/view`,
+            {},
+            { withCredentials: true }
+          );
+          console.log(res.data.message);
+          
+      } catch (err) {
+        console.error("שגיאה בשליחת התראה לבעל הנכס:", err);
+      }
+    };
+
+    notifyView();
+  }, [id, apiUrl]);
+
   //שליפת נתוני הנכס הנבחר
   useEffect(() => {
     async function getProp() {
@@ -20,7 +38,7 @@ const PropertyPage = () => {
       }
     }
     getProp();
-  }, [id , apiUrl]);
+  }, [id, apiUrl]);
 
   if (!property)
     return (

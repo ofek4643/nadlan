@@ -63,7 +63,6 @@ export default function AdminDashboard() {
           withCredentials: true,
         });
         setStats(res.data);
-        console.log(res.data);
       } catch (err) {
         console.error(
           "שגיאה בשליפת נתונים:",
@@ -83,7 +82,6 @@ export default function AdminDashboard() {
           withCredentials: true,
         });
         setUsers(res.data);
-        console.log(res.data);
       } catch (error) {
         console.log(error);
       }
