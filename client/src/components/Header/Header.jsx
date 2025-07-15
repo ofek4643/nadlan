@@ -81,7 +81,7 @@ const Header = () => {
       setNewAlertArray([]);
       return;
     }
-
+    // שליפת התראות חדשות
     const fetchNewAlerts = async () => {
       try {
         const res = await axios.get(`${apiUrl}/newAlerts`, {

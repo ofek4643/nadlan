@@ -9,14 +9,16 @@ import React, {
 import axios from "axios";
 
 const AuthContext = createContext();
-
+// משתנים
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+
   const [isLoadingUser, setIsLoadingUser] = useState(true);
   const [edit, setEdit] = useState(false);
+
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
   const didInitialFavoritesFetch = useRef(false);
-  const [isAdmin, setIsAdmin] = useState(false);
   const [newAlertArray, setNewAlertArray] = useState([]);
   const [refreshAlerts, setRefreshAlerts] = useState(false);
   const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
@@ -31,7 +33,7 @@ export const AuthProvider = ({ children }) => {
       setIsAdmin(res.data.role === "admin");
     } catch (error) {
       if (error.response?.status === 401) {
-        setUser(null); // פשוט לא מחובר
+        setUser(null);
       } else {
         console.error(error);
       }
@@ -85,21 +87,21 @@ export const AuthProvider = ({ children }) => {
       console.error("שגיאה בעדכון המעודפים", error);
     }
   };
-
+  // משנה את מצב העריכה של הנכסים שלי
   const toggleEdit = () => {
     setEdit(!edit);
   };
 
   // טוען את היוזר בכל פעם שיש שבו שינוי
- useEffect(() => {
-  const tokenExists = document.cookie.includes('token=');
-  if (tokenExists) {
-    fetchUser();
-  } else {
-    setUser(null);
-    setIsLoadingUser(false);
-  }
-}, [fetchUser]);
+  useEffect(() => {
+    const tokenExists = document.cookie.includes("token=");
+    if (tokenExists) {
+      fetchUser();
+    } else {
+      setUser(null);
+      setIsLoadingUser(false);
+    }
+  }, [fetchUser]);
 
   // טען מועדפים רק פעם אחת אחרי שהיוזר נטען
   useEffect(() => {
@@ -120,7 +122,7 @@ export const AuthProvider = ({ children }) => {
   // שליפת התראות חדשות עם ריענון אוטומטי
   useEffect(() => {
     if (!user) {
-      setNewAlertArray([]); // לא מושך התראות אם אין משתמש
+      setNewAlertArray([]);
       return;
     }
     async function fetchNewAlerts() {

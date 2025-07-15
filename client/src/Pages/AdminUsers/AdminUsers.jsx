@@ -5,6 +5,7 @@ import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import axios from "axios";
 
 const AdminUsers = () => {
+  // משתנים
   const [navCollapsed, setNavCollapsed] = useState(false);
   const [value, setValue] = useState("");
   const [users, setUsers] = useState([]);
@@ -15,7 +16,7 @@ const AdminUsers = () => {
   const [confirmMessageBlock, setConfirmMessageBlock] = useState(false);
   const [saveUserId, setSaveUserId] = useState(null);
   const [isBlock, setIsBlock] = useState(false);
-
+  //טעינה והודעוצ
   const [loading, setLoading] = useState(false);
   const [showMessageVisibilty, setShowMessageVisibilty] = useState(false);
   const [showMessage, setShowMessage] = useState("");

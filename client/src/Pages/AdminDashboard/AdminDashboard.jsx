@@ -20,7 +20,7 @@ const StatCard = ({ title, value, trend }) => (
     <span className={styles.statTitle}>{title}</span>
     <span className={styles.statValue}>
       {typeof value === "number" ? value.toLocaleString() : "—"}
-    </span>{" "}
+    </span>
     <span className={styles.statTrend}>{trend}</span>
   </div>
 );

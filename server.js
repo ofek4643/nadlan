@@ -47,15 +47,15 @@ async function connectDB() {
 
 // הגבלת בקשות לשרת מאותו המשתמש
 
-// const globalLimiter = rateLimit({
-//   windowMs: 15 * 60 * 1000,
-//   max: 200,
-//   standardHeaders: true,
-//   legacyHeaders: false,
-//   message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
-// });
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
+});
 
-// app.use(globalLimiter);
+app.use(globalLimiter);
 
 // הרשמה
 app.post("/register", async (req, res) => {
@@ -159,7 +159,6 @@ app.post("/login", async (req, res) => {
 });
 
 // בדיקת יוזר שנוצר מטוקן תקין
-
 const authenticate = (req, res, next) => {
   const token = req.cookies.token;
   if (!token) return res.status(401).json({ error: "משתמש לא מחובר" });
@@ -250,6 +249,7 @@ app.post("/add-property", authenticate, async (req, res) => {
     });
   }
 });
+//עדכון נכס
 app.put("/edit-property/:id", authenticate, async (req, res) => {
   try {
     const propertyId = req.params.id;
@@ -405,7 +405,7 @@ app.get("/alerts", authenticate, async (req, res) => {
     res.status(500).json({ error: "שגיאת שרת" });
   }
 });
-
+// מחיקת כל התראות
 app.delete("/deleteAlerts", authenticate, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
@@ -418,7 +418,7 @@ app.delete("/deleteAlerts", authenticate, async (req, res) => {
     res.status(500).json({ error: "שגיאה במחיקה" });
   }
 });
-
+// מחיקה התראה
 app.delete("/deleteAlerts/:id", authenticate, async (req, res) => {
   try {
     const alertId = req.params.id;
@@ -434,6 +434,7 @@ app.delete("/deleteAlerts/:id", authenticate, async (req, res) => {
     res.status(500).json({ error: "שגיאה במחיקה" });
   }
 });
+//שליפה התראות חדשות
 app.get("/newAlerts", authenticate, async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
@@ -447,6 +448,7 @@ app.get("/newAlerts", authenticate, async (req, res) => {
     res.status(500).json({ error: "שגיאת שרת" });
   }
 });
+//עדכון התראה לנקראה
 app.put("/unNewAlerts/:id", authenticate, async (req, res) => {
   try {
     const alertId = req.params.id;
@@ -773,7 +775,7 @@ app.get("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
   if (!user) return res.status(404).json({ message: "User not found" });
   res.json(user);
 });
-
+// עדכון יוזר על ידי אדמין
 app.put("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
   try {
     const { fullName, phoneNumber, email, userName } = req.body;
@@ -808,7 +810,7 @@ app.put("/admin/users/:id", authenticate, isAdmin, async (req, res) => {
     });
   }
 });
-
+//מחיקת נכס לפי id
 app.delete("/properties/prop/delete/:id", authenticate, async (req, res) => {
   try {
     const propertyId = req.params.id;
@@ -821,6 +823,7 @@ app.delete("/properties/prop/delete/:id", authenticate, async (req, res) => {
       .json({ error: "אירעה שגיאה בשרת, נסה שוב מאוחר יותר" });
   }
 });
+// שליפת כל הלוח בקרה של האדמין
 app.get(
   "/api/admin/dashboard-stats",
   authenticate,

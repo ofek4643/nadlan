@@ -40,6 +40,7 @@ const MyProfile = () => {
 
   // משתנים של הנכסים שלי המעודפים והתראות
   const [myProperties, setMyProperties] = useState([]);
+  //מקבל state or function from createContext
   const {
     myFavoriteProperties,
     setMyFavoriteProperties,
@@ -213,6 +214,7 @@ const MyProfile = () => {
     setMyFavoriteActive(true);
   }
 
+  // עידכון נתוונים אישיים
   async function onSubmit(e) {
     e.preventDefault();
     setSubmited(true);
@@ -265,7 +267,7 @@ const MyProfile = () => {
       setNewPasswordError(false);
       setConfirmNewPasswordError(false);
     }
-
+    // אם יש שגיאה/תקין יוציא הודעה בהתאם
     if (hasErrors) {
       setShowMessageVisibilty(false);
       setTimeout(() => {
@@ -281,7 +283,7 @@ const MyProfile = () => {
 
       return;
     }
-    // עדכון הנתונים
+    //  עדכון הנתונים ומאםס את הסיסמאות
     try {
       setLoading(true);
       const res = await axios.put(
@@ -303,6 +305,7 @@ const MyProfile = () => {
           error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
         );
       }
+      // אם יש שגיאה/תקין יוציא הודעה בהתאם
     } finally {
       setLoading(false);
       setShowMessageVisibilty(false);
@@ -376,7 +379,7 @@ const MyProfile = () => {
   const strengthLabel = ["", "חלש", "בינונית", "חזקה"];
   const strengthColor = ["gray", "red", "orange", "green"];
   const strengthIndex = score === 0 ? 0 : score <= 2 ? 1 : score <= 4 ? 2 : 3;
-
+  // אם המשתמש מהטלפון אז התפריט יוצג אחרת
   useEffect(() => {
     function handleResize() {
       if (window.innerWidth <= 500) {
@@ -389,7 +392,7 @@ const MyProfile = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
+  // מחיקת נכס לפי מזהה
   const deleteProperty = async (id) => {
     try {
       await axios.delete(`${apiUrl}/properties/prop/delete/${id}`, {
@@ -428,6 +431,7 @@ const MyProfile = () => {
       }, 3000);
     }
   };
+  // מחיקת התראות
 
   const removeAllAlerts = async () => {
     try {
@@ -458,6 +462,7 @@ const MyProfile = () => {
       }, 3000);
     }
   };
+  // מחיקת התראה לפי מזהה
   const removeAlert = async (id) => {
     try {
       const res = await axios.delete(`${apiUrl}/deleteAlerts/${id}`, {
@@ -488,6 +493,7 @@ const MyProfile = () => {
       }, 3000);
     }
   };
+  // קריאת התראה לפי מזהה
 
   const unNewAlert = async (id) => {
     try {
@@ -985,7 +991,7 @@ const MyProfile = () => {
                     <div className={styles.buttonsAlert}>
                       {alert?.isNewAlert && (
                         <button
-                          title="צפיתי בהתראה"
+                          title="קראתי את ההתראה"
                           onClick={() => unNewAlert(alert._id)}
                           className={styles.seenBtn}
                         >
