@@ -12,10 +12,7 @@ const Home = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
-  const apiUrl = import.meta.env.VITE_API_URL;
-  console.log("VITE_API_URL:", import.meta.env.VITE_API_URL);
-  console.log("NODE_ENV:", import.meta.env.MODE);
-  console.log("All env vars:", import.meta.env);
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // משתנים של הודעה
   const [message, setMessage] = useState(""); // הודעת הצלחה
@@ -39,7 +36,7 @@ const Home = () => {
       }
     }
     fetchProperties();
-  }, []);
+  }, [apiUrl]);
 
   // מראה את ההודעת הצלחה מהתחברות
   useEffect(() => {

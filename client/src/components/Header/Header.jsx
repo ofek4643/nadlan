@@ -11,6 +11,7 @@ const Header = () => {
   const { user, setUser, isAdmin } = useAuth();
   const ref = useRef();
   const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // ערכים לרשימה של הפרופיל
   const options = [
@@ -28,7 +29,7 @@ const Header = () => {
   const logout = async () => {
     try {
       const res = await axios.post(
-        "http://localhost:5000/logout",
+        `${apiUrl}/logout`,
         {},
         { withCredentials: true }
       );

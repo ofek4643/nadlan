@@ -1,4 +1,11 @@
-import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
@@ -6,31 +13,32 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const [edit , setEdit] = useState(false)
+  const [edit, setEdit] = useState(false);
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
   const didInitialFavoritesFetch = useRef(false);
-  const [isAdmin , setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false);
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
       setIsLoadingUser(true);
-      const res = await axios.get("http://localhost:5000/users", {
+      const res = await axios.get(`${apiUrl}/users`, {
         withCredentials: true,
       });
       setUser(res.data);
-      setIsAdmin(res.data.role === "admin" ? true : false)      
+      setIsAdmin(res.data.role === "admin" ? true : false);
     } catch {
       setUser(null);
     } finally {
       setIsLoadingUser(false);
     }
-  }, []);
+  }, [apiUrl]);
 
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/add-favorite", {
+      const res = await axios.get(`${apiUrl}/add-favorite`, {
         withCredentials: true,
       });
       setMyFavoriteProperties(res.data);
@@ -54,7 +62,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     try {
       const res = await axios.post(
-        "http://localhost:5000/add-favorite",
+        `${apiUrl}/add-favorite`,
         { propertyId },
         { withCredentials: true }
       );
@@ -67,15 +75,15 @@ export const AuthProvider = ({ children }) => {
       setMyFavoriteProperties((prev) =>
         prev.filter((p) => updatedIds.includes(p._id))
       );
-      fetchFavorites()
+      fetchFavorites();
     } catch (error) {
       console.error("שגיאה בעדכון המעודפים", error);
     }
   };
 
   const toggleEdit = () => {
-      setEdit(!edit)
-  }
+    setEdit(!edit);
+  };
 
   // טוען את היוזר בכל פעם שיש שבו שינוי
   useEffect(() => {
