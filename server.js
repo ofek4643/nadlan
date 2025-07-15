@@ -183,8 +183,8 @@ const isAdmin = (req, res, next) => {
 app.post("/logout", (req, res) => {
   res.clearCookie("token", "", {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // ← אותו secure
-    sameSite: process.env.NODE_ENV === "production" ? "None" : "Lax",
+    secure: true,
+    sameSite: "none",
     expires: new Date(0), // או maxAge: 0
     path: "/",
     // אם בלוג‑אין הוספת:
