@@ -186,11 +186,6 @@ const isAdmin = (req, res, next) => {
 };
 
 // התנתקות
-const domain =
-  process.env.NODE_ENV === "production"
-    ? "nadlan-lxn4.onrender.com"
-    : undefined;
-
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {
     httpOnly: true,
