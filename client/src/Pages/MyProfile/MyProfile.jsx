@@ -117,6 +117,7 @@ const MyProfile = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
+        setLoading(true);
         const res = await axios.get(`${apiUrl}/users`, {
           withCredentials: true,
         });
@@ -129,6 +130,8 @@ const MyProfile = () => {
         }
       } catch (error) {
         console.error("שגיאה בשליפת נתוני היוזר", error);
+      } finally {
+        setLoading(false);
       }
     };
 

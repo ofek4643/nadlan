@@ -26,6 +26,8 @@ const AdminUsers = () => {
 
   // מושך נתוני של כל המשתמשים
   useEffect(() => {
+    setLoading(true);
+
     async function fetchUsers() {
       try {
         const res = await axios.get(`${apiUrl}/getAllUsers`, {
@@ -42,6 +44,8 @@ const AdminUsers = () => {
             error.response.data.error || "אירעה שגיאה בשרת, נסה שוב מאוחר יותר."
           );
         }
+      } finally {
+        setLoading(false);
       }
     }
     fetchUsers();
