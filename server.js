@@ -111,6 +111,11 @@ app.post("/register", async (req, res) => {
 });
 
 // התחברות
+const domain =
+  process.env.NODE_ENV === "production"
+    ? "nadlan-lxn4.onrender.com"
+    : undefined;
+
 app.post("/login", async (req, res) => {
   try {
     const { userName, password, rememberMe } = req.body;
@@ -133,12 +138,14 @@ app.post("/login", async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: rememberMe ? "7d" : "2h" }
     );
+
     res.cookie("token", token, {
       httpOnly: true,
-      secure: true,
-      sameSite: "none",
+      secure: process.env.NODE_ENV === "production",
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
       maxAge: rememberMe ? 7 * 24 * 60 * 60 * 1000 : 2 * 60 * 60 * 1000,
       path: "/",
+      ...(domain ? { domain } : {}),
     });
 
     res.status(200).json({
@@ -179,7 +186,10 @@ const isAdmin = (req, res, next) => {
 };
 
 // התנתקות
-const domain = process.env.NODE_ENV === "production" ? "nadlan-lxn4.onrender.com" : undefined;
+const domain =
+  process.env.NODE_ENV === "production"
+    ? "nadlan-lxn4.onrender.com"
+    : undefined;
 
 app.post("/logout", (req, res) => {
   res.clearCookie("token", {
