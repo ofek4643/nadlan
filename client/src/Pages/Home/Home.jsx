@@ -24,7 +24,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await axios.get(`${apiUrl}/properties`, {
+        const res = await axios.get(`${apiUrl}/property`, {
           withCredentials: true,
         });
         setProperties(res.data.properties);

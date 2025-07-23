@@ -2,10 +2,10 @@ import { Link, useNavigate } from "react-router-dom";
 import styles from "../Property/Property.module.css";
 import { useAuth } from "../../data/AuthContext";
 
-const Property = ({ properties, onDelete }) => {
+const Property = ({ properties, onDelete , edit }) => {
   const navigate = useNavigate();
 
-  const { user, toggleFavorite, edit } = useAuth();
+  const { user, toggleFavorite} = useAuth();
   const favorites = user?.favoriteProperties || [];
 
   return (

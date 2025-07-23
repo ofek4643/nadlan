@@ -46,11 +46,11 @@ const MyProfile = () => {
     setMyFavoriteProperties,
     setUser,
     isAdmin,
-    toggleEdit,
     newAlertArray,
     triggerRefreshAlerts,
   } = useAuth();
   const [alertArray, setAlertArray] = useState([]);
+  const [edit, setEdit] = useState(false);
 
   // סגירה ופתיחת הnav
   const [navCollapsed, setNavCollapsed] = useState(false);
@@ -118,7 +118,7 @@ const MyProfile = () => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/users`, {
+        const res = await axios.get(`${apiUrl}/user`, {
           withCredentials: true,
         });
 
@@ -142,7 +142,7 @@ const MyProfile = () => {
   const verifyCurrentPassword = async () => {
     try {
       const res = await axios.post(
-        `${apiUrl}/users/verify-password`,
+        `${apiUrl}/user/verify-password`,
         { password },
         { withCredentials: true }
       );
@@ -183,7 +183,7 @@ const MyProfile = () => {
   // הוצאת נכסים שלי ממסד נתונים
   useEffect(() => {
     async function getMyProperties() {
-      const res = await axios.get(`${apiUrl}/my-properties`, {
+      const res = await axios.get(`${apiUrl}/property/my-properties`, {
         withCredentials: true,
       });
       setMyProperties(res.data);
@@ -290,7 +290,7 @@ const MyProfile = () => {
     try {
       setLoading(true);
       const res = await axios.put(
-        `${apiUrl}/users/update-information`,
+        `${apiUrl}/user/update-information`,
         { fullName, phoneNumber, newPassword, userName },
         { withCredentials: true }
       );
@@ -398,7 +398,7 @@ const MyProfile = () => {
   // מחיקת נכס לפי מזהה
   const deleteProperty = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/properties/prop/delete/${id}`, {
+      await axios.delete(`${apiUrl}/property/${id}`, {
         withCredentials: true,
       });
       setMyProperties((prev) => prev.filter((p) => p._id !== id));
@@ -438,7 +438,7 @@ const MyProfile = () => {
 
   const removeAllAlerts = async () => {
     try {
-      await axios.delete(`${apiUrl}/deleteAlerts`, {
+      await axios.delete(`${apiUrl}/alerts`, {
         withCredentials: true,
       });
       setAlertArray([]);
@@ -468,7 +468,7 @@ const MyProfile = () => {
   // מחיקת התראה לפי מזהה
   const removeAlert = async (id) => {
     try {
-      const res = await axios.delete(`${apiUrl}/deleteAlerts/${id}`, {
+      const res = await axios.delete(`${apiUrl}/alerts/${id}`, {
         withCredentials: true,
       });
       console.log(res.data.message);
@@ -501,7 +501,7 @@ const MyProfile = () => {
   const unNewAlert = async (id) => {
     try {
       await axios.put(
-        `${apiUrl}/unNewAlerts/${id}`,
+        `${apiUrl}/alerts/${id}`,
         {},
         { withCredentials: true }
       );
@@ -913,7 +913,7 @@ const MyProfile = () => {
                 </Link>
                 <button
                   className={styles.editMyProperties}
-                  onClick={toggleEdit}
+                  onClick={() => setEdit(!edit)}
                 >
                   מצב עריכה
                 </button>
@@ -925,6 +925,7 @@ const MyProfile = () => {
                   <Property
                     properties={currentProperties}
                     onDelete={deleteProperty}
+                    edit = {edit}
                   />
                 </div>
                 <div className={styles.pagination}>

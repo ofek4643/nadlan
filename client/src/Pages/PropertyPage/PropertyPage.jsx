@@ -13,7 +13,7 @@ const PropertyPage = () => {
     const notifyView = async () => {
       try {
          const res = await axios.post(
-            `${apiUrl}/properties/${id}/view`,
+            `${apiUrl}/alerts/${id}`,
             {},
             { withCredentials: true }
           );
@@ -31,7 +31,7 @@ const PropertyPage = () => {
   useEffect(() => {
     async function getProp() {
       try {
-        const res = await axios.get(`${apiUrl}/propertyId/${id}`);
+        const res = await axios.get(`${apiUrl}/property/${id}`);
         setProperty(res.data);
       } catch (error) {
         console.error("שגיאה בשליפת נתוני נכס:", error);

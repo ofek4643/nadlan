@@ -1,6 +1,6 @@
 .property {
   width: 470px;
-  height: 380px;
+  min-height: 380px;
   margin-top: 40px;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
   transition: all 0.2s ease-in-out;

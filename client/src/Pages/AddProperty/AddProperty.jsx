@@ -73,7 +73,13 @@ const AddProperty = () => {
     // בדיקה ראשונית אם הוזנו ערכים תקינים
     let hasErrors = false;
 
-    if (header.length <= 8 || !header.includes(" ")) {
+    if (
+      header.trim().length <= 3 ||
+      header
+        .trim()
+        .split(" ")
+        .filter((w) => w.length > 0).length < 2
+    ) {
       setHeaderError(true);
       hasErrors = true;
     }
@@ -137,7 +143,7 @@ const AddProperty = () => {
       setLoading(true);
 
       const res = await axios.post(
-        `${apiUrl}/add-property`,
+        `${apiUrl}/property/add-property`,
         {
           header,
           description,
@@ -213,7 +219,13 @@ const AddProperty = () => {
   // מבצע בזמן אמת אם השדות עדיין תקינים
   useEffect(() => {
     if (submited) {
-      if (header.length > 8 && header.includes(" ")) {
+      if (
+        header.trim().length > 3 &&
+        header
+          .trim()
+          .split(" ")
+          .filter((w) => w.length > 0).length >= 2
+      ) {
         setHeaderError(false);
       } else {
         setHeaderError(true);

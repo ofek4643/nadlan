@@ -75,7 +75,7 @@ const EditProperty = () => {
     async function getProp() {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/propertyId/${id}`);
+        const res = await axios.get(`${apiUrl}/property/${id}`);
         setHeader(res.data.header);
         setDescription(res.data.description);
         setPrice(res.data.price);
@@ -175,7 +175,7 @@ const EditProperty = () => {
       setLoading(true);
 
       const res = await axios.put(
-        `${apiUrl}/edit-property/${id}`,
+        `${apiUrl}/property/${id}`,
         {
           header,
           description,

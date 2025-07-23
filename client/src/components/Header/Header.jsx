@@ -38,7 +38,7 @@ const Header = () => {
   const logout = async () => {
     try {
       await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/logout`,
+        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/auth/logout`,
         {
           method: "POST",
           credentials: "include",
@@ -84,7 +84,7 @@ const Header = () => {
     // שליפת התראות חדשות
     const fetchNewAlerts = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/newAlerts`, {
+        const res = await axios.get(`${apiUrl}/alerts/new`, {
           withCredentials: true,
         });
         setNewAlertArray(res.data.newAlerts);

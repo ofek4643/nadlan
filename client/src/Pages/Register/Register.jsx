@@ -137,7 +137,7 @@ const Register = () => {
       setLoading(true);
 
       const res = await axios.post(
-        `${apiUrl}/register`,
+        `${apiUrl}/auth/register`,
         {
           fullName,
           userName,

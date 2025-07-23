@@ -15,8 +15,6 @@ export const AuthProvider = ({ children }) => {
   const [isAdmin, setIsAdmin] = useState(false);
 
   const [isLoadingUser, setIsLoadingUser] = useState(true);
-  const [edit, setEdit] = useState(false);
-
   const [myFavoriteProperties, setMyFavoriteProperties] = useState([]);
   const didInitialFavoritesFetch = useRef(false);
   const [newAlertArray, setNewAlertArray] = useState([]);
@@ -26,7 +24,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/users`, {
+      const res = await axios.get(`${apiUrl}/user`, {
         withCredentials: true,
       });
       setUser(res.data);
@@ -45,7 +43,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/add-favorite`, {
+      const res = await axios.get(`${apiUrl}/favorites`, {
         withCredentials: true,
       });
       setMyFavoriteProperties(res.data);
@@ -69,7 +67,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     try {
       const res = await axios.post(
-        `${apiUrl}/add-favorite`,
+        `${apiUrl}/favorites`,
         { propertyId },
         { withCredentials: true }
       );
@@ -87,11 +85,6 @@ export const AuthProvider = ({ children }) => {
       console.error("שגיאה בעדכון המעודפים", error);
     }
   };
-  // משנה את מצב העריכה של הנכסים שלי
-  const toggleEdit = () => {
-    setEdit(!edit);
-  };
-
   // טוען את היוזר בכל פעם שיש שבו שינוי
   useEffect(() => {
     fetchUser();
@@ -121,7 +114,7 @@ export const AuthProvider = ({ children }) => {
     }
     async function fetchNewAlerts() {
       try {
-        const res = await axios.get(`${apiUrl}/newAlerts`, {
+        const res = await axios.get(`${apiUrl}/alerts/new`, {
           withCredentials: true,
         });
         setNewAlertArray(res.data.newAlerts);
@@ -144,8 +137,6 @@ export const AuthProvider = ({ children }) => {
         myFavoriteProperties,
         setMyFavoriteProperties,
         isAdmin,
-        toggleEdit,
-        edit,
         newAlertArray,
         setNewAlertArray,
         refreshAlerts,

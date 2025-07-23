@@ -98,7 +98,7 @@ const SearchProperty = () => {
       try {
         if (isFiltering) {
           // שליפה עם סינון
-          const res = await axios.post(`${apiUrl}/properties/filter`, {
+          const res = await axios.post(`${apiUrl}/property/filter`, {
             type,
             city,
             minRooms: parsedMinRooms,
@@ -123,7 +123,7 @@ const SearchProperty = () => {
           setTotalPages(res.data.totalPages);
         } else {
           // שליפה רגילה
-          const res = await axios.get(`${apiUrl}/properties`, {
+          const res = await axios.get(`${apiUrl}/property`, {
             params: {
               page: currentPage,
               limit: 9,
@@ -370,7 +370,7 @@ const SearchProperty = () => {
                           className={styles.checkBox}
                           type="checkbox"
                           checked={furnished}
-                          onClick={() => setFurnished((prev) => !prev)}
+                          onChange={() => setFurnished((prev) => !prev)}
                         />
                         מרוהט
                       </label>
@@ -379,7 +379,7 @@ const SearchProperty = () => {
                           className={styles.checkBox}
                           type="checkbox"
                           checked={airConditioning}
-                          onClick={() => setAirConditioning((prev) => !prev)}
+                          onChange={() => setAirConditioning((prev) => !prev)}
                         />
                         מיזוג
                       </label>
@@ -390,7 +390,7 @@ const SearchProperty = () => {
                           className={styles.checkBox}
                           type="checkbox"
                           checked={parking}
-                          onClick={() => setParking((prev) => !prev)}
+                          onChange={() => setParking((prev) => !prev)}
                         />
                         חניה
                       </label>
@@ -399,7 +399,7 @@ const SearchProperty = () => {
                           className={styles.checkBox}
                           type="checkbox"
                           checked={balcony}
-                          onClick={() => setBalcony((prev) => !prev)}
+                          onChange={() => setBalcony((prev) => !prev)}
                         />
                         מרפסת
                       </label>
@@ -410,7 +410,7 @@ const SearchProperty = () => {
                           className={styles.checkBox}
                           type="checkbox"
                           checked={elevator}
-                          onClick={() => setElevator((prev) => !prev)}
+                          onChange={() => setElevator((prev) => !prev)}
                         />
                         מעלית
                       </label>
@@ -419,7 +419,7 @@ const SearchProperty = () => {
                           className={styles.checkBox}
                           type="checkbox"
                           checked={storage}
-                          onClick={() => setStorage((prev) => !prev)}
+                          onChange={() => setStorage((prev) => !prev)}
                         />
                         מחסן
                       </label>

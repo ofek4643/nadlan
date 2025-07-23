@@ -59,7 +59,7 @@ export default function AdminDashboard() {
     async function fetchStats() {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/api/admin/dashboard-stats`, {
+        const res = await axios.get(`${apiUrl}/admin/dashboard-stats`, {
           withCredentials: true,
         });
         setStats(res.data);
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const res = await axios.get(`${apiUrl}/getAllUsers`, {
+        const res = await axios.get(`${apiUrl}/admin/users`, {
           withCredentials: true,
         });
         setUsers(res.data);

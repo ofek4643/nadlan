@@ -30,7 +30,7 @@ const AdminUsers = () => {
 
     async function fetchUsers() {
       try {
-        const res = await axios.get(`${apiUrl}/getAllUsers`, {
+        const res = await axios.get(`${apiUrl}/admin/users`, {
           withCredentials: true,
         });
         setUsers(res.data);
@@ -54,7 +54,7 @@ const AdminUsers = () => {
   useEffect(() => {
     async function getUserId() {
       try {
-        const res = await axios.get(`${apiUrl}/users`, {
+        const res = await axios.get(`${apiUrl}/user`, {
           withCredentials: true,
         });
         setMyId(res.data._id);
@@ -101,7 +101,7 @@ const AdminUsers = () => {
     // אם אין שגיאות אז תמחק את היוזר
     try {
       setLoading(true);
-      const res = await axios.delete(`${apiUrl}/${userId}`, {
+      const res = await axios.delete(`${apiUrl}/admin/${userId}`, {
         withCredentials: true,
       });
       setUsers(users.filter((i) => i._id !== userId));
@@ -153,7 +153,7 @@ const AdminUsers = () => {
     try {
       setLoading(true);
       const res = await axios.put(
-        `${apiUrl}/blockUser/${userId}`,
+        `${apiUrl}/admin/block/${userId}`,
         {},
         { withCredentials: true }
       );
