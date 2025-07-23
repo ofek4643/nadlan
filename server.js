@@ -43,8 +43,8 @@ connectDB();
 
 // הגבלת בקשות לשרת מאותו המשתמש
 const globalLimiter = rateLimit({
-  windowMs: 15 * 60 * 1000,
-  max: 100,
+  windowMs: 5 * 60 * 1000,
+  max: 200,
   standardHeaders: true,
   legacyHeaders: false,
   message: "שלחת יותר מידי בקשות אנא תמתין כמה דקות",
