@@ -1,12 +1,42 @@
-# React + Vite
+# 🏠 Nadlan App - אפליקציית נדל"ן
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## פרויקט נדל"ן הבנוי ב־ React עם Vite. מאפשר מיון, סינון וניהול נכסים למכירה ולהשכרה, כולל מערכת משתמשים, ניהול מועדפים, הוספת נכסים, דשבורד לאדמין ועוד.
 
-Currently, two official plugins are available:
+## 🚀 טכנולוגיות עיקריות
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Frontend**: React + Vite
+- **Backend**: Node.js + Express
+- **Database**: MongoDB (עם Mongoose)
+- **Authentication**: JWT + Cookies
+- **Styling**: CSS Modules
+- **State Management**: useState/useEffect/AuthContext
+- **Deployment**: Render
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 🧑‍💻 תכונות עיקריות
+
+- הרשמה / התחברות עם אימות בסיסי
+- מיון וסינון נכסים לפי מיקום, מחיר, סוג נכס ועוד
+- הצגת נכסים נבחרים
+- ניהול נכסים עבור משתמשים
+- מועדפים והתראות אישיות
+- הוספת נכסים, עריכת נכסים ומחיקת הנכסים
+- אדמין שיכול לנהל משתמשים
+- דשבורד אדמין עם סטטיסטיקות בזמן אמת
+
+---
+
+## 🛠️ התקנה מקומית
+
+1. קלון של הריפוזיטורי:
+
+```bash
+git clone https://github.com/ofek4643/nadlan.git
+```
+
+frontend
+npm run dec
+
+backend
+node server.js
