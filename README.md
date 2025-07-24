@@ -35,8 +35,10 @@
 git clone https://github.com/ofek4643/nadlan.git
 ```
 
+cd nadlan-app
+
 frontend
-npm run dec
+npm run dev
 
 backend
 node server.js
