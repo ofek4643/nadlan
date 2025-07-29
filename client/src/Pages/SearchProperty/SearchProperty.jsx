@@ -3,7 +3,7 @@ import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import Property from "../../components/Property/Property.jsx";
 import { useEffect, useState } from "react";
-import { filterProperies, getProperies } from "../../api/property.js";
+import { filterProperties, getProperties } from "../../api/property.js";
 const SearchProperty = () => {
   // משתנים של טעינה הודעה והאם פתוח הרשימה
   const [loading, setLoading] = useState(true);
@@ -119,7 +119,7 @@ const SearchProperty = () => {
             limit: 9,
           };
 
-          const res = await filterProperies(dataFillter);
+          const res = await filterProperties(dataFillter);
 
           setFilteredProperties(res.data.properties);
           setTotalPages(res.data.totalPages);
@@ -132,7 +132,7 @@ const SearchProperty = () => {
               sort,
             },
           };
-          const res = await getProperies(dataProperties)
+          const res = await getProperties(dataProperties)
           setAllProperties(res.data.properties);
           setFilteredProperties(res.data.properties);
           setTotalPages(res.data.totalPages);

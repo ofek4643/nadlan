@@ -13,7 +13,7 @@ import {
   getAllAlerts,
   readAlert,
 } from "../../api/alerts.js";
-import { deletePropertyById, myPropeties } from "../../api/property.js";
+import { deletePropertyById, myUserProperties } from "../../api/property.js";
 // דרישות סיסמא
 const requirements = [
   {
@@ -181,7 +181,7 @@ const MyProfile = () => {
   // הוצאת נכסים שלי ממסד נתונים
   useEffect(() => {
     async function getMyProperties() {
-      const res = await myPropeties();
+      const res = await myUserProperties();
       setMyProperties(res.data);
     }
     getMyProperties();

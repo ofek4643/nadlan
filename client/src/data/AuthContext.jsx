@@ -8,7 +8,7 @@ import React, {
 } from "react";
 import { myUserId as myUser } from "../api/users";
 import { newAlerts } from "../api/alerts";
-import { getAlters, toggleFavoriteProperty } from "../api/favorites";
+import { getAlerts, toggleFavoriteProperty } from "../api/favorites";
 
 const AuthContext = createContext();
 // משתנים
@@ -41,9 +41,11 @@ export const AuthProvider = ({ children }) => {
 
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
-    if (!user) return;
+    if (!user) {
+      return
+    }
     try {
-      const res = await getAlters();
+      const res = await getAlerts();
       setMyFavoriteProperties(res.data);
 
       const favIds = res.data.map((p) => p._id);
@@ -116,7 +118,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
     fetchNewAlerts();
-  }, [refreshAlerts]);
+  }, [refreshAlerts , user]);
 
   return (
     <AuthContext.Provider

@@ -4,7 +4,7 @@ import styles from "../AddProperty/AddProperty.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
 import { labelStyle } from "../../data/data.js";
-import { addPropery } from "../../api/property.js";
+import { addProperty } from "../../api/property.js";
 
 const AddProperty = () => {
   //משתנים של בדיקה ומידע של נכס
@@ -162,7 +162,7 @@ const AddProperty = () => {
         elevator,
         storage,
       };
-      const res = await addPropery(propertyData);
+      const res = await addProperty(propertyData);
       console.log("התגובה מהשרת:", res.data);
       setShowMessage(res.data);
 

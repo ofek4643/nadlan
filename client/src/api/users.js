@@ -1,28 +1,16 @@
-import axios from "axios";
+import { api } from "./api";
 
-export const logoutUser = async () =>
-  await axios.post("/api/auth/logout", null, { withCredentials: true });
+export const logoutUser = async () => api.post("/api/auth/logout");
 
 export const registerGuest = async (data) =>
-  await axios.post("/api/auth/register", data, { withCredentials: true });
+  api.post("/api/auth/register", data);
 
-export const loginUser = async (data) =>
-  await axios.post("/api/auth/login", data, { withCredentials: true });
+export const loginUser = async (data) => api.post("/api/auth/login", data);
 
-export const myUserId = async () =>
-  await axios.get(`/api/user`, {
-    withCredentials: true,
-  });
+export const myUserId = async () => api.get("/api/user");
+
 export const verifyPassword = async (data) =>
-  await axios.post(
-    `/api/user/verify-password`,
-    { password: data },
-    {
-      withCredentials: true,
-    }
-  );
+  api.post("/api/user/verify-password", { password: data });
 
 export const updateMyInformation = async (data) =>
-  await axios.put(`/api/user/update-information`, data, {
-    withCredentials: true,
-  });
+  api.put("/api/user/update-information", data);
