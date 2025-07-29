@@ -3,7 +3,8 @@ import styles from "./Header.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { useAuth } from "../../data/AuthContext.jsx";
-import axios from "axios";
+import { logoutUser } from "../../api/users.js";
+import { newAlerts } from "../../api/alerts.js";
 
 const Header = () => {
   //משתנים
@@ -20,8 +21,6 @@ const Header = () => {
   const ref = useRef();
   const navigate = useNavigate();
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   // רשימות אפשרויות בתפריט הפרופיל
   const options = [
     { label: "הפרופיל שלי", to: "/my-profile" },
@@ -37,17 +36,11 @@ const Header = () => {
   // התנתקות
   const logout = async () => {
     try {
-      await fetch(
-        `${import.meta.env.VITE_API_URL || "http://localhost:5000"}/auth/logout`,
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
+      await logoutUser();
       setUser(null);
       navigate("/", { state: { showMessage: "התנתקת בהצלחה" } });
     } catch (error) {
-      console.error("Error logging out:", error);
+      console.error("שגיאה בהתנתקות:", error);
     }
   };
 
@@ -84,9 +77,7 @@ const Header = () => {
     // שליפת התראות חדשות
     const fetchNewAlerts = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/alerts/new`, {
-          withCredentials: true,
-        });
+        const res = await newAlerts();
         setNewAlertArray(res.data.newAlerts);
       } catch (error) {
         if (error.response?.status === 401) {
@@ -99,7 +90,7 @@ const Header = () => {
     };
 
     fetchNewAlerts();
-  }, [apiUrl, refreshAlerts, setNewAlertArray, user, setUser]);
+  }, [refreshAlerts, setNewAlertArray, user, setUser]);
   return (
     <header className={styles.header}>
       <div className={styles.container}>

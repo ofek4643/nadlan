@@ -1,22 +1,17 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import styles from "./PropertyPage.module.css";
+import { createAlert } from "../../api/alerts";
+import { getPropertyById } from "../../api/property";
 
 const PropertyPage = () => {
   const { id } = useParams();
   const [property, setProperty] = useState(null);
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   useEffect(() => {
     const notifyView = async () => {
       try {
-         const res = await axios.post(
-            `${apiUrl}/alerts/${id}`,
-            {},
-            { withCredentials: true }
-          );
+         const res = await createAlert(id)
           console.log(res.data.message);
           
       } catch (err) {
@@ -25,20 +20,20 @@ const PropertyPage = () => {
     };
 
     notifyView();
-  }, [id, apiUrl]);
+  }, [id]);
 
   //שליפת נתוני הנכס הנבחר
   useEffect(() => {
     async function getProp() {
       try {
-        const res = await axios.get(`${apiUrl}/property/${id}`);
+        const res = await getPropertyById(id)
         setProperty(res.data);
       } catch (error) {
         console.error("שגיאה בשליפת נתוני נכס:", error);
       }
     }
     getProp();
-  }, [id, apiUrl]);
+  }, [id]);
 
   if (!property)
     return (

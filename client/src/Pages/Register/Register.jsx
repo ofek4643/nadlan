@@ -4,8 +4,8 @@ import styles from "./Register.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { Link } from "react-router-dom";
 import { labelStyle } from "../../data/data.js";
-import axios from "axios";
 import { useAuth } from "../../data/AuthContext.jsx";
+import { registerGuest } from "../../api/users.js";
 // דרישות סיסמא
 const requirements = [
   {
@@ -64,8 +64,6 @@ const Register = () => {
 
   const navigate = useNavigate();
   const { fetchUser } = useAuth();
-
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // בודק את החוזק הסיסמא המוזנת בזמן אמת
   useEffect(() => {
@@ -135,18 +133,8 @@ const Register = () => {
     // שליחת נתונים לשרת בשביל שירשם
     try {
       setLoading(true);
-
-      const res = await axios.post(
-        `${apiUrl}/auth/register`,
-        {
-          fullName,
-          userName,
-          email,
-          phoneNumber,
-          password,
-        },
-        { withCredentials: true }
-      );
+      const dataRegister = { fullName, userName, email, phoneNumber, password };
+      const res = await registerGuest(dataRegister);
       console.log("התגובה מהשרת:", res.data.message);
       await fetchUser();
       navigate("/", { state: { showMessage: res.data.message } });

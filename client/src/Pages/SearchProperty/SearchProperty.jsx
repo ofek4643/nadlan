@@ -3,7 +3,7 @@ import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import Property from "../../components/Property/Property.jsx";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { filterProperies, getProperies } from "../../api/property.js";
 const SearchProperty = () => {
   // משתנים של טעינה הודעה והאם פתוח הרשימה
   const [loading, setLoading] = useState(true);
@@ -63,7 +63,6 @@ const SearchProperty = () => {
     maxRooms === "5+" ? Infinity : maxRooms ? parseInt(maxRooms) : Infinity;
 
   const [filterTrigger, setFilterTrigger] = useState(0);
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // בודקת אם יש סינון
   function hasFilters() {
@@ -98,7 +97,8 @@ const SearchProperty = () => {
       try {
         if (isFiltering) {
           // שליפה עם סינון
-          const res = await axios.post(`${apiUrl}/property/filter`, {
+
+          const dataFillter = {
             type,
             city,
             minRooms: parsedMinRooms,
@@ -117,19 +117,22 @@ const SearchProperty = () => {
             sort,
             page: currentPage,
             limit: 9,
-          });
+          };
+
+          const res = await filterProperies(dataFillter);
 
           setFilteredProperties(res.data.properties);
           setTotalPages(res.data.totalPages);
         } else {
           // שליפה רגילה
-          const res = await axios.get(`${apiUrl}/property`, {
+          const dataProperties = {
             params: {
               page: currentPage,
               limit: 9,
               sort,
             },
-          });
+          };
+          const res = await getProperies(dataProperties)
           setAllProperties(res.data.properties);
           setFilteredProperties(res.data.properties);
           setTotalPages(res.data.totalPages);

@@ -1,9 +1,9 @@
 import { useParams } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
 import styles from "./EditUser.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/data.js";
+import { editUserAdmin, getUserAdmin } from "../../api/admin.js";
 
 // דרישות סיסמא
 
@@ -27,15 +27,11 @@ const EditUser = () => {
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   // משיכת פרטי משתמש
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await axios.get(`${apiUrl}/admin/users/${id}`, {
-          withCredentials: true,
-        });
+        const res = await getUserAdmin(id);
         setFullName(res.data.fullName);
         setEmail(res.data.email || "");
         setPhoneNumber(res.data.phoneNumber || "");
@@ -45,17 +41,14 @@ const EditUser = () => {
       }
     };
     fetchUser();
-  }, [id , apiUrl]);
+  }, [id]);
 
   // עדכון פרטי המשתמש
   const saveHandler = async () => {
     try {
       setLoading(true);
-      const res = await axios.put(
-        `${apiUrl}/admin/users/${id}`,
-        { fullName, phoneNumber, email, userName },
-        { withCredentials: true }
-      );
+      const dataEditUser = {fullName, phoneNumber, email, userName}
+      const res = await editUserAdmin(dataEditUser , id)
       console.log(res.data);
       setShowMessageVisibilty(true);
       setShowMessage(res.data);

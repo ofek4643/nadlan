@@ -3,6 +3,8 @@ import styles from "../AdminUsers/AdminUsers.module.css";
 import { Link } from "react-router-dom";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import axios from "axios";
+import { allUsersAdmin, blockUser, deleteUser } from "../../api/admin.js";
+import { myUserId } from "../../api/users.js";
 
 const AdminUsers = () => {
   // משתנים
@@ -22,17 +24,13 @@ const AdminUsers = () => {
   const [showMessage, setShowMessage] = useState("");
   const timeoutRef = useRef(null);
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   // מושך נתוני של כל המשתמשים
   useEffect(() => {
     setLoading(true);
 
     async function fetchUsers() {
       try {
-        const res = await axios.get(`${apiUrl}/admin/users`, {
-          withCredentials: true,
-        });
+        const res = await allUsersAdmin()
         setUsers(res.data);
         console.log(res.data);
       } catch (error) {
@@ -49,21 +47,19 @@ const AdminUsers = () => {
       }
     }
     fetchUsers();
-  }, [apiUrl]);
+  }, []);
   // מושך את הid שלי להשוואה
   useEffect(() => {
     async function getUserId() {
       try {
-        const res = await axios.get(`${apiUrl}/user`, {
-          withCredentials: true,
-        });
+        const res = await myUserId()
         setMyId(res.data._id);
       } catch (error) {
         console.log(error);
       }
     }
     getUserId();
-  }, [apiUrl]);
+  }, []);
 
   // בודק בזמן אמת את החיפוש של המשתמשים
   useEffect(() => {
@@ -101,9 +97,7 @@ const AdminUsers = () => {
     // אם אין שגיאות אז תמחק את היוזר
     try {
       setLoading(true);
-      const res = await axios.delete(`${apiUrl}/admin/${userId}`, {
-        withCredentials: true,
-      });
+      const res = await deleteUser(userId)
       setUsers(users.filter((i) => i._id !== userId));
       setFilteredUsers(filteredUsers.filter((i) => i._id !== userId));
       setShowMessage(res.data.message);
@@ -152,11 +146,7 @@ const AdminUsers = () => {
     }
     try {
       setLoading(true);
-      const res = await axios.put(
-        `${apiUrl}/admin/block/${userId}`,
-        {},
-        { withCredentials: true }
-      );
+      const res = await blockUser(userId)
       setShowMessage(res.data.message);
       setIsBlock((prev) => !prev);
     } catch (error) {

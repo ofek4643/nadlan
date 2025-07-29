@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import {Link } from "react-router-dom";
 import styles from "../AddProperty/AddProperty.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import CustomSelect from "../../components/CustomSelect/CustomSelect.jsx";
 import { labelStyle } from "../../data/data.js";
-import axios from "axios";
+import { addPropery } from "../../api/property.js";
 
 const AddProperty = () => {
   //משתנים של בדיקה ומידע של נכס
@@ -64,8 +64,6 @@ const AddProperty = () => {
   const [submited, setSubmited] = useState(false);
 
   const [loading, setLoading] = useState(false);
-
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   async function submit() {
     setSubmited(true);
@@ -141,34 +139,30 @@ const AddProperty = () => {
     // אם הכל תקין מפקסם את הנכס
     try {
       setLoading(true);
-
-      const res = await axios.post(
-        `${apiUrl}/property/add-property`,
-        {
-          header,
-          description,
-          price,
-          status,
-          type,
-          city,
-          neighborhood,
-          street,
-          houseNumber,
-          floor,
-          maxFloor,
-          imageUrl,
-          size,
-          rooms,
-          bathrooms,
-          furnished,
-          airConditioning,
-          parking,
-          balcony,
-          elevator,
-          storage,
-        },
-        { withCredentials: true }
-      );
+      const propertyData = {
+        header,
+        description,
+        price,
+        status,
+        type,
+        city,
+        neighborhood,
+        street,
+        houseNumber,
+        floor,
+        maxFloor,
+        imageUrl,
+        size,
+        rooms,
+        bathrooms,
+        furnished,
+        airConditioning,
+        parking,
+        balcony,
+        elevator,
+        storage,
+      };
+      const res = await addPropery(propertyData);
       console.log("התגובה מהשרת:", res.data);
       setShowMessage(res.data);
 

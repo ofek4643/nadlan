@@ -53,12 +53,12 @@ const globalLimiter = rateLimit({
 app.use(globalLimiter);
 
 // שימוש ב route
-app.use("/auth", authRouter);
-app.use("/property", propertyRouter);
-app.use("/alerts" , alertsRouter)
-app.use("/favorites" , favoriteRouter)
-app.use("/user" , userRouter)
-app.use("/admin" , adminRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/property", propertyRouter);
+app.use("/api/alerts" , alertsRouter)
+app.use("/api/favorites" , favoriteRouter)
+app.use("/api/user" , userRouter)
+app.use("/api/admin" , adminRouter)
 
 // יצירת השרת
 app.listen(port, () => {

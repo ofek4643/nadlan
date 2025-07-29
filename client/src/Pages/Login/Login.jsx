@@ -2,9 +2,9 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styles from "./Login.module.css";
 import CustomInput from "../../components/CustomInput/CustomInput";
-import axios from "axios";
 import { useAuth } from "../../data/AuthContext";
 import { useLocation } from "react-router-dom";
+import { loginUser } from "../../api/users";
 
 const Login = () => {
   // משתנים של התחברות
@@ -24,7 +24,6 @@ const Login = () => {
   const [submited, setSubmited] = useState(false);
   const { fetchUser } = useAuth();
   const navigate = useNavigate();
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // בדיקה ראשונית אם השדות תקינים
   const onSubmit = async (e) => {
@@ -57,15 +56,9 @@ const Login = () => {
     // אם כן בודק האם יש יוזר במסד נתונים
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${apiUrl}/auth/login`,
-        {
-          userName,
-          password,
-          rememberMe,
-        },
-        { withCredentials: true }
-      );
+
+      const dataLogin = { userName, password, rememberMe };
+      const res = await loginUser(dataLogin)
       console.log("התגובה מהשרת:", res.data);
       await fetchUser();
       navigate("/", { state: { showMessage: res.data.message } });

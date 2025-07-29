@@ -12,7 +12,6 @@ const Home = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // משתנים של הודעה
   const [message, setMessage] = useState(""); // הודעת הצלחה
@@ -24,7 +23,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await axios.get(`${apiUrl}/property`, {
+        const res = await axios.get(`/api/property`, {
           withCredentials: true,
         });
         setProperties(res.data.properties);
@@ -36,7 +35,7 @@ const Home = () => {
       }
     }
     fetchProperties();
-  }, [apiUrl]);
+  }, []);
 
   // מראה את ההודעת הצלחה מהתחברות
 

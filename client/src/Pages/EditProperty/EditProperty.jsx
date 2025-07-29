@@ -1,10 +1,10 @@
-import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import styles from "../EditProperty/EditProperty.module.css";
 import { Link, useParams } from "react-router-dom";
 import { labelStyle } from "../../data/data.js";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
+import { getPropertyById, updatePropertyById } from "../../api/property.js";
 
 const EditProperty = () => {
   const { id } = useParams();
@@ -68,14 +68,12 @@ const EditProperty = () => {
 
   const [loading, setLoading] = useState(false);
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   //שולף את פרטי הנכס
   useEffect(() => {
     async function getProp() {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/property/${id}`);
+        const res = await getPropertyById(id);
         setHeader(res.data.header);
         setDescription(res.data.description);
         setPrice(res.data.price);
@@ -104,7 +102,7 @@ const EditProperty = () => {
       }
     }
     getProp();
-  }, [id , apiUrl]);
+  }, [id]);
   async function submit() {
     setSubmited(true);
 
@@ -173,34 +171,30 @@ const EditProperty = () => {
     // אם הכל תקין מעדכן את הנכס
     try {
       setLoading(true);
-
-      const res = await axios.put(
-        `${apiUrl}/property/${id}`,
-        {
-          header,
-          description,
-          price,
-          status,
-          type,
-          city,
-          neighborhood,
-          street,
-          houseNumber,
-          floor,
-          maxFloor,
-          imageUrl,
-          size,
-          rooms,
-          bathrooms,
-          furnished,
-          airConditioning,
-          parking,
-          balcony,
-          elevator,
-          storage,
-        },
-        { withCredentials: true }
-      );
+      const dataUpdateProperty = {
+        header,
+        description,
+        price,
+        status,
+        type,
+        city,
+        neighborhood,
+        street,
+        houseNumber,
+        floor,
+        maxFloor,
+        imageUrl,
+        size,
+        rooms,
+        bathrooms,
+        furnished,
+        airConditioning,
+        parking,
+        balcony,
+        elevator,
+        storage,
+      };
+      const res = await updatePropertyById(dataUpdateProperty , id)
       console.log("התגובה מהשרת:", res.data);
       setShowMessage(res.data);
     } catch (error) {

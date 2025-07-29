@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
-import axios from "axios";
 import {
   AreaChart,
   Area,
@@ -14,6 +13,7 @@ import {
 } from "recharts";
 import styles from "./AdminDashboard.module.css";
 import { Link } from "react-router-dom";
+import { dashboardStats, allUsersAdmin } from "../../api/admin.js";
 
 const StatCard = ({ title, value, trend }) => (
   <div className={styles.statCard}>
@@ -53,15 +53,12 @@ export default function AdminDashboard() {
     trendProperties: null,
   });
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     async function fetchStats() {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/admin/dashboard-stats`, {
-          withCredentials: true,
-        });
+        const res = await dashboardStats()
         setStats(res.data);
       } catch (err) {
         console.error(
@@ -73,21 +70,19 @@ export default function AdminDashboard() {
       }
     }
     fetchStats();
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     async function fetchUsers() {
       try {
-        const res = await axios.get(`${apiUrl}/admin/users`, {
-          withCredentials: true,
-        });
+        const res = await allUsersAdmin()
         setUsers(res.data);
       } catch (error) {
         console.log(error);
       }
     }
     fetchUsers();
-  }, [apiUrl]);
+  }, []);
 
   useEffect(() => {
     const search = value.trim().toLowerCase();

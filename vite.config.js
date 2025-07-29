@@ -8,6 +8,14 @@ export default ({ mode }) => {
   return defineConfig({
     root: "./client",
     plugins: [react()],
+    server: {
+      proxy: {
+        "/api" : {
+          target: "http://localhost:5000",
+          // target: "https://nadlan-lxn4.onrender.com"
+        }
+      }
+    },
     define: {
       "import.meta.env.VITE_API_URL": JSON.stringify(env.VITE_API_URL),
     },

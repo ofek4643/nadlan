@@ -4,8 +4,16 @@ import { Link } from "react-router-dom";
 import Property from "../../components/Property/Property.jsx";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/data.js";
-import axios, { Axios } from "axios";
+
 import { useAuth } from "../../data/AuthContext.jsx";
+import { myUserId, updateMyInformation, verifyPassword } from "../../api/users.js";
+import {
+  deleteAlert,
+  deleteAlerts,
+  getAllAlerts,
+  readAlert,
+} from "../../api/alerts.js";
+import { deletePropertyById, myPropeties } from "../../api/property.js";
 // דרישות סיסמא
 const requirements = [
   {
@@ -106,8 +114,6 @@ const MyProfile = () => {
     myFavoriteProperties.length / propertiesPerPage
   );
 
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
-
   // מתחיל את הדף למעלה אם השתנה החלון
   useEffect(() => {
     window.scrollTo({ top: 0, left: 0 });
@@ -118,9 +124,7 @@ const MyProfile = () => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);
-        const res = await axios.get(`${apiUrl}/user`, {
-          withCredentials: true,
-        });
+        const res = await myUserId()
 
         if (res.data) {
           setFullName(res.data.fullName || "");
@@ -136,16 +140,12 @@ const MyProfile = () => {
     };
 
     fetchUserProfile();
-  }, [apiUrl]);
+  }, []);
 
   // בדיקת סיסמא נוכחית
   const verifyCurrentPassword = async () => {
     try {
-      const res = await axios.post(
-        `${apiUrl}/user/verify-password`,
-        { password },
-        { withCredentials: true }
-      );
+      const res = await verifyPassword(password);
       return res.data.valid;
     } catch (err) {
       console.error("שגיאה באימות סיסמה", err);
@@ -167,9 +167,7 @@ const MyProfile = () => {
   useEffect(() => {
     async function fetchAlerts() {
       try {
-        const res = await axios.get(`${apiUrl}/alerts`, {
-          withCredentials: true,
-        });
+        const res = await getAllAlerts();
         setAlertArray(res.data.alerts);
         console.log("alerts:", res.data.alerts);
       } catch (error) {
@@ -178,18 +176,16 @@ const MyProfile = () => {
       }
     }
     fetchAlerts();
-  }, [apiUrl]);
+  }, []);
 
   // הוצאת נכסים שלי ממסד נתונים
   useEffect(() => {
     async function getMyProperties() {
-      const res = await axios.get(`${apiUrl}/property/my-properties`, {
-        withCredentials: true,
-      });
+      const res = await myPropeties();
       setMyProperties(res.data);
     }
     getMyProperties();
-  }, [apiUrl]);
+  }, []);
 
   // איזה חלון להציג
   function changeMyProfileActive() {
@@ -289,11 +285,8 @@ const MyProfile = () => {
     //  עדכון הנתונים ומאםס את הסיסמאות
     try {
       setLoading(true);
-      const res = await axios.put(
-        `${apiUrl}/user/update-information`,
-        { fullName, phoneNumber, newPassword, userName },
-        { withCredentials: true }
-      );
+      const dataUpdateInfo = { fullName, phoneNumber, newPassword, userName };
+      const res = await updateMyInformation(dataUpdateInfo);
       console.log(res.data);
       setShowMessageVisibilty(true);
       setShowMessage(res.data);
@@ -395,12 +388,11 @@ const MyProfile = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   // מחיקת נכס לפי מזהה
   const deleteProperty = async (id) => {
     try {
-      await axios.delete(`${apiUrl}/property/${id}`, {
-        withCredentials: true,
-      });
+      await deletePropertyById(id);
       setMyProperties((prev) => prev.filter((p) => p._id !== id));
       setUser((prevUser) => ({
         ...prevUser,
@@ -438,9 +430,7 @@ const MyProfile = () => {
 
   const removeAllAlerts = async () => {
     try {
-      await axios.delete(`${apiUrl}/alerts`, {
-        withCredentials: true,
-      });
+      await deleteAlerts();
       setAlertArray([]);
       triggerRefreshAlerts();
       setShowMessage("ההתראות נמחקו בהצלחה");
@@ -468,9 +458,7 @@ const MyProfile = () => {
   // מחיקת התראה לפי מזהה
   const removeAlert = async (id) => {
     try {
-      const res = await axios.delete(`${apiUrl}/alerts/${id}`, {
-        withCredentials: true,
-      });
+      const res = await deleteAlert(id);
       console.log(res.data.message);
       triggerRefreshAlerts();
       setAlertArray((prev) => prev.filter((alert) => alert._id !== id));
@@ -500,11 +488,7 @@ const MyProfile = () => {
 
   const unNewAlert = async (id) => {
     try {
-      await axios.put(
-        `${apiUrl}/alerts/${id}`,
-        {},
-        { withCredentials: true }
-      );
+      await readAlert(id);
 
       setAlertArray((prev) =>
         prev.map((al) => (al._id === id ? { ...al, isNewAlert: false } : al))
@@ -925,7 +909,7 @@ const MyProfile = () => {
                   <Property
                     properties={currentProperties}
                     onDelete={deleteProperty}
-                    edit = {edit}
+                    edit={edit}
                   />
                 </div>
                 <div className={styles.pagination}>

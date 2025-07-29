@@ -19,12 +19,11 @@ export const AuthProvider = ({ children }) => {
   const didInitialFavoritesFetch = useRef(false);
   const [newAlertArray, setNewAlertArray] = useState([]);
   const [refreshAlerts, setRefreshAlerts] = useState(false);
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5000";
 
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
-      const res = await axios.get(`${apiUrl}/user`, {
+      const res = await axios.get(`/api/user`, {
         withCredentials: true,
       });
       setUser(res.data);
@@ -38,12 +37,12 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoadingUser(false);
     }
-  }, [apiUrl]);
+  }, []);
 
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
     try {
-      const res = await axios.get(`${apiUrl}/favorites`, {
+      const res = await axios.get(`/api/favorites`, {
         withCredentials: true,
       });
       setMyFavoriteProperties(res.data);
@@ -67,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     if (!user) return;
     try {
       const res = await axios.post(
-        `${apiUrl}/favorites`,
+        `/api/favorites`,
         { propertyId },
         { withCredentials: true }
       );
@@ -114,7 +113,7 @@ export const AuthProvider = ({ children }) => {
     }
     async function fetchNewAlerts() {
       try {
-        const res = await axios.get(`${apiUrl}/alerts/new`, {
+        const res = await axios.get(`/api/alerts/new`, {
           withCredentials: true,
         });
         setNewAlertArray(res.data.newAlerts);
@@ -124,7 +123,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
     fetchNewAlerts();
-  }, [apiUrl, refreshAlerts]);
+  }, [refreshAlerts]);
 
   return (
     <AuthContext.Provider
