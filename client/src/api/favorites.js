@@ -1,11 +1,6 @@
-import axios from "axios";
+import api from "./api";
 
-export const getAlters = async () =>
-  await axios.get(`/api/favorites`, {
-    withCredentials: true,
-  });
+export const getAlters = async () => await api.get(`/favorites`);
 
 export const toggleFavoriteProperty = async (id) =>
-  await axios.post(`/api/favorites`, { propertyId: id } , {
-    withCredentials: true,
-  });
+  await api.post(`/favorites`, { propertyId: id });

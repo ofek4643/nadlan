@@ -1,31 +1,13 @@
-import axios from "axios";
+import api from "./api";
 
-export const newAlerts = async () =>
-  await axios.get(`/api/alerts/new`, {
-    withCredentials: true,
-  });
+export const newAlerts = async () => await api.get(`/alerts/new`);
 
-export const createAlert = async (id) =>
-  await axios.post(`/api/alerts/${id}`, {
-    withCredentials: true,
-  });
+export const createAlert = async (id) => await api.post(`/alerts/${id}`);
 
-export const getAllAlerts = async () =>
-  await axios.get(`/api/alerts`, {
-    withCredentials: true,
-  });
+export const getAllAlerts = async () => await api.get(`/alerts`);
 
-export const deleteAlerts = async () =>
-  await axios.delete(`/api/alerts`, {
-    withCredentials: true,
-  });
+export const deleteAlerts = async () => await api.delete(`/alerts`);
 
-export const deleteAlert = async (id) =>
-  await axios.delete(`/api/alerts/${id}`, {
-    withCredentials: true,
-  });
+export const deleteAlert = async (id) => await api.delete(`/alerts/${id}`);
 
-export const readAlert = async (id) =>
-  await axios.put(`/api/alerts/${id}`, {} ,{
-    withCredentials: true,
-  });
+export const readAlert = async (id) => await api.put(`/alerts/${id}`, {});
