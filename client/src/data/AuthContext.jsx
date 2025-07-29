@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
     if (!user) {
-      return
+      return;
     }
     try {
       const res = await getAlerts();
@@ -102,6 +102,20 @@ export const AuthProvider = ({ children }) => {
     setRefreshAlerts((prev) => !prev);
   };
 
+  // רענון ראשוני של התראות כשמשתמש נטען
+  useEffect(() => {
+    async function fetchNewAlerts() {
+      try {
+        const res = await newAlerts();
+        setNewAlertArray(res.data.newAlerts);
+      } catch (error) {
+        console.error("שגיאה במשיכת התראות חדשות", error);
+        setNewAlertArray([]);
+      }
+    }
+    fetchNewAlerts();
+  }, []);
+
   // שליפת התראות חדשות עם ריענון אוטומטי
   useEffect(() => {
     if (!user) {
@@ -118,7 +132,7 @@ export const AuthProvider = ({ children }) => {
       }
     }
     fetchNewAlerts();
-  }, [refreshAlerts , user]);
+  }, [refreshAlerts]);
 
   return (
     <AuthContext.Provider
