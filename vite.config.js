@@ -8,7 +8,6 @@ export default () => {
     server: {
       proxy: {
         "/api" : {
-          // target: "http://localhost:5000",
           target: "https://nadlan-lxn4.onrender.com",
           changeOrigin: true
         }
