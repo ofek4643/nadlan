@@ -76,6 +76,7 @@ export const AuthProvider = ({ children }) => {
       setMyFavoriteProperties((prev) =>
         prev.filter((p) => updatedIds.includes(p._id))
       );
+      fetchFavorites()
     } catch (error) {
       console.error("שגיאה בעדכון המעודפים", error);
     }
