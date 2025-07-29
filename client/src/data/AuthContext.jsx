@@ -6,7 +6,9 @@ import React, {
   useCallback,
   useRef,
 } from "react";
-import axios from "axios";
+import { myUserId as myUser } from "../api/users";
+import { newAlerts } from "../api/alerts";
+import { getAlters, toggleFavoriteProperty } from "../api/favorites";
 
 const AuthContext = createContext();
 // משתנים
@@ -23,9 +25,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
-      const res = await axios.get(`/api/user`, {
-        withCredentials: true,
-      });
+      const res = await myUser()
       setUser(res.data);
       setIsAdmin(res.data.role === "admin");
     } catch (error) {
@@ -42,9 +42,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
     try {
-      const res = await axios.get(`/api/favorites`, {
-        withCredentials: true,
-      });
+      const res = await getAlters()
       setMyFavoriteProperties(res.data);
 
       const favIds = res.data.map((p) => p._id);
@@ -65,11 +63,7 @@ export const AuthProvider = ({ children }) => {
   const toggleFavorite = async (propertyId) => {
     if (!user) return;
     try {
-      const res = await axios.post(
-        `/api/favorites`,
-        { propertyId },
-        { withCredentials: true }
-      );
+      const res = await toggleFavoriteProperty(propertyId)
 
       const updatedIds = res.data;
       setUser((prev) => {
@@ -113,9 +107,7 @@ export const AuthProvider = ({ children }) => {
     }
     async function fetchNewAlerts() {
       try {
-        const res = await axios.get(`/api/alerts/new`, {
-          withCredentials: true,
-        });
+        const res = await newAlerts()
         setNewAlertArray(res.data.newAlerts);
       } catch (error) {
         console.error("שגיאה במשיכת התראות חדשות", error);

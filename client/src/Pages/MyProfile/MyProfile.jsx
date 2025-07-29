@@ -6,7 +6,7 @@ import CustomInput from "../../components/CustomInput/CustomInput.jsx";
 import { labelStyle } from "../../data/data.js";
 
 import { useAuth } from "../../data/AuthContext.jsx";
-import { myUserId, updateMyInformation, verifyPassword } from "../../api/users.js";
+import { myUserId as myUser, updateMyInformation, verifyPassword } from "../../api/users.js";
 import {
   deleteAlert,
   deleteAlerts,
@@ -124,7 +124,7 @@ const MyProfile = () => {
     const fetchUserProfile = async () => {
       try {
         setLoading(true);
-        const res = await myUserId()
+        const res = await myUser()
 
         if (res.data) {
           setFullName(res.data.fullName || "");
