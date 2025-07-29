@@ -4,7 +4,6 @@ import { Link, useNavigate } from "react-router-dom";
 import CustomSelect from "../CustomSelect/CustomSelect";
 import { useAuth } from "../../data/AuthContext.jsx";
 import { logoutUser } from "../../api/users.js";
-import { newAlerts } from "../../api/alerts.js";
 
 const Header = () => {
   //משתנים
@@ -15,8 +14,6 @@ const Header = () => {
     setUser,
     isAdmin,
     newAlertArray,
-    refreshAlerts,
-    setNewAlertArray,
   } = useAuth();
   const ref = useRef();
   const navigate = useNavigate();
@@ -68,29 +65,6 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // עדכון התראות כשמתבצע טריגר רענון
-  useEffect(() => {
-    if (!user) {
-      setNewAlertArray([]);
-      return;
-    }
-    // שליפת התראות חדשות
-    const fetchNewAlerts = async () => {
-      try {
-        const res = await newAlerts();
-        setNewAlertArray(res.data.newAlerts);
-      } catch (error) {
-        if (error.response?.status === 401) {
-          setUser(null);
-          setNewAlertArray([]);
-        } else {
-          console.error("שגיאה במשיכת התראות חדשות", error);
-        }
-      }
-    };
-
-    fetchNewAlerts();
-  }, [refreshAlerts, setNewAlertArray, user, setUser]);
   return (
     <header className={styles.header}>
       <div className={styles.container}>

@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת יוזר
   const fetchUser = useCallback(async () => {
     try {
-      const res = await myUser()
+      const res = await myUser();
       setUser(res.data);
       setIsAdmin(res.data.role === "admin");
     } catch (error) {
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }) => {
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
     try {
-      const res = await getAlters()
+      const res = await getAlters();
       setMyFavoriteProperties(res.data);
 
       const favIds = res.data.map((p) => p._id);
@@ -63,7 +63,7 @@ export const AuthProvider = ({ children }) => {
   const toggleFavorite = async (propertyId) => {
     if (!user) return;
     try {
-      const res = await toggleFavoriteProperty(propertyId)
+      const res = await toggleFavoriteProperty(propertyId);
 
       const updatedIds = res.data;
       setUser((prev) => {
@@ -73,14 +73,14 @@ export const AuthProvider = ({ children }) => {
       setMyFavoriteProperties((prev) =>
         prev.filter((p) => updatedIds.includes(p._id))
       );
-      fetchFavorites();
     } catch (error) {
       console.error("שגיאה בעדכון המעודפים", error);
     }
   };
-  // טוען את היוזר בכל פעם שיש שבו שינוי
+  // טוען את היוזר והמעודפים בכל פעם שיש שבו שינוי
   useEffect(() => {
     fetchUser();
+    fetchFavorites();
   }, [fetchUser]);
 
   // טען מועדפים רק פעם אחת אחרי שהיוזר נטען
@@ -107,7 +107,7 @@ export const AuthProvider = ({ children }) => {
     }
     async function fetchNewAlerts() {
       try {
-        const res = await newAlerts()
+        const res = await newAlerts();
         setNewAlertArray(res.data.newAlerts);
       } catch (error) {
         console.error("שגיאה במשיכת התראות חדשות", error);
