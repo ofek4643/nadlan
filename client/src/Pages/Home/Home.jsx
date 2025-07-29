@@ -12,7 +12,6 @@ const Home = () => {
   const location = useLocation();
   const { user } = useAuth();
 
-
   // משתנים של הודעה
   const [message, setMessage] = useState(""); // הודעת הצלחה
   const [messageErrorFetchVisibility, setMessageErrorFetchVisibility] =
@@ -23,8 +22,8 @@ const Home = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await getProperies()
-        setProperties(res.data.properties);
+        const res = await getProperies();
+        setProperties(res.data.properties || []);
       } catch (err) {
         console.error("שגיאה:", err);
         setMessageErrorFetchVisibility(true);
