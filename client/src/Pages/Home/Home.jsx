@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import styles from "../Home/Home.module.css";
 import Property from "../../components/Property/Property";
 import { useEffect, useState } from "react";
-import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useAuth } from "../../data/AuthContext";
+import { getProperies } from "../../api/property";
 
 const Home = () => {
   const [properties, setProperties] = useState([]);
@@ -23,9 +23,7 @@ const Home = () => {
   useEffect(() => {
     async function fetchProperties() {
       try {
-        const res = await axios.get(`/api/property`, {
-          withCredentials: true,
-        });
+        const res = await getProperies()
         setProperties(res.data.properties);
       } catch (err) {
         console.error("שגיאה:", err);

@@ -1,4 +1,4 @@
-import { defineConfig} from "vite";
+import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 export default () => {
@@ -7,11 +7,11 @@ export default () => {
     plugins: [react()],
     server: {
       proxy: {
-        "/api" : {
-          // target: "http://localhost:5000",
-          target: "https://nadlan-lxn4.onrender.com"
-        }
-      }
+        "/api": {
+          target: "https://nadlan-lxn4.onrender.com",
+          changeOrigin: true,
+        },
+      },
     },
   });
 };
