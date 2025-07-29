@@ -1,19 +1,29 @@
-import api from "./api";
+import axios from "axios";
 
 export const dashboardStats = async () =>
-  await api.get(`/admin/dashboard-stats`);
+  await axios.get(`/api/admin/dashboard-stats`, {
+    withCredentials: true,
+  });
 
 export const allUsersAdmin = async () =>
-  await api.get(`/admin/users`);
+  await axios.get(`/api/admin/users`, {
+    withCredentials: true,
+  });
 
 export const getUserAdmin = async (id) =>
-  await api.get(`/admin/users/${id}`);
+  await axios.get(`/api/admin/users/${id}`, {
+    withCredentials: true,
+  });
 
 export const editUserAdmin = async (data, id) =>
-  await api.put(`/admin/users/${id}`, data);
+  await axios.put(`/api/admin/users/${id}`, data, {
+    withCredentials: true,
+  });
 
 export const deleteUser = async (userId) =>
-  await api.delete(`/admin/${userId}`);
+  await axios.delete(`/api/admin/${userId}`, {
+    withCredentials: true,
+  });
 
 export const blockUser = async (userId) =>
-  await api.put(`/admin/block/${userId}`, {});
+  await axios.put(`/api/admin/block/${userId}`, {}, { withCredentials: true });

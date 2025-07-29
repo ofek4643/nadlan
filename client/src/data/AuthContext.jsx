@@ -41,6 +41,7 @@ export const AuthProvider = ({ children }) => {
 
   // טעינת נכסים מעודפים
   const fetchFavorites = async () => {
+    if (!user) return;
     try {
       const res = await getAlters();
       setMyFavoriteProperties(res.data);

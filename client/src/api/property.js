@@ -1,19 +1,23 @@
-import api from "./api";
-
+import axios from "axios";
 export const addPropery = async (data) =>
-  await api.post(`/property/add-property`, data);
+  await axios.post(`/api/property/add-property`, data, {
+    withCredentials: true,
+  });
 
 export const filterProperies = async (data) =>
-  await api.post(`/property/filter`, data);
+  await axios.post(`/api/property/filter`, data, { withCredentials: true });
 
-export const getProperies = async () => await api.get(`/property`);
+export const getProperies = async (data) =>
+  await axios.get(`/api/property`, data, { withCredentials: true });
 
-export const getPropertyById = async (id) => await api.get(`/property/${id}`);
+export const getPropertyById = async (id) =>
+  await axios.get(`/api/property/${id}`, { withCredentials: true });
 
 export const updatePropertyById = async (data, id) =>
-  await api.put(`/property/${id}`, data);
+  await axios.put(`/api/property/${id}`, data, { withCredentials: true });
 
-export const myPropeties = async () => await api.get(`/property/my-properties`);
+export const myPropeties = async () =>
+  await axios.get(`/api/property/my-properties`, { withCredentials: true });
 
 export const deletePropertyById = async (id) =>
-  await api.delete(`/property/${id}`);
+  await axios.delete(`/api/property/${id}`, { withCredentials: true });
