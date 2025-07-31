@@ -56,7 +56,6 @@ const Login = () => {
     // אם כן בודק האם יש יוזר במסד נתונים
     try {
       setLoading(true);
-
       const dataLogin = { userName, password, rememberMe };
       const res = await loginUser(dataLogin)
       console.log("התגובה מהשרת:", res.data);

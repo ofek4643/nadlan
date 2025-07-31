@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import styles from "../AdminUsers/AdminUsers.module.css";
 import { Link } from "react-router-dom";
 import CustomInput from "../../components/CustomInput/CustomInput.jsx";
-import axios from "axios";
 import { allUsersAdmin, blockUser, deleteUser } from "../../api/admin.js";
 import { myUserId } from "../../api/users.js";
 

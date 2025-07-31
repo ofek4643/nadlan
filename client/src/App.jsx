@@ -15,7 +15,10 @@ import AdminUsers from "./Pages/AdminUsers/AdminUsers.jsx";
 import AdminDashboard from "./Pages/AdminDashboard/AdminDashboard.jsx";
 import EditUser from "./Pages/EditUser/EditUser.jsx";
 import EditProperty from "./Pages/EditProperty/EditProperty.jsx";
+import NotAuthorized from "./Pages/NotAuthorized/NotAuthorized.jsx";
 import { AuthProvider } from "./data/AuthContext.jsx";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute.jsx";
+import AdminProtectedRoute from "./components/ProtectedRoute/AdminProtectedRoute.jsx";
 
 function App() {
   return (
@@ -34,13 +37,56 @@ function App() {
             <Route path="register" element={<Register />} />
             <Route path="terms" element={<Terms />} />
             <Route path="privacy" element={<Privacy />} />
-            <Route path="my-profile" element={<MyProfile />} />
-            <Route path="add-property" element={<AddProperty />} />
+            <Route
+              path="my-profile"
+              element={
+                <ProtectedRoute>
+                  <MyProfile />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="add-property"
+              element={
+                <ProtectedRoute>
+                  <AddProperty />
+                </ProtectedRoute>
+              }
+            />
             <Route path="/properties/prop/:id" element={<PropertyPage />} />
-            <Route path="admin/users" element={<AdminUsers />} />
-            <Route path="admin/dashboard" element={<AdminDashboard />} />
-            <Route path="/admin/users/:id/edit" element={<EditUser />} />
-            <Route path="/properties/prop/:id/edit" element={<EditProperty />} />
+            <Route
+              path="admin/users"
+              element={
+                <AdminProtectedRoute>
+                  <AdminUsers />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="admin/dashboard"
+              element={
+                <AdminProtectedRoute>
+                  <AdminDashboard />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/admin/users/:id/edit"
+              element={
+                <AdminProtectedRoute>
+                  <EditUser />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route
+              path="/properties/prop/:id/edit"
+              element={
+                <AdminProtectedRoute>
+                  <EditProperty />
+                </AdminProtectedRoute>
+              }
+            />
+            <Route path="not-authorized" element={<NotAuthorized />} />
           </Route>
         </Routes>
       </Router>
