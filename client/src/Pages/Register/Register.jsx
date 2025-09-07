@@ -136,8 +136,8 @@ const Register = () => {
       const dataRegister = { fullName, userName, email, phoneNumber, password };
       const res = await registerGuest(dataRegister);
       console.log("התגובה מהשרת:", res.data.message);
-      await fetchUser();
       navigate("/", { state: { showMessage: res.data.message } });
+      await fetchUser();
     } catch (error) {
       if (!error.response) {
         setShowMessage("לא ניתן להתחבר לשרת. אנא נסה שוב מאוחר יותר.");

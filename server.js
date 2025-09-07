@@ -6,11 +6,11 @@ import rateLimit from "express-rate-limit";
 
 import connectDB from "./config/db.js";
 import authRouter from "./routes/auth.js";
-import propertyRouter from "./routes/property.js"
-import alertsRouter from "./routes/alerts.js"
-import favoriteRouter from "./routes/favorite.js"
-import userRouter from "./routes/user.js"
-import adminRouter from "./routes/admin.js"
+import propertyRouter from "./routes/property.js";
+import alertsRouter from "./routes/alerts.js";
+import favoriteRouter from "./routes/favorite.js";
+import userRouter from "./routes/user.js";
+import adminRouter from "./routes/admin.js";
 
 dotenv.config();
 const app = express();
@@ -19,6 +19,7 @@ app.use(express.json());
 
 const allowedOrigins = [
   "http://localhost:5173",
+  "http://localhost:5174",
   "https://nadlan-react1.onrender.com",
   "https://nadlan-lxn4.onrender.com",
 ];
@@ -55,10 +56,10 @@ app.use(globalLimiter);
 // שימוש ב route
 app.use("/api/auth", authRouter);
 app.use("/api/property", propertyRouter);
-app.use("/api/alerts" , alertsRouter)
-app.use("/api/favorites" , favoriteRouter)
-app.use("/api/user" , userRouter)
-app.use("/api/admin" , adminRouter)
+app.use("/api/alerts", alertsRouter);
+app.use("/api/favorites", favoriteRouter);
+app.use("/api/user", userRouter);
+app.use("/api/admin", adminRouter);
 
 // יצירת השרת
 app.listen(port, () => {
