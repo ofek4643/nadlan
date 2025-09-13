@@ -1,15 +1,15 @@
 # 🏠 Nadlan App - אפליקציית נדל"ן
 
-## פרויקט נדל"ן הבנוי ב־ React עם Vite. מאפשר מיון, סינון וניהול נכסים למכירה ולהשכרה, כולל מערכת משתמשים, ניהול מועדפים, הוספת נכסים, דשבורד לאדמין ועוד.
+פרויקט נדל"ן הבנוי ב־ React עם Vite. מאפשר מיון, סינון וניהול נכסים למכירה ולהשכרה, כולל מערכת משתמשים, ניהול מועדפים, הוספת נכסים, דשבורד לאדמין ועוד.
 
 ## 🚀 טכנולוגיות עיקריות
 
 - **Frontend**: React + Vite
 - **Backend**: Node.js + Express
 - **Database**: MongoDB (עם Mongoose)
-- **Authentication**: JWT + Cookies
-- **Styling**: CSS Modules
-- **State Management**: useState/useEffect/AuthContext
+- **Authentication**: JWT + Cookies + bcrypt
+- **Authorization:** authMiddleware לאימות טוקנים, isAdmin להגבלת גישת מנהלים
+- **State Management**: useState/useEffect/AuthContext/useRef
 - **Deployment**: Render
 
 ---
@@ -27,18 +27,22 @@
 
 ---
 
-## 🛠️ התקנה מקומית
+## ⚙️ התקנה והרצה מקומית
 
-1. קלון של הריפוזיטורי:
+1. שיבוט הפרויקט:
 
-```bash
-git clone https://github.com/ofek4643/nadlan.git
-```
+   ```bash
+   git clone https://github.com/ofek4643/nadlan.git
+   cd nadlan-app
+   npm install
+   npm run dev
+   ```
+
+---
+
+## 🌐 הגדרות לשרת
 
 cd nadlan-app
-
-frontend
-npm run dev
-
-backend
 node server.js
+
+---
